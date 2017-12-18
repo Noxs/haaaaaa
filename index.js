@@ -73,7 +73,6 @@ let context = {
 
 templateEngine.render(template, context).then(function (response) {
     let compiledTemplate = response;
-    // console.log("1", compiledTemplate);
 },function (error) {
     console.log(error);
 });

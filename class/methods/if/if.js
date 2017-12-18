@@ -5,7 +5,6 @@ const Context = require('../../context.js');
 
 class If {
     _checkTags(openingTagsNumber, closingTagsNumber){
-        console.log(openingTagsNumber);
         if (typeof(openingTagsNumber) !== 'number') {
             throw new Error('First parameter of if-process _checkTags() method must be a number.');
         }

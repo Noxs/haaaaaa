@@ -3,7 +3,6 @@ const ForLoop = require('./forLoop.js');
 
 class For {
     _checkTags(openingTagsNumber, closingTagsNumber){
-        console.log(openingTagsNumber);
         if (typeof(openingTagsNumber) !== 'number') {
             throw new Error('First parameter of for-process _checkTags() method must be a number.');
         }
