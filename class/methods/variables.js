@@ -25,6 +25,13 @@ class Variables {
 
     _applyFilter(tag, context){
         return new Promise( (resolve, reject) => {
+            if (typeof(tag) !== 'object') {
+                throw new Error('First parameter of variables _applyFilter() method must be an array.');
+            }
+            if (!context || context.constructor !== Context) {
+                reject(new Error('Second parameter of variables _applyFilter() method must be a Context object.'));
+                return;
+            }
             const filterParams = [];
             if (tag[2]) {
                 if (this._checkQuoteMarks(tag[1])) {
