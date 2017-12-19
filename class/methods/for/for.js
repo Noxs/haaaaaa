@@ -10,10 +10,10 @@ class For {
             throw new Error('Second parameter of for-process _checkTags() method must be a number.');
         }
         if (openingTagsNumber < closingTagsNumber) {
-            throw new Error('One opening for-tag is missing.');
+            throw new Error('One opening for-tag is missing, at least.');
         }
         if (openingTagsNumber > closingTagsNumber) {
-            throw new Error('One closing for-tag is missing.');
+            throw new Error('One closing for-tag is missing, at least.');
         }
         return;
     }

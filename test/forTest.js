@@ -73,7 +73,7 @@ describe('For', function () {
             assert.isUndefined(result);
             done();
         }, (error) => {
-            assert.equal(error.message, 'One opening for-tag is missing.');
+            assert.equal(error.message, 'One opening for-tag is missing, at least.');
             done();
         });
     });
@@ -100,7 +100,7 @@ describe('For', function () {
             assert.isUndefined(result);
             done();
         }, (error) => {
-            assert.equal(error.message, 'One closing for-tag is missing.');
+            assert.equal(error.message, 'One closing for-tag is missing, at least.');
             done();
         });
     });
