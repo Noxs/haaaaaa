@@ -8,6 +8,22 @@ const For = require('../class/methods/for/for.js');
 const ForLoop = require('../class/methods/for/forLoop.js');
 
 describe('For', function () {
+    it('For _checktags() method : First parameter is not a number', function () {
+        const forLoop = new For();
+        const test = function () {
+            forLoop._checkTags('Not a number', 2);
+        }
+        expect(test).to.throw('First parameter of for-process _checkTags() method must be a number.');
+    });
+
+    it('For _checktags() method : Second parameter is not a number', function () {
+        const forLoop = new For();
+        const test = function () {
+            forLoop._checkTags(1, 'Not a number');
+        }
+        expect(test).to.throw('Second parameter of for-process _checkTags() method must be a number.');
+    });
+
     it('For process() method : Success', function (done) {
         const template = new Template('<p>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</p>');
         const test = {
@@ -31,6 +47,60 @@ describe('For', function () {
             done();
         }, (error) => {
             assert.isUndefined(error);
+            done();
+        });
+    });
+
+    it('For process() method : One opening tag is missing', function (done) {
+        const template = new Template('<p><p>{{user.firstname}}</p>{%endfor%}</p>');
+        const test = {
+            users : [
+                {
+                    firstname : "Jake",
+                    lastname : "Fisher",
+                    age : "21",
+                },
+                {
+                    firstname : "Bonz",
+                    lastname : "Atron",
+                    age : "22",
+                }
+            ]
+        };
+        const context = new Context(test);
+        const forRepetition = new For();
+        forRepetition.process(template, context).then( (result) => {
+            assert.isUndefined(result);
+            done();
+        }, (error) => {
+            assert.equal(error.message, 'One opening for-tag is missing.');
+            done();
+        });
+    });
+
+    it('For process() method : One closing tag is missing', function (done) {
+        const template = new Template('<p>{% for user in users %}<p>{{user.firstname}}</p></p>');
+        const test = {
+            users : [
+                {
+                    firstname : "Jake",
+                    lastname : "Fisher",
+                    age : "21",
+                },
+                {
+                    firstname : "Bonz",
+                    lastname : "Atron",
+                    age : "22",
+                }
+            ]
+        };
+        const context = new Context(test);
+        const forRepetition = new For();
+        forRepetition.process(template, context).then( (result) => {
+            assert.isUndefined(result);
+            done();
+        }, (error) => {
+            assert.equal(error.message, 'One closing for-tag is missing.');
             done();
         });
     });
