@@ -35,11 +35,6 @@ class TemplateEngine {
                 console.log(error, 'for.process() in templateEngine() failed.');
                 reject(error);
             });
-
-
-            //TODO for loop
-            //TODO if condition
-            //TODO variables
         });
     }
 }
