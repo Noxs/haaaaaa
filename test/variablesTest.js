@@ -5,6 +5,7 @@ const should = chai.should();
 const Variables = require('../class/methods/variables.js');
 const Template = require('../class/template.js');
 const Context = require('../class/context.js');
+const regexp = new RegExp("{{\\s?((?:[a-zA-Z0-9.]+)|(?:'[a-zA-Z0-9. ]+')|(?:\"[a-zA-Z0-9. ]+\"))\\s?(?:\\|+\\s?([a-zA-Z0-9.]+)(?:\\(([a-zA-Z0-9.,'\"]+)\\))?)?\\s?}}", "g");
 
 describe('Variables', function () {
     it('Variables process() method : Success', function (done) {
@@ -227,10 +228,91 @@ describe('Variables', function () {
         assert.equal(variables._extractFromQuoteMarks(testSimpleQuote), "It has to be extracted without simple quotation marks.");
     });
 
-    //TODO : test _checkQuoteMarks()
-    //TODO : test _applyFilter()
-    //TODO : test _treatTag()
-    //TODO : refactore variable?
-    //TODO : test {{'Monday'| dayTest('Friday') }}
-    //TODO : bug with different type of quotation marks at the beginning and the end('this is a test"), in _extractFromQuoteMarks(), and _checkQuoteMarks()
+    it("Variables _extractFromQuoteMarks() method : First parameter is not a string", function () {
+        const variables = new Variables();
+
+        testNoStringFunc = function () {
+            variables._extractFromQuoteMarks(3);
+        }
+        expect(testNoStringFunc).to.throw('First parameter of _extractFromQuoteMarks() method must be a string');
+    });
+
+    it("Variables _checkQuoteMarks() method : Success with simple and double quote", function () {
+        const variables = new Variables();
+        const testDoubleQuote = '"It has double quotation marks."';
+        const testSimpleQuote = "'It has simple quotation marks.'";
+
+        assert.equal(variables._checkQuoteMarks(testSimpleQuote), true);
+        assert.equal(variables._checkQuoteMarks(testDoubleQuote), true);
+    });
+
+    it("Variables _checkQuoteMarks() method : Success with no quotation marks", function () {
+        const variables = new Variables();
+        const testNoQuote = 'It has no quotation mark';
+
+        assert.equal(variables._checkQuoteMarks(testNoQuote), false);
+    });
+
+    it("Variables _checkQuoteMarks() method : First parameter is not a string", function () {
+        const variables = new Variables();
+        const testNoString = 3;
+        const testNoStringFunc = function () {
+            variables._checkQuoteMarks(testNoString);
+        };
+
+        expect(testNoStringFunc).to.throw('First parameter of _checkQuoteMarks() method must be a string');
+    });
+
+    it("Variables _applyFilter() method : Success", function () {
+        const variables = new Variables();
+        const template = new Template('{{ "Monday" | dayTest("Tuesday")}}');
+        const tag = template.search(regexp)[0];
+        const context = new Context({ year: 2017, day: 'Friday', month: 'September' });
+        variables._applyFilter(tag, context).then( (result) => {
+            assert.equal(result, "It is not Tuesday. It is \"Monday\".");
+        }, (error) => {
+            assert.isUndefined(error);
+            done();
+        });
+
+    });
+
+    it("Variables _applyFilter() method : First parameter is not an array", function (done) {
+        const variables = new Variables();
+        const context = { year: 2017, day: 'Friday', month: 'September' };
+
+        variables._applyFilter("Not an array", context).then( (result) => {
+            assert.isUndefined(result);
+        }, (error) => {
+            assert.equal(error.message, 'First parameter of variables _applyFilter() method must be an array.');
+            done();
+        });
+    });
+
+    it("Variables _applyFilter() method : Second parameter is not a Context object", function (done) {
+        const variables = new Variables();
+        const template = new Template('{{ "Monday" | dayTest("Tuesday")}}');
+        const tag = template.search(regexp)[0];
+        const context = { year: 2017, day: 'Friday', month: 'September' };
+
+        variables._applyFilter(tag, context).then( (result) => {
+            assert.isUndefined(result);
+        }, (error) => {
+            assert.equal(error.message, 'Second parameter of variables _applyFilter() method must be a Context object.');
+            done();
+        });
+    });
+
+    it("Variables _applyFilter() method : Second parameter is undefined", function (done) {
+        const variables = new Variables();
+        const template = new Template('{{ "Monday" | dayTest("Tuesday")}}');
+        const tag = template.search(regexp)[0];
+
+        variables._applyFilter(tag).then( (result) => {
+            assert.isUndefined(result);
+        }, (error) => {
+            assert.equal(error.message, 'Second parameter of variables _applyFilter() method must be a Context object.');
+            done();
+        });
+    });
 });
