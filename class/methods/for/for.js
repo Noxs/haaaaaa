@@ -3,7 +3,6 @@ const ForLoop = require('./forLoop.js');
 
 class For {
     _checkTags(openingTagsNumber, closingTagsNumber){
-        console.log(openingTagsNumber);
         if (typeof(openingTagsNumber) !== 'number') {
             throw new Error('First parameter of for-process _checkTags() method must be a number.');
         }
@@ -11,10 +10,10 @@ class For {
             throw new Error('Second parameter of for-process _checkTags() method must be a number.');
         }
         if (openingTagsNumber < closingTagsNumber) {
-            throw new Error('One opening for-tag is missing.');
+            throw new Error('One opening for-tag is missing, at least.');
         }
         if (openingTagsNumber > closingTagsNumber) {
-            throw new Error('One closing for-tag is missing.');
+            throw new Error('One closing for-tag is missing, at least.');
         }
         return;
     }
@@ -53,7 +52,7 @@ class For {
                 }
                 resolve(template);
             },function(error) {
-                console.log(error, "For process() method failed.");
+                console.log(error, "Promise.all in for process() method failed.");
                 reject(error);
             });
         });

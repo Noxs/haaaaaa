@@ -16,7 +16,7 @@ class ForIteration {
             templateEngine.render(template, context).then(function () {
                 resolve(template);
             },function (error) {
-                console.log(error, "ForIteration process() failed.");
+                console.log(error, "TemplateEngine render() method in ForIteration process() method failed.");
                 reject(error);
             });
         });

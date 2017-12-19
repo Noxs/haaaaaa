@@ -24,7 +24,7 @@ describe('Template', function () {
         const failureFunc = function() {
             new Template({});
         };
-        expect(failureFunc, "Template constructor function").to.throw(Error);
+        expect(failureFunc, "Template constructor function").to.throw('First parameter of template constructor() must be a string.');
     });
 
     it('Template.copy() method : Success', function () {
@@ -51,7 +51,7 @@ describe('Template', function () {
         const notRegexpResultFunc = function () {
             template.search('test');
         };
-        expect(notRegexpResultFunc).to.throw(Error);
+        expect(notRegexpResultFunc).to.throw('First parameter of template search() method must be a RegExp object.');
     });
 
     it('Template.search() method : No match', function () {
@@ -66,7 +66,7 @@ describe('Template', function () {
         const undefinedParameterFunc = function () {
             template.search();
         };
-        expect(undefinedParameterFunc).to.throw(Error);
+        expect(undefinedParameterFunc).to.throw('First parameter of template search() method must be a RegExp object.');
     });
 
     it('Template.extract() method : Success', function () {
@@ -77,15 +77,12 @@ describe('Template', function () {
         const successFunc = function () {
             template.extract(6, 11);
         };
-        expect(successFunc).to.not.throw();
+        expect(successFunc).to.not.throw(Error);
 
         const templateTest = new Template('<a>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</a>');
         const resultTest = templateTest.extract(3, 50);
 
         expect(resultTest).to.equal('{% for user in users %}<p>{{user.firstname}}</p>');
-
-
-
     });
 
     it('Template.extract() method : Only one parameter', function () {
@@ -93,7 +90,7 @@ describe('Template', function () {
         const oneParameterFunc = function () {
             template.extract(6);
         };
-        expect(oneParameterFunc).to.throw(Error);
+        expect(oneParameterFunc).to.throw('Second parameter of template extract() method must be an integer.');
     });
 
     it('Template.extract() method : First parameter is a string', function () {
@@ -101,7 +98,7 @@ describe('Template', function () {
         const stringParameterFunc = function () {
             template.extract('test', 6);
         };
-        expect(stringParameterFunc).to.throw(Error);
+        expect(stringParameterFunc).to.throw('First parameter of template extract() method must be an integer.');
     });
 
     it('Template.extract() method : Second parameter is a string', function () {
@@ -109,7 +106,7 @@ describe('Template', function () {
         const stringParameterFunc = function () {
             template.extract(6,'test');
         };
-        expect(stringParameterFunc).to.throw(Error);
+        expect(stringParameterFunc).to.throw('Second parameter of template extract() method must be an integer.');
     });
 
     it('Template.extract() method : First parameter is a float', function () {
@@ -117,7 +114,7 @@ describe('Template', function () {
         const firstParameterFloatFunc = function () {
             template.extract(6.4, 12);
         };
-        expect(firstParameterFloatFunc).to.throw(Error);
+        expect(firstParameterFloatFunc).to.throw('First parameter of template extract() method must be an integer.');
     });
 
     it('Template.extract() method : Second parameter is a float', function () {
@@ -125,7 +122,7 @@ describe('Template', function () {
         const secondParameterFloatFunc = function () {
             template.extract(6, 12.8);
         };
-        expect(secondParameterFloatFunc).to.throw(Error);
+        expect(secondParameterFloatFunc).to.throw('Second parameter of template extract() method must be an integer.');
     });
 
     it('Template.extract() method : Second parameter is smaller than the first one', function () {
@@ -133,7 +130,7 @@ describe('Template', function () {
         const endingSmallerFunc = function () {
             template.extract(7, 2);
         };
-        expect(endingSmallerFunc).to.throw(Error);
+        expect(endingSmallerFunc).to.throw('Second parameter of template extract() method must be bigger than first parameter.');
     });
 
     it("Template.extract() method : Second parameter is bigger than last character's index", function () {
@@ -141,23 +138,23 @@ describe('Template', function () {
         const outOfRangeFunc = function () {
             template.extract(2, 14);
         };
-        expect(outOfRangeFunc).to.throw(Error);
+        expect(outOfRangeFunc).to.throw('Second parameter of template extract() method must be smaller than the template length.');
     });
 
     it("Template.extract() method : First parameter is negative", function () {
         const template = new Template("It is a test");
         const firstParameterNegativeFunc = function () {
-            template.extract(-2, 14);
+            template.extract(-2, 11);
         };
-        expect(firstParameterNegativeFunc).to.throw(Error);
+        expect(firstParameterNegativeFunc).to.throw('First parameter of template extract() method must be positive.');
     });
 
     it("Template.extract() method : Second parameter is negative", function () {
         const template = new Template("It is a test");
         const secondParameterNegativeFunc = function () {
-            template.extract(-2, 14);
+            template.extract(2, -2);
         };
-        expect(secondParameterNegativeFunc).to.throw(Error);
+        expect(secondParameterNegativeFunc).to.throw('Second parameter of template extract() method must be positive.');
     });
 
     it('Template.replace() method : Success', function () {
@@ -185,17 +182,22 @@ describe('Template', function () {
         expect(anotherTemplate._content).to.equal("It is the successful test");
     });
 
-    it('Template.replace() method : First parameter is a String', function () {
+    it('Template.replace() method : First parameter is not an Integer', function () {
         const template = new Template("It is a test");
-        const stringFirstParameterFunc = function () {
-            template.replace("test", 11, "success");
+        const testFunc = function () {
+            template.replace("This is not an Integer", 11, "success");
         };
-        expect(stringFirstParameterFunc).to.throw(Error);
 
-        const floatFirstParameter = function () {
-            template.replace(6.4, 11, "success");
+        expect(testFunc).to.throw('First parameter of template replace() method must be an integer.');
+    });
+
+    it('Template.replace() method : Second parameter is not an Integer', function () {
+        const template = new Template("It is a test");
+        const testFunc = function () {
+            template.replace(2, "This is not an Integer", "success");
         };
-        expect(floatFirstParameter).to.throw(Error);
+
+        expect(testFunc).to.throw('Second parameter of template replace() method must be an integer.');
     });
 
     it('Template.replace() method : Second parameter is smaller than the first one', function () {
@@ -203,20 +205,21 @@ describe('Template', function () {
         const secondParameterSmallerFunc = function () {
             template.replace(12, 6, "test");
         };
-        expect(secondParameterSmallerFunc).to.throw(Error);
+        expect(secondParameterSmallerFunc).to.throw('Second parameter of template replace() method must be bigger than first parameter.');
     });
 
-    it('Template.replace() method : Third parameter is a string', function () {
+    it('Template.replace() method : Third parameter is neither an integer nor a string', function () {
         const template = new Template("It is a test");
-        const numberThirdParameterFunc = function () {
-            template.replace(6, 12, 34);
+        const undefinedThirdParameterFunc = function () {
+            template.replace(6, 12, undefined);
         };
-        expect(numberThirdParameterFunc).to.not.throw(Error);
+        expect(undefinedThirdParameterFunc).to.throw('Third parameter of template replace() method cannot be undefined.');
 
-        const variableThirdParameterFunc = function () {
-            template.replace(6, 12, variable);
+        const objectThirdParameterFunc = function () {
+            template.replace(6, 12, {test : null});
         };
-        expect(variableThirdParameterFunc).to.throw(Error);
+
+        expect(objectThirdParameterFunc).to.throw('Third parameter of template replace() method must be a string or a number.');
     });
 
     it('Template.replace() method : Missing parameter', function () {
@@ -224,6 +227,12 @@ describe('Template', function () {
         const parameterMissingFunc = function () {
             template.replace(6, 12);
         };
-        expect(parameterMissingFunc).to.throw(Error);
+        expect(parameterMissingFunc).to.throw('Third parameter of template replace() method cannot be undefined.');
+    });
+
+    it('Template length getter method : success', function () {
+        const template = new Template("It is a test");
+
+        assert.equal(template.length, 12);
     });
 });

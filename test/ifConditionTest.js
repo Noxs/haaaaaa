@@ -358,6 +358,44 @@ describe('IfCondition', function () {
         expect(testFunc).to.not.throw(Error);
     });
 
+    it("IfCondition _evalutateString() method : First parameter is not defined", function () {
+        const template = new Template("{% if test %} {% endif %}");
+        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const openingTag = tags[0];
+        const closingTag = tags[1];
+        const test = {
+            variable : 1,
+            string : "It is a test",
+        };
+        const context = new Context(test);
+        const ifCondition = new IfCondition(template, context, openingTag, closingTag);
+
+        const testFunc = function () {
+            return ifCondition._evaluateString(undefined, context);
+        };
+
+        expect(testFunc).to.throw('Fisrt parameter of ifCondition must be a string.');
+    });
+
+    it("IfCondition _evalutateString() method : Second parameter is not a Context object", function () {
+        const template = new Template("{% if test %} {% endif %}");
+        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const openingTag = tags[0];
+        const closingTag = tags[1];
+        const test = {
+            variable : 1,
+            string : "It is a test",
+        };
+        const context = new Context(test);
+        const ifCondition = new IfCondition(template, context, openingTag, closingTag);
+
+        const testFunc = function () {
+            return ifCondition._evaluateString("variable === 2 || string === 'It is a test'", "This is not a Context object");
+        };
+
+        expect(testFunc).to.throw('Second parameter of ifCondition must be a Context object.');
+    });
+
     it('IfCondition process() method : Success with a condition that return false', function (done) {
         const template = new Template("{% if test !== 'Value' %}It has to be displayed{% endif %}");
         const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
