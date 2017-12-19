@@ -62,7 +62,7 @@ class If {
                 }
                 resolve(template);
             }, (error) => {
-                console.log(error, "For process() method failed.");
+                console.log(error, "Promise.all in if process() method failed.");
                 reject(error);
             });
         });

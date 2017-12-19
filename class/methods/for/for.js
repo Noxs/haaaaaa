@@ -52,7 +52,7 @@ class For {
                 }
                 resolve(template);
             },function(error) {
-                console.log(error, "For process() method failed.");
+                console.log(error, "Promise.all in for process() method failed.");
                 reject(error);
             });
         });
