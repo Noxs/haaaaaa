@@ -5,6 +5,7 @@ const should = chai.should();
 const Variables = require('../lib/methods/variables.js');
 const TemplateEngine = require('../lib/templateEngine.js');
 const Context = require('../lib/context.js');
+const translator = require('../lib/translator.js');
 
 describe('TemplateEngine', function () {
     it('TemplateEngine build : Success', function () {
@@ -200,6 +201,55 @@ describe('TemplateEngine', function () {
         const context = new Context(test);
         templateEngine.render(template, context).then( (result) => {
             expect(result._content).to.equal('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body></html>');
+            done();
+        }, (error) => {
+            assert.isUndefined(error);
+            done();
+        });
+    });
+
+    it('TemplateEngine render() method : Success with for-tags, if-tags, variables, filters, and translations', function (done) {
+        const templateEngine = new TemplateEngine();
+        const template = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>{{"HELLO_WORD" | translate}}</title></head><body><main>{%if title %}{{title}}{% endif %}</main><div>{% for user in users %}<p>{%if user.hobby %}{{user.firstname}} enjoys {{user.hobby}}{% endif %}{% if user.age < 30 %} and is {{user.age}} {% endif %}{{user.firstname}} lastname is {{user.lastname}}</p>{% endfor %}<p>{{day | dayTest(\'Monday\')}}</p></div></body></html>';
+        const test = {
+        	title : "Welcome",
+        	users : [
+                {
+                    firstname : "Antoine",
+                    lastname : "Dupont",
+                    age : 30,
+                    hobby : null,
+                },
+                {
+                    firstname : "Bonz",
+                    lastname : "Atron",
+                    age : "25",
+                    hobby : "Kendama"
+                }
+            ],
+            day : 'Friday',
+        };
+        const context = new Context(test);
+        const translations = {
+            'HELLO_WORD' : {
+                en : 'Hello',
+                fr : 'Bonjour',
+                de : 'Hallo'
+            },
+            'HOW_ARE_YOU_QUESTION' : {
+                en : 'How are you?',
+                fr : 'Comment ça va?',
+                de : "Wie geht's?"
+            }
+        };
+        const language = 'en';
+        const fallbackLanguage = 'fr';
+        translator.translations = translations;
+        translator.language = language;
+        translator.fallbackLanguage = fallbackLanguage;
+
+        templateEngine.render(template, context).then( (result) => {
+            expect(result._content).to.equal('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Hello</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body></html>');
             done();
         }, (error) => {
             assert.isUndefined(error);
