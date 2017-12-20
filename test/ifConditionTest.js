@@ -2,9 +2,9 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
-const Template = require('../class/template.js');
-const Context = require('../class/context.js');
-const IfCondition = require('../class/methods/if/ifCondition.js');
+const Template = require('../lib/template.js');
+const Context = require('../lib/context.js');
+const IfCondition = require('../lib/methods/if/ifCondition.js');
 
 describe('IfCondition', function () {
     it('IfCondition build : Success', function () {

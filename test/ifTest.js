@@ -2,9 +2,9 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
-const Template = require('../class/template.js');
-const Context = require('../class/context.js');
-const If = require('../class/methods/if/if.js');
+const Template = require('../lib/template.js');
+const Context = require('../lib/context.js');
+const If = require('../lib/methods/if/if.js');
 
 
 describe('If', function () {

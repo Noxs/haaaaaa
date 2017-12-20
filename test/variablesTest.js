@@ -2,9 +2,9 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
-const Variables = require('../class/methods/variables.js');
-const Template = require('../class/template.js');
-const Context = require('../class/context.js');
+const Variables = require('../lib/methods/variables.js');
+const Template = require('../lib/template.js');
+const Context = require('../lib/context.js');
 const regexp = new RegExp("{{\\s?((?:[a-zA-Z0-9.]+)|(?:'[a-zA-Z0-9. ]+')|(?:\"[a-zA-Z0-9. ]+\"))\\s?(?:\\|+\\s?([a-zA-Z0-9.]+)(?:\\(([a-zA-Z0-9.,'\"]+)\\))?)?\\s?}}", "g");
 
 describe('Variables', function () {

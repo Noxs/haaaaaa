@@ -2,7 +2,7 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
-const Template = require('../class/template.js');
+const Template = require('../lib/template.js');
 
 
 describe('Template', function () {

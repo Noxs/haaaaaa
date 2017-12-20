@@ -1,4 +1,4 @@
-const TemplateEngine = require('./class/TemplateEngine.js');
+const TemplateEngine = require('./lib/TemplateEngine.js');
 
 let templateEngine = new TemplateEngine();
 

@@ -2,10 +2,10 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
-const Template = require('../class/template.js');
-const Context = require('../class/context.js');
-const For = require('../class/methods/for/for.js');
-const ForLoop = require('../class/methods/for/forLoop.js');
+const Template = require('../lib/template.js');
+const Context = require('../lib/context.js');
+const For = require('../lib/methods/for/for.js');
+const ForLoop = require('../lib/methods/for/forLoop.js');
 
 describe('For', function () {
     it('For _checktags() method : First parameter is not a number', function () {

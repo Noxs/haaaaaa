@@ -2,9 +2,9 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
-const Variables = require('../class/methods/variables.js');
-const TemplateEngine = require('../class/templateEngine.js');
-const Context = require('../class/context.js');
+const Variables = require('../lib/methods/variables.js');
+const TemplateEngine = require('../lib/templateEngine.js');
+const Context = require('../lib/context.js');
 
 describe('TemplateEngine', function () {
     it('TemplateEngine build : Success', function () {

@@ -2,10 +2,10 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
-const Template = require('../class/template.js');
-const Context = require('../class/context.js');
-const ForIteration = require('../class/methods/for/forIteration.js');
-const ForLoop = require('../class/methods/for/forLoop.js');
+const Template = require('../lib/template.js');
+const Context = require('../lib/context.js');
+const ForIteration = require('../lib/methods/for/forIteration.js');
+const ForLoop = require('../lib/methods/for/forLoop.js');
 
 describe('ForLoop', function () {
     it('ForLoop build : Success', function () {
