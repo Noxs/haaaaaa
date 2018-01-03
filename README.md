@@ -1,6 +1,6 @@
 # SmashTemplateEngine [![Build Status](https://travis-ci.org/Noxs/SmashTemplateEngine.svg?branch=master)](https://travis-ci.org/Noxs/SmashTemplateEngine) [![codecov](https://codecov.io/gh/Noxs/SmashTemplateEngine/branch/master/graph/badge.svg)](https://codecov.io/gh/Noxs/SmashTemplateEngine)
 
-A template Engine with basic features :
+A template Engine with basic features :<br />
 &ensp;&ensp;- Variables handling<br />
 &ensp;&ensp;- If condition<br />
 &ensp;&ensp;- For loops<br />
@@ -21,7 +21,7 @@ npm install smash-template-engine
 ## Usage
 
 The only method you need is templateEngine.render().
-It takes two parameters :
+It takes two parameters :<br />
 &ensp;&ensp;- The first one is a string, which is actually your template<br />
 &ensp;&ensp;- The second one is an object, it corresponds to your context, containing all the variables used in the template<br />
 
