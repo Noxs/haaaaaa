@@ -190,4 +190,5 @@ templateEngine.render(string, parameters).then( (result) => {
 });
 ```
 
-rendered = "<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Hello</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body></html>"
+rendered should be <br />
+<p><!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Hello</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body></html><p>
