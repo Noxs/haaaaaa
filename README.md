@@ -1,10 +1,10 @@
 # SmashTemplateEngine [![Build Status](https://travis-ci.org/Noxs/SmashTemplateEngine.svg?branch=master)](https://travis-ci.org/Noxs/SmashTemplateEngine) [![codecov](https://codecov.io/gh/Noxs/SmashTemplateEngine/branch/master/graph/badge.svg)](https://codecov.io/gh/Noxs/SmashTemplateEngine)
 
 A template Engine with basic features :
-&ensp;&ensp;- Variables handling
-&ensp;&ensp;- If condition
-&ensp;&ensp;- For loops
-&ensp;&ensp;- Filters handling
+&ensp;&ensp;- Variables handling<br />
+&ensp;&ensp;- If condition<br />
+&ensp;&ensp;- For loops<br />
+&ensp;&ensp;- Filters handling<br />
 
 ## Getting Started
 
@@ -22,8 +22,8 @@ npm install smash-template-engine
 
 The only method you need is templateEngine.render().
 It takes two parameters :
-&ensp;&ensp;- The first one is a string, which is actually your template
-&ensp;&ensp;- The second one is an object, it corresponds to your context, containing all the variables used in the template
+&ensp;&ensp;- The first one is a string, which is actually your template<br />
+&ensp;&ensp;- The second one is an object, it corresponds to your context, containing all the variables used in the template<br />
 
 templateEngine.render() method is asynchronous, it resolves an object with a content attribute which is basically the compiled template.
 
@@ -98,7 +98,7 @@ Filters allow to apply treatment on a variable. There's a translate filter build
 {{ 'HELLO_KEYWORD' | translate }}
 ```
 
-n.b : In order to use translate filter, you'll need to tell translator your intention, make sure you've read * [Translate Filter](#translate-filter)
+n.b : In order to use translate filter, you'll need to tell translator your intention, make sure you've read [Translate Filter](#translate-filter)
 
 #### In order to add custom filter
 
