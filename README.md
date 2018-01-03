@@ -145,7 +145,7 @@ Here is a full examples of how to use the template engine.
 
 
 ```
-const string = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>{{"HELLO_WORD" | translate}}</title></head><body><main>{%if title %}{{title}}{% endif %}</main><div>{% for user in users %}<p>{%if user.hobby %}{{user.firstname}} enjoys {{user.hobby}}{% endif %}{% if user.age < 30 %} and is {{user.age}} {% endif %}{{user.firstname}} lastname is {{user.lastname}}</p>{% endfor %}<p>{{day | dayTest(\'Monday\')}}</p></div></body></html>';
+const string = '<body><main>{{"HELLO_WORD" | translate}}</main><h1>{%if title %}{{title}}{% endif %}</h1><div>{% for user in users %}<p>{%if user.hobby %}{{user.firstname}} enjoys {{user.hobby}}{% endif %}{% if user.age < 30 %} and is {{user.age}} {% endif %}{{user.firstname}} lastname is {{user.lastname}}</p>{% endfor %}<p>{{day | dayTest(\'Monday\')}}</p></div></body>';
 
 const parameters = {
     title : "Welcome",
@@ -191,4 +191,4 @@ templateEngine.render(string, parameters).then( (result) => {
 ```
 
 rendered now should be : <br />
-<pre><!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Hello</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body></html></pre>
+<pre><body><main>Hello</main><h1>Welcome</h1><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body></pre>
