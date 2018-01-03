@@ -190,5 +190,8 @@ templateEngine.render(string, parameters).then( (result) => {
 });
 ```
 
-rendered now should be : <br />
-<pre><body><main>Hello</main><h1>Welcome</h1><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body></pre>
+rendered now should be :
+
+```
+'<body><main>Hello</main><h1>Welcome</h1><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body>'
+```
