@@ -2,7 +2,7 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
-const Context = require('../class/context.js');
+const Context = require('../lib/context.js');
 
 
 describe('Context', function () {

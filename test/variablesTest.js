@@ -2,9 +2,10 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
-const Variables = require('../class/methods/variables.js');
-const Template = require('../class/template.js');
-const Context = require('../class/context.js');
+const Variables = require('../lib/methods/variables.js');
+const Template = require('../lib/template.js');
+const Context = require('../lib/context.js');
+const regexp = new RegExp("{{\\s?((?:[a-zA-Z0-9.]+)|(?:'[a-zA-Z0-9. ]+')|(?:\"[a-zA-Z0-9. ]+\"))\\s?(?:\\|+\\s?([a-zA-Z0-9.]+)(?:\\(([a-zA-Z0-9.,'\"]+)\\))?)?\\s?}}", "g");
 
 describe('Variables', function () {
     it('Variables process() method : Success', function (done) {
@@ -21,6 +22,8 @@ describe('Variables', function () {
         variables.process(template, context).then( (result) => {
             expect(template._content).to.equal('The current year is 2017');
             done();
+        }, (error) => {
+            assert.isUndefined(error);
         });
     });
 
@@ -57,7 +60,6 @@ describe('Variables', function () {
             expect(error.message).to.equal("Variable hour doesn't exist.");
             done();
         });
-
     });
 
     it('Variables process() method : several variables in template are undefined', function (done) {
@@ -217,20 +219,4 @@ describe('Variables', function () {
             done();
         });
     });
-
-    it("Variables _extractFromQuoteMarks() method : Success with simple and double quote", function () {
-        const variables = new Variables();
-        const testDoubleQuote = '"It has to be extracted without double quotation marks."';
-        const testSimpleQuote = "'It has to be extracted without simple quotation marks.'";
-
-        assert.equal(variables._extractFromQuoteMarks(testDoubleQuote), "It has to be extracted without double quotation marks.");
-        assert.equal(variables._extractFromQuoteMarks(testSimpleQuote), "It has to be extracted without simple quotation marks.");
-    });
-
-    //TODO : test _checkQuoteMarks()
-    //TODO : test _applyFilter()
-    //TODO : test _treatTag()
-    //TODO : refactore variable?
-    //TODO : test {{'Monday'| dayTest('Friday') }}
-    //TODO : bug with different type of quotation marks at the beginning and the end('this is a test"), in _extractFromQuoteMarks(), and _checkQuoteMarks()
 });
