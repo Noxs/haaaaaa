@@ -47,6 +47,50 @@ describe('TemplateEngine', function () {
         });
     });
 
+    it('TemplateEngine render() method : Success with translate filter', function (done) {
+        const templateEngine = new TemplateEngine();
+        const template = '<p>{{"HELLO_WORD" | translate( { firstname : users[0].firstname, lastname : users[0].lastname} )}}</p>';
+        const test = {
+        	title : "Welcome",
+        	users : [
+                {
+                    firstname : "Antoine",
+                    lastname : "Dupont",
+                    age : 30,
+                    hobby : null,
+                },
+                {
+                    firstname : "Bonz",
+                    lastname : "Atron",
+                    age : "25",
+                    hobby : "Kendama"
+                }
+            ],
+            day : 'Friday',
+        };
+        const context = new Context(test);
+        const translations = {
+            'HELLO_WORD' : {
+                en : 'Hello %firstname% %lastname%',
+                fr : 'Bonjour',
+                de : 'Hallo'
+            },
+        };
+        const language = 'en';
+        const fallbackLanguage = 'fr';
+        translator.translations = translations;
+        translator.language = language;
+        translator.fallbackLanguage = fallbackLanguage;
+
+        templateEngine.render(template, context).then( (result) => {
+            expect(result._content).to.equal('<p>Hello Antoine Dupont</p>');
+            done();
+        }, (error) => {
+            assert.isUndefined(error);
+            done();
+        });
+    });
+
     it('TemplateEngine render() method : Success with many brothers couple of for-tags', function (done) {
         const templateEngine = new TemplateEngine();
         const template = '<p>{% for sport in sports %}<p>{{ sport.name }} is played {{sport.place }}</p>{%endfor%}</p><p>{% for user in users %}<a>{{user.firstname}} is here</a>{% endfor %}</p>';

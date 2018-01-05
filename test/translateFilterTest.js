@@ -62,4 +62,32 @@ describe('Translate Filter', function () {
             done();
         });
     });
+
+    it('Translate Filter translate() method : Second parameter is not an object', function (done) {
+        const translations = {
+            'HELLO_WORD' : {
+                en : 'Hello',
+                fr : 'Bonjour',
+                de : 'Hallo'
+            },
+            'HOW_ARE_YOU_QUESTION' : {
+                en : 'How are you?',
+                fr : 'Comment ça va?',
+                de : "Wie geht's?"
+            }
+        };
+        const language = 'fr';
+        const fallbackLanguage = 'en';
+        translator.translations = translations;
+        translator.language = language;
+        translator.fallbackLanguage = fallbackLanguage;
+
+        filters['translate'].apply({} , ["HELLO_WORD", "It should be an object"]).then( (result) => {
+            assert.isUndefined(result);
+            done();
+        }, (error) => {
+            assert.equal(error.message, "Second parameter of translate filter must be an object but got : string");
+            done();
+        });
+    });
 });
