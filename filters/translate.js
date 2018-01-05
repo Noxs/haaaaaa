@@ -1,29 +1,26 @@
 const translator = require('../lib/translator.js');
 
 function translate(keyword, parameters){
-    return new Promise(function(resolve, reject) {
-        if (typeof keyword !== 'string') {
-            reject(new Error('First parameter of translate filter must be a string.')); //TODO improve that kind of error with "but got [typeof]" at the end
-            return;
+    if (typeof keyword !== 'string') {
+        throw new Error('First parameter of translate filter must be a string.'); //TODO improve that kind of error with "but got [typeof]" at the end
+    }
+    if (parameters) {
+        if (typeof parameters !== 'object') {
+            throw new Error('Second parameter of translate filter must be an object but got : ' + typeof parameters);
         }
-        if (parameters) {
-            if (typeof parameters !== 'object') {
-                reject(new Error('Second parameter of translate filter must be an object but got : ' + typeof parameters));
-                return;
+        let renderer = translator.translate(keyword);
+        for (let key in parameters) {
+            console.log("ici gros", key, parameters);
+            if(!parameters[key]){
+                throw new Error(key + " is not defined");
             }
-            let renderer = translator.translate(keyword);
-            for (let key in parameters) {
-                if(!parameters[key]){
-                    reject(new Error(key + " is not defined"));
-                    return;
-                }
-                renderer = renderer.replace('%'+ key +'%', parameters[key]);
-            }
-            resolve(renderer);
-        } else {
-            resolve(translator.translate(keyword));
+            renderer = renderer.replace('%'+ key +'%', parameters[key]);
         }
-    });
+        console.log("translate",renderer);
+        return renderer;
+    } else {
+        return translator.translate(keyword);
+    }
 }
 
 module.exports = translate;
