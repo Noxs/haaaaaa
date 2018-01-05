@@ -13,6 +13,10 @@ function translate(keyword, parameters){
             }
             let renderer = translator.translate(keyword);
             for (let key in parameters) {
+                if(!parameters[key]){
+                    reject(new Error(key + " is not defined"));
+                    return;
+                }
                 renderer = renderer.replace('%'+ key +'%', parameters[key]);
             }
             resolve(renderer);
