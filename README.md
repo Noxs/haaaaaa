@@ -18,6 +18,13 @@ All you need is to install the npm package.
 npm install smash-template-engine
 ```
 
+You can now require the package and create an instance of TemplateEngine :
+
+```
+const STE = require('smash-template-engine');
+const templateEngine = new STE.TemplateEngine();
+```
+
 ## Usage
 
 The only method you need is templateEngine.render().
@@ -45,6 +52,7 @@ The template engine needs to know the translations used in the template, but als
 A translator object manages the translation, so all you need may look like this :
 
 ```
+const translator = STE.translator;
 const translations = {
     'HELLO_WORD' : {
         en : 'Hello',
@@ -150,7 +158,11 @@ npm test
 Here is a full examples of how to use the template engine.
 
 
+
 ```
+const STE = require('smash-template-engine');
+const templateEngine = new STE.TemplateEngine();
+const translator = STE.translator;
 const string = '<body><main>{{"HELLO_WORD" | translate}}</main><h1>{%if title %}{{title}}{% endif %}</h1><div>{% for user in users %}<p>{%if user.hobby %}{{user.firstname}} enjoys {{user.hobby}}{% endif %}{% if user.age < 30 %} and is {{user.age}} {% endif %}{{user.firstname}} lastname is {{user.lastname}}</p>{% endfor %}<p>{{day | dayTest(\'Monday\')}}</p></div></body>';
 
 const parameters = {
