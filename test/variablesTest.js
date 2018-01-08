@@ -57,7 +57,7 @@ describe('Variables', function () {
         variables.process(template, context).then( () => {
             done();
         }, function (error) {
-            expect(error.message).to.equal("Variable hour doesn't exist.");
+            expect(error.message).to.equal("hour is not defined");
             done();
         });
     });
@@ -75,7 +75,7 @@ describe('Variables', function () {
             done();
         }, function (error) {
             //Reject at the first undefined met => the last in the list
-            expect(error.message).to.equal("Variable variable doesn't exist.");
+            expect(error.message).to.equal("variable is not defined");
             done();
         });
     });

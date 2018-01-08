@@ -1,7 +1,5 @@
 function filterTest(){
-    return new Promise(function(resolve, reject) {
-        resolve();
-    });
+        return ;
 }
 
 module.exports = filterTest;

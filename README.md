@@ -18,6 +18,13 @@ All you need is to install the npm package.
 npm install smash-template-engine
 ```
 
+You can now require the package and create an instance of TemplateEngine :
+
+```
+const STE = require('smash-template-engine');
+const templateEngine = new STE.TemplateEngine();
+```
+
 ## Usage
 
 The only method you need is templateEngine.render().
@@ -31,7 +38,7 @@ To make it simple, it should look like :
 
 ```
 templateEngine.render(string, parameters).then(function (template) {
-    let rendered = template.content;
+    let renderer = template.content;
 },function (error) {
     console.log(error);
 });
@@ -45,6 +52,7 @@ The template engine needs to know the translations used in the template, but als
 A translator object manages the translation, so all you need may look like this :
 
 ```
+const translator = STE.translator;
 const translations = {
     'HELLO_WORD' : {
         en : 'Hello',
@@ -98,14 +106,19 @@ Filters allow to apply treatment on a variable. There's a translate filter build
 {{ 'HELLO_KEYWORD' | translate }}
 ```
 
-n.b : In order to use translate filter, you'll need to tell translator your intention, make sure you've read [Translate Filter](#translate-filter)
+NB : In order to use translate filter, you'll need to tell translator your intention, make sure you've read [Translate Filter](#translate-filter)
 
-#### In order to add custom filter
+#### Custom filters
 
 You can add you own template to the template engine.
+Let's consider the template hereunder as an example :
+```
+{{variable | myFilter(param1, param2)}}
+```
+
 Filter have been thought as promise, so a very basic filter structure may look like this :
 ```
-function myFilter(){
+function myFilter(variable, param1, param2){
     return new Promise(function(resolve, reject) {
         resolve();
     });
@@ -113,7 +126,8 @@ function myFilter(){
 
 module.exports = myFilter;
 ```
-And make sure you placed your filter in /filters
+
+Make sure you placed your filter in /filters
 
 Then you need to add your filter to the filters constructor located in lib/filters.js
 
@@ -144,7 +158,11 @@ npm test
 Here is a full examples of how to use the template engine.
 
 
+
 ```
+const STE = require('smash-template-engine');
+const templateEngine = new STE.TemplateEngine();
+const translator = STE.translator;
 const string = '<body><main>{{"HELLO_WORD" | translate}}</main><h1>{%if title %}{{title}}{% endif %}</h1><div>{% for user in users %}<p>{%if user.hobby %}{{user.firstname}} enjoys {{user.hobby}}{% endif %}{% if user.age < 30 %} and is {{user.age}} {% endif %}{{user.firstname}} lastname is {{user.lastname}}</p>{% endfor %}<p>{{day | dayTest(\'Monday\')}}</p></div></body>';
 
 const parameters = {
@@ -184,13 +202,13 @@ translator.language = language;
 translator.fallbackLanguage = fallbackLanguage;
 
 templateEngine.render(string, parameters).then( (result) => {
-    let rendered = result.content;
+    let renderer = result.content;
 }, (error) => {
     console.log(error);
 });
 ```
 
-rendered now should be :
+renderer now should be :
 
 ```
 '<body><main>Hello</main><h1>Welcome</h1><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body>'
