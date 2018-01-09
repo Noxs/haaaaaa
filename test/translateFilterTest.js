@@ -9,15 +9,15 @@ const translator = require('../lib/translator.js');
 describe('Translate Filter', function () {
     it('Translate Filter translate() method : Success', function () {
         const translations = {
-            'HELLO_WORD' : {
-                en : 'Hello',
-                fr : 'Bonjour',
-                de : 'Hallo'
+            'HELLO_WORD': {
+                en: 'Hello',
+                fr: 'Bonjour',
+                de: 'Hallo'
             },
-            'HOW_ARE_YOU_QUESTION' : {
-                en : 'How are you?',
-                fr : 'Comment ça va?',
-                de : "Wie geht's?"
+            'HOW_ARE_YOU_QUESTION': {
+                en: 'How are you?',
+                fr: 'Comment ça va?',
+                de: "Wie geht's?"
             }
         };
         const language = 'fr';
@@ -30,15 +30,15 @@ describe('Translate Filter', function () {
 
     it('Translate Filter translate() method : First parameter is not a string', function () {
         const translations = {
-            'HELLO_WORD' : {
-                en : 'Hello',
-                fr : 'Bonjour',
-                de : 'Hallo'
+            'HELLO_WORD': {
+                en: 'Hello',
+                fr: 'Bonjour',
+                de: 'Hallo'
             },
-            'HOW_ARE_YOU_QUESTION' : {
-                en : 'How are you?',
-                fr : 'Comment ça va?',
-                de : "Wie geht's?"
+            'HOW_ARE_YOU_QUESTION': {
+                en: 'How are you?',
+                fr: 'Comment ça va?',
+                de: "Wie geht's?"
             }
         };
         const language = 'fr';
@@ -47,23 +47,23 @@ describe('Translate Filter', function () {
         translator.language = language;
         translator.fallbackLanguage = fallbackLanguage;
         const testFunc = function () {
-            const result = filters['translate'].apply({}, [{data : 'This is an object'}]);
+            const result = filters['translate'].apply({}, [{ data: 'This is an object' }]);
         }
 
-        expect(testFunc).to.throw('First parameter of translate filter must be a string.');
+        expect(testFunc).to.throw();
     });
 
     it('Translate Filter translate() method : Second parameter is not an object', function () {
         const translations = {
-            'HELLO_WORD' : {
-                en : 'Hello',
-                fr : 'Bonjour',
-                de : 'Hallo'
+            'HELLO_WORD': {
+                en: 'Hello',
+                fr: 'Bonjour',
+                de: 'Hallo'
             },
-            'HOW_ARE_YOU_QUESTION' : {
-                en : 'How are you?',
-                fr : 'Comment ça va?',
-                de : "Wie geht's?"
+            'HOW_ARE_YOU_QUESTION': {
+                en: 'How are you?',
+                fr: 'Comment ça va?',
+                de: "Wie geht's?"
             }
         };
         const language = 'fr';
@@ -73,8 +73,8 @@ describe('Translate Filter', function () {
         translator.fallbackLanguage = fallbackLanguage;
 
         testFunc = function () {
-            const result = filters['translate'].apply({} , ["HELLO_WORD", "It should be an object"]);
+            const result = filters['translate'].apply({}, ["HELLO_WORD", "It should be an object"]);
         };
-        expect(testFunc).to.throw('Second parameter of translate filter must be an object but got : string');
+        expect(testFunc).to.throw();
     });
 });

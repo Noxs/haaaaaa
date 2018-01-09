@@ -13,7 +13,7 @@ describe('If', function () {
         const test = function () {
             ifCondition._checkTags('Not a number', 2);
         };
-        expect(test).to.throw('First parameter of if _checkTags() method must be a number.');
+        expect(test).to.throw();
     });
 
     it('If _checktags() method : Second parameter is not a number', function () {
@@ -21,7 +21,7 @@ describe('If', function () {
         const test = function () {
             ifCondition._checkTags(1, 'Not a number');
         };
-        expect(test).to.throw('Second parameter of if _checkTags() method must be a number.');
+        expect(test).to.throw();
     });
 
     it('If _checktags() method : Many opening tags are missing', function () {
@@ -29,7 +29,7 @@ describe('If', function () {
         const test = function () {
             ifCondition._checkTags(1, 3);
         };
-        expect(test).to.throw('One opening if-tag is missing, at least.');
+        expect(test).to.throw();
     });
 
     it('If _checktags() method : Many closing tags are missing', function () {
@@ -37,7 +37,7 @@ describe('If', function () {
         const test = function () {
             ifCondition._checkTags(3, 1);
         };
-        expect(test).to.throw('One closing if-tag is missing, at least.');
+        expect(test).to.throw();
     });
 
     it('If process() method : Success with one checked tag', function (done) {
@@ -100,7 +100,7 @@ describe('If', function () {
             assert.isUndefined(result);
             done();
         }, (error) => {
-            assert.equal(error.message, 'First parameter of if process() method must be a Template object.');
+            assert.isDefined(error);
             done();
         });
     });
@@ -116,7 +116,7 @@ describe('If', function () {
             assert.isUndefined(result);
             done();
         }, (error) => {
-            assert.equal(error.message, 'Second parameter of if process() method must be a Context object.');
+            assert.isDefined(error);
             done();
         });
     });
