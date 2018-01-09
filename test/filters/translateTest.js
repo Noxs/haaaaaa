@@ -2,8 +2,8 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
-const filters = require('../lib/filters.js');
-const translator = require('../lib/translator.js');
+const filters = require('../../lib/filters.js');
+const translator = require('../../lib/translator.js');
 
 
 describe('Translate Filter', function () {
