@@ -17,7 +17,7 @@ describe('TemplateEngine', function () {
         const templateEngine = new TemplateEngine();
         const template = 'A test template with no tags';
         const context = {};
-        templateEngine.render(template, context).then( (result) => {
+        templateEngine.render(template, context).then((result) => {
             expect(result._content).to.equal('A test template with no tags');
             done();
         });
@@ -27,21 +27,21 @@ describe('TemplateEngine', function () {
         const templateEngine = new TemplateEngine();
         const template = '<a>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</a>';
         const test = {
-            users : [
+            users: [
                 {
-                    firstname : "Jake",
-                    lastname : "Fisher",
-                    age : "21",
+                    firstname: "Jake",
+                    lastname: "Fisher",
+                    age: "21",
                 },
                 {
-                    firstname : "Bonz",
-                    lastname : "Atron",
-                    age : "22",
+                    firstname: "Bonz",
+                    lastname: "Atron",
+                    age: "22",
                 }
             ]
         };
         const context = new Context(test);
-        templateEngine.render(template, context).then( (result) => {
+        templateEngine.render(template, context).then((result) => {
             expect(result._content).to.equal('<a><p>Jake</p><p>Bonz</p></a>');
             done();
         });
@@ -51,29 +51,29 @@ describe('TemplateEngine', function () {
         const templateEngine = new TemplateEngine();
         const template = '<p>{{"HELLO_WORD" | translate( { firstname : users[0].firstname, lastname : users[0].lastname} )}}</p>';
         const test = {
-        	title : "Welcome",
-        	users : [
+            title: "Welcome",
+            users: [
                 {
-                    firstname : "Antoine",
-                    lastname : "Dupont",
-                    age : 30,
-                    hobby : null,
+                    firstname: "Antoine",
+                    lastname: "Dupont",
+                    age: 30,
+                    hobby: null,
                 },
                 {
-                    firstname : "Bonz",
-                    lastname : "Atron",
-                    age : "25",
-                    hobby : "Kendama"
+                    firstname: "Bonz",
+                    lastname: "Atron",
+                    age: "25",
+                    hobby: "Kendama"
                 }
             ],
-            day : 'Friday',
+            day: 'Friday',
         };
         const context = new Context(test);
         const translations = {
-            'HELLO_WORD' : {
-                en : 'Hello %firstname% %lastname%',
-                fr : 'Bonjour',
-                de : 'Hallo'
+            'HELLO_WORD': {
+                en: 'Hello %firstname% %lastname%',
+                fr: 'Bonjour',
+                de: 'Hallo'
             },
         };
         const language = 'en';
@@ -81,9 +81,9 @@ describe('TemplateEngine', function () {
         translator.translations = translations;
         translator.language = language;
         translator.fallbackLanguage = fallbackLanguage;
-        templateEngine.render(template, context).then( (result) => {
+        templateEngine.render(template, context).then((result) => {
             expect(result._content).to.equal('<p>Hello Antoine Dupont</p>');
-            assert.equal(result._content,'<p>Hello Antoine Dupont</p>');
+            assert.equal(result._content, '<p>Hello Antoine Dupont</p>');
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -95,28 +95,28 @@ describe('TemplateEngine', function () {
         const templateEngine = new TemplateEngine();
         const template = '<p>{{"HELLO_WORD" | translate( { firstname : users[0].firstname, lastname : users[0].lastname} )}}</p>';
         const test = {
-        	title : "Welcome",
-        	users : [
+            title: "Welcome",
+            users: [
                 {
-                    firstname : "Antoine",
-                    age : 30,
-                    hobby : null,
+                    firstname: "Antoine",
+                    age: 30,
+                    hobby: null,
                 },
                 {
-                    firstname : "Bonz",
-                    lastname : "Atron",
-                    age : "25",
-                    hobby : "Kendama"
+                    firstname: "Bonz",
+                    lastname: "Atron",
+                    age: "25",
+                    hobby: "Kendama"
                 }
             ],
-            day : 'Friday',
+            day: 'Friday',
         };
         const context = new Context(test);
         const translations = {
-            'HELLO_WORD' : {
-                en : 'Hello %firstname% %lastname%',
-                fr : 'Bonjour',
-                de : 'Hallo'
+            'HELLO_WORD': {
+                en: 'Hello %firstname% %lastname%',
+                fr: 'Bonjour',
+                de: 'Hallo'
             },
         };
         const language = 'en';
@@ -125,7 +125,7 @@ describe('TemplateEngine', function () {
         translator.language = language;
         translator.fallbackLanguage = fallbackLanguage;
 
-        templateEngine.render(template, context).then( (result) => {
+        templateEngine.render(template, context).then((result) => {
             assert.isUndefined(result._content);
             done();
         }, (error) => {
@@ -138,33 +138,33 @@ describe('TemplateEngine', function () {
         const templateEngine = new TemplateEngine();
         const template = '<p>{{"HELLO_WORD" | translate( { firstname : users[0].firstname, sentence : translate("SENTENCE")} )}}</p>';
         const test = {
-        	title : "Welcome",
-        	users : [
+            title: "Welcome",
+            users: [
                 {
-                    firstname : "Antoine",
-                    age : 30,
-                    hobby : null,
+                    firstname: "Antoine",
+                    age: 30,
+                    hobby: null,
                 },
                 {
-                    firstname : "Bonz",
-                    lastname : "Atron",
-                    age : "25",
-                    hobby : "Kendama"
+                    firstname: "Bonz",
+                    lastname: "Atron",
+                    age: "25",
+                    hobby: "Kendama"
                 }
             ],
-            day : 'Friday',
+            day: 'Friday',
         };
         const context = new Context(test);
         const translations = {
-            'HELLO_WORD' : {
-                en : 'Hello %firstname% %sentence%',
-                fr : 'Bonjour',
-                de : 'Hallo'
+            'HELLO_WORD': {
+                en: 'Hello %firstname% %sentence%',
+                fr: 'Bonjour',
+                de: 'Hallo'
             },
-            'SENTENCE' : {
-                en : 'A sentence',
-                fr : 'Une phrase',
-                de : 'Ein Satz'
+            'SENTENCE': {
+                en: 'A sentence',
+                fr: 'Une phrase',
+                de: 'Ein Satz'
             }
         };
         const language = 'en';
@@ -173,7 +173,7 @@ describe('TemplateEngine', function () {
         translator.language = language;
         translator.fallbackLanguage = fallbackLanguage;
 
-        templateEngine.render(template, context).then( (result) => {
+        templateEngine.render(template, context).then((result) => {
             expect(result.content).to.equal('<p>Hello Antoine A sentence</p>');
             done();
         }, (error) => {
@@ -186,33 +186,33 @@ describe('TemplateEngine', function () {
         const templateEngine = new TemplateEngine();
         const template = '<p>{% for sport in sports %}<p>{{ sport.name }} is played {{sport.place }}</p>{%endfor%}</p><p>{% for user in users %}<a>{{user.firstname}} is here</a>{% endfor %}</p>';
         const test = {
-            users : [
+            users: [
                 {
-                    firstname : "Jake",
-                    lastname : "Fisher",
-                    age : "21",
+                    firstname: "Jake",
+                    lastname: "Fisher",
+                    age: "21",
                 },
                 {
-                    firstname : "Bonz",
-                    lastname : "Atron",
-                    age : "22",
+                    firstname: "Bonz",
+                    lastname: "Atron",
+                    age: "22",
                 }
             ],
-            sports : [
+            sports: [
                 {
-                    name : "Handball",
-                    place : "indoor",
-                    team : 7
+                    name: "Handball",
+                    place: "indoor",
+                    team: 7
                 },
                 {
-                    name : "Tennis",
-                    place : "outdoor",
-                    team : 1
+                    name: "Tennis",
+                    place: "outdoor",
+                    team: 1
                 }
             ]
         };
         const context = new Context(test);
-        templateEngine.render(template, context).then( (result) => {
+        templateEngine.render(template, context).then((result) => {
             expect(result._content).to.equal('<p><p>Handball is played indoor</p><p>Tennis is played outdoor</p></p><p><a>Jake is here</a><a>Bonz is here</a></p>');
             done();
         }, (error) => {
@@ -225,10 +225,10 @@ describe('TemplateEngine', function () {
         const templateEngine = new TemplateEngine();
         const template = '<p>{% if displayed === true %}It is displayed{% endif %}</p>';
         const test = {
-            displayed : true
+            displayed: true
         };
         const context = new Context(test);
-        templateEngine.render(template, context).then( (result) => {
+        templateEngine.render(template, context).then((result) => {
             expect(result._content).to.equal('<p>It is displayed</p>');
             done();
         }, (error) => {
@@ -241,11 +241,11 @@ describe('TemplateEngine', function () {
         const templateEngine = new TemplateEngine();
         const template = '<p>{% if displayed === true %}It is displayed{% endif %}{% if hidden === false %}It is hidden{% endif %}</p>';
         const test = {
-            displayed : true,
-            hidden : true
+            displayed: true,
+            hidden: true
         };
         const context = new Context(test);
-        templateEngine.render(template, context).then( (result) => {
+        templateEngine.render(template, context).then((result) => {
             expect(result._content).to.equal('<p>It is displayed</p>');
             done();
         }, (error) => {
@@ -258,22 +258,22 @@ describe('TemplateEngine', function () {
         const templateEngine = new TemplateEngine();
         const template = '<p>{% for user in users %}{% if displayed === true %}Test{% endif %}{% endfor %}</p>';
         const test = {
-            displayed : true,
-            users : [
+            displayed: true,
+            users: [
                 {
-                    firstname : "Jake",
-                    lastname : "Fisher",
-                    age : "21",
+                    firstname: "Jake",
+                    lastname: "Fisher",
+                    age: "21",
                 },
                 {
-                    firstname : "Bonz",
-                    lastname : "Atron",
-                    age : "22",
+                    firstname: "Bonz",
+                    lastname: "Atron",
+                    age: "22",
                 }
             ]
         };
         const context = new Context(test);
-        templateEngine.render(template, context).then( (result) => {
+        templateEngine.render(template, context).then((result) => {
             expect(result._content).to.equal('<p>TestTest</p>');
             done();
         }, (error) => {
@@ -286,24 +286,24 @@ describe('TemplateEngine', function () {
         const templateEngine = new TemplateEngine();
         const template = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>{%if title %}{{title}}{% endif %}</main><div>{% for user in users %}<p>{%if user.hobby %}{{user.firstname}} enjoys {{user.hobby}}{% endif %}{% if user.age < 30 %} and is {{user.age}} {% endif %}{{user.firstname}} lastname is {{user.lastname}}</p>{% endfor %}</div></body></html>';
         const test = {
-        	title : "Welcome",
-        	users : [
-                        {
-                            firstname : "Antoine",
-                            lastname : "Dupont",
-                            age : 30,
-                            hobby : null,
-                        },
-                        {
-                            firstname : "Bonz",
-                            lastname : "Atron",
-                            age : "25",
-                            hobby : "Kendama"
-                        }
-                    ],
+            title: "Welcome",
+            users: [
+                {
+                    firstname: "Antoine",
+                    lastname: "Dupont",
+                    age: 30,
+                    hobby: null,
+                },
+                {
+                    firstname: "Bonz",
+                    lastname: "Atron",
+                    age: "25",
+                    hobby: "Kendama"
+                }
+            ],
         };
         const context = new Context(test);
-        templateEngine.render(template, context).then( (result) => {
+        templateEngine.render(template, context).then((result) => {
             expect(result._content).to.equal('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p></div></body></html>');
             done();
         }, (error) => {
@@ -316,25 +316,25 @@ describe('TemplateEngine', function () {
         const templateEngine = new TemplateEngine();
         const template = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>{%if title %}{{title}}{% endif %}</main><div>{% for user in users %}<p>{%if user.hobby %}{{user.firstname}} enjoys {{user.hobby}}{% endif %}{% if user.age < 30 %} and is {{user.age}} {% endif %}{{user.firstname}} lastname is {{user.lastname}}</p>{% endfor %}<p>{{day | dayTest(\'Monday\')}}</p></div></body></html>';
         const test = {
-        	title : "Welcome",
-        	users : [
+            title: "Welcome",
+            users: [
                 {
-                    firstname : "Antoine",
-                    lastname : "Dupont",
-                    age : 30,
-                    hobby : null,
+                    firstname: "Antoine",
+                    lastname: "Dupont",
+                    age: 30,
+                    hobby: null,
                 },
                 {
-                    firstname : "Bonz",
-                    lastname : "Atron",
-                    age : "25",
-                    hobby : "Kendama"
+                    firstname: "Bonz",
+                    lastname: "Atron",
+                    age: "25",
+                    hobby: "Kendama"
                 }
             ],
-            day : 'Friday',
+            day: 'Friday',
         };
         const context = new Context(test);
-        templateEngine.render(template, context).then( (result) => {
+        templateEngine.render(template, context).then((result) => {
             expect(result._content).to.equal('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body></html>');
             done();
         }, (error) => {
@@ -347,34 +347,34 @@ describe('TemplateEngine', function () {
         const templateEngine = new TemplateEngine();
         const template = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>{{"HELLO_WORD" | translate}}</title></head><body><main>{%if title %}{{title}}{% endif %}</main><div>{% for user in users %}<p>{%if user.hobby %}{{user.firstname}} enjoys {{user.hobby}}{% endif %}{% if user.age < 30 %} and is {{user.age}} {% endif %}{{user.firstname}} lastname is {{user.lastname}}</p>{% endfor %}<p>{{day | dayTest(\'Monday\')}}</p></div></body></html>';
         const test = {
-        	title : "Welcome",
-        	users : [
+            title: "Welcome",
+            users: [
                 {
-                    firstname : "Antoine",
-                    lastname : "Dupont",
-                    age : 30,
-                    hobby : null,
+                    firstname: "Antoine",
+                    lastname: "Dupont",
+                    age: 30,
+                    hobby: null,
                 },
                 {
-                    firstname : "Bonz",
-                    lastname : "Atron",
-                    age : "25",
-                    hobby : "Kendama"
+                    firstname: "Bonz",
+                    lastname: "Atron",
+                    age: "25",
+                    hobby: "Kendama"
                 }
             ],
-            day : 'Friday',
+            day: 'Friday',
         };
         const context = new Context(test);
         const translations = {
-            'HELLO_WORD' : {
-                en : 'Hello',
-                fr : 'Bonjour',
-                de : 'Hallo'
+            'HELLO_WORD': {
+                en: 'Hello',
+                fr: 'Bonjour',
+                de: 'Hallo'
             },
-            'HOW_ARE_YOU_QUESTION' : {
-                en : 'How are you?',
-                fr : 'Comment ça va?',
-                de : "Wie geht's?"
+            'HOW_ARE_YOU_QUESTION': {
+                en: 'How are you?',
+                fr: 'Comment ça va?',
+                de: "Wie geht's?"
             }
         };
         const language = 'en';
@@ -383,10 +383,43 @@ describe('TemplateEngine', function () {
         translator.language = language;
         translator.fallbackLanguage = fallbackLanguage;
 
-        templateEngine.render(template, context).then( (result) => {
+        templateEngine.render(template, context).then((result) => {
             expect(result._content).to.equal('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Hello</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body></html>');
             done();
         }, (error) => {
+            assert.isUndefined(error);
+            done();
+        });
+    });
+
+    it("TemplateEngine render() with html: Success ", function (done) {
+        const templateEngine = new TemplateEngine();
+        const translations = {
+            'ABOUT_LINK': {
+                en: 'Hello',
+                fr: 'Bonjour',
+                de: 'Hallo'
+            },
+            'HOW_ARE_YOU_QUESTION': {
+                en: 'How are you?',
+                fr: 'Comment ça va?',
+                de: "Wie geht's?"
+            }
+        };
+        translator.translations = translations;
+        translator.language = "fr";
+        translator.fallbackLanguage = "en";
+        const test = {
+            year: 2017,
+            day: 'Friday',
+            month: 'September'
+        };
+        const template = "<a href=\"{{ 'ABOUT_LINK' | translate({}) }}\" target=\"_blank\">";
+        const context = new Context(test);
+        templateEngine.render(template, context).then((result) => {
+            assert.equal(result._content, "<a href=\"Bonjour\" target=\"_blank\">");
+            done();
+        }, function (error) {
             assert.isUndefined(error);
             done();
         });
