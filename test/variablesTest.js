@@ -72,10 +72,11 @@ describe('Variables', function () {
         };
         const context = new Context(test);
         variables.process(template, context).then( () => {
+            assert.equals("Should reject", true);
             done();
-        }, function (error) {
+        }, (error) => {
             //Reject at the first undefined met => the last in the list
-            expect(error.message).to.equal("variable is not defined");
+            assert.isDefined(error);
             done();
         });
     });
