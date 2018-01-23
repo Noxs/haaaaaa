@@ -10,7 +10,7 @@ describe('Template', function () {
         const test = "test";
         const template = new Template(test);
         assert.isObject(template);
-        assert.equal(template._content, test);
+        assert.equal(template.content, test);
         assert.isFunction(template.extract);
         assert.isFunction(template.search);
         assert.isFunction(template.replace);
@@ -160,8 +160,8 @@ describe('Template', function () {
     it('Template.replace() method : Success', function () {
         const template = new Template("It is a test");
         template.replace(8, 11, "success");
-        assert.isString(template._content);
-        expect(template._content).to.equal('It is a success');
+        assert.isString(template.content);
+        expect(template.content).to.equal('It is a success');
 
         const successFunc = function () {
             template.replace(8, 11, "success");
@@ -174,12 +174,12 @@ describe('Template', function () {
         template.replace(8, 11, "success");
         template.replace(5,5, " not ");
         template.replace(12, 18, "failure");
-        expect(template._content).to.equal("It is not a failure");
+        expect(template.content).to.equal("It is not a failure");
 
         const anotherTemplate = new Template('It is the tested sentence');
         anotherTemplate.replace(10, 15, "successful");
         anotherTemplate.replace(21, 29, "test");
-        expect(anotherTemplate._content).to.equal("It is the successful test");
+        expect(anotherTemplate.content).to.equal("It is the successful test");
     });
 
     it('Template.replace() method : First parameter is not an Integer', function () {

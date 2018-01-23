@@ -43,7 +43,7 @@ describe('For', function () {
         const context = new Context(test);
         const forRepetition = new For();
         forRepetition.process(template, context).then( (result) => {
-            assert.equal(result._content, "<p><p>Jake</p><p>Bonz</p></p>");
+            assert.equal(result.content, "<p><p>Jake</p><p>Bonz</p></p>");
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -164,7 +164,7 @@ describe('For', function () {
         const context = new Context(test);
         const forRepetition = new For();
         forRepetition.process(template, context).then( (result) => {
-            expect(result._content).to.equal('<p><p>Handball is played indoor</p><p>Tennis is played outdoor</p></p><p><a>Jake is here</a><a>Bonz is here</a></p>');
+            expect(result.content).to.equal('<p><p>Handball is played indoor</p><p>Tennis is played outdoor</p></p><p><a>Jake is here</a><a>Bonz is here</a></p>');
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -202,7 +202,7 @@ describe('For', function () {
         const context = new Context(test);
         const forRepetition = new For();
         forRepetition.process(template, context).then( (result) => {
-            expect(result._content).to.equal('<p><p>Handball is played indoor <a>Jake plays Handball</a><a>Bonz plays Handball</a></p><p>Tennis is played outdoor <a>Jake plays Tennis</a><a>Bonz plays Tennis</a></p></p>');
+            expect(result.content).to.equal('<p><p>Handball is played indoor <a>Jake plays Handball</a><a>Bonz plays Handball</a></p><p>Tennis is played outdoor <a>Jake plays Tennis</a><a>Bonz plays Tennis</a></p></p>');
             done();
         }, (error) => {
             assert.isUndefined(error);

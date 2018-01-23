@@ -18,7 +18,16 @@ describe('TemplateEngine', function () {
         const template = 'A test template with no tags';
         const context = {};
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('A test template with no tags');
+            expect(result.content).to.equal('A test template with no tags');
+            done();
+        });
+    });
+
+    it('TemplateEngine render() method : Success with no context', function (done) {
+        const templateEngine = new TemplateEngine();
+        const template = 'A test template with no context';
+        templateEngine.render(template).then((result) => {
+            expect(result.content).to.equal('A test template with no context');
             done();
         });
     });
@@ -42,7 +51,20 @@ describe('TemplateEngine', function () {
         };
         const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('<a><p>Jake</p><p>Bonz</p></a>');
+            expect(result.content).to.equal('<a><p>Jake</p><p>Bonz</p></a>');
+            done();
+        });
+    });
+
+    it('TemplateEngine render() method : Success with no context specified', function (done) {
+        const templateEngine = new TemplateEngine();
+        const template = '<h1>Just a title template</h1>';
+
+        templateEngine.render(template).then((result) => {
+            expect(result.content).to.equal('<h1>Just a title template</h1>');
+            done();
+        }, (error) => {
+            assert.isUndefined(error);
             done();
         });
     });
@@ -82,8 +104,7 @@ describe('TemplateEngine', function () {
         translator.language = language;
         translator.fallbackLanguage = fallbackLanguage;
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('<p>Hello Antoine Dupont</p>');
-            assert.equal(result._content, '<p>Hello Antoine Dupont</p>');
+            assert.equal(result.content, '<p>Hello Antoine Dupont</p>');
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -126,10 +147,10 @@ describe('TemplateEngine', function () {
         translator.fallbackLanguage = fallbackLanguage;
 
         templateEngine.render(template, context).then((result) => {
-            assert.isUndefined(result._content);
+            assert.isUndefined(result.content);
             done();
         }, (error) => {
-            assert.equal(error.message, 'lastname is not defined');
+            assert.isDefined(error);
             done();
         });
     });
@@ -213,7 +234,7 @@ describe('TemplateEngine', function () {
         };
         const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('<p><p>Handball is played indoor</p><p>Tennis is played outdoor</p></p><p><a>Jake is here</a><a>Bonz is here</a></p>');
+            expect(result.content).to.equal('<p><p>Handball is played indoor</p><p>Tennis is played outdoor</p></p><p><a>Jake is here</a><a>Bonz is here</a></p>');
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -229,7 +250,7 @@ describe('TemplateEngine', function () {
         };
         const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('<p>It is displayed</p>');
+            expect(result.content).to.equal('<p>It is displayed</p>');
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -246,7 +267,7 @@ describe('TemplateEngine', function () {
         };
         const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('<p>It is displayed</p>');
+            expect(result.content).to.equal('<p>It is displayed</p>');
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -274,7 +295,7 @@ describe('TemplateEngine', function () {
         };
         const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('<p>TestTest</p>');
+            expect(result.content).to.equal('<p>TestTest</p>');
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -304,7 +325,7 @@ describe('TemplateEngine', function () {
         };
         const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p></div></body></html>');
+            assert.equal(result.content, '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p></div></body></html>');
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -335,7 +356,7 @@ describe('TemplateEngine', function () {
         };
         const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body></html>');
+            assert.equal(result.content, '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body></html>');
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -384,7 +405,7 @@ describe('TemplateEngine', function () {
         translator.fallbackLanguage = fallbackLanguage;
 
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Hello</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body></html>');
+            assert.equal(result.content, '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Hello</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body></html>');
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -417,7 +438,7 @@ describe('TemplateEngine', function () {
         const template = "<a href=\"{{ 'ABOUT_LINK' | translate({}) }}\" target=\"_blank\">";
         const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
-            assert.equal(result._content, "<a href=\"Bonjour\" target=\"_blank\">");
+            assert.equal(result.content, "<a href=\"Bonjour\" target=\"_blank\">");
             done();
         }, function (error) {
             assert.isUndefined(error);

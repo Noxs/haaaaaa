@@ -48,7 +48,7 @@ describe('If', function () {
         };
         const context = new Context(test);
         ifCondition.process(template, context).then( (result) => {
-            assert.deepEqual(result._content, "<div><p>It has to be displayed</p></div>");
+            assert.deepEqual(result.content, "<div><p>It has to be displayed</p></div>");
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -81,7 +81,7 @@ describe('If', function () {
         };
         const context = new Context(test);
         ifCondition.process(template, context).then( (result) => {
-            assert.deepEqual(result._content, "<div><p>Jake has to be displayed</p><p>Bonz has to be displayed</p></div>");
+            assert.deepEqual(result.content, "<div><p>Jake has to be displayed</p><p>Bonz has to be displayed</p></div>");
             done();
         }, (error) => {
             assert.isUndefined(error);
