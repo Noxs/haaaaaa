@@ -7,8 +7,8 @@ const filters = require('../lib/filters.js');
 describe('Filters', function () {
     it('Filters build : Success', function () {
         assert.isFunction(filters.translate);
-        assert.isFunction(filters.dayTest);
-        assert.isFunction(filters.halfTest);
+        assert.isUndefined(filters.dayTest);
+        assert.isUndefined(filters.halfTest);
     });
 
     it('Filters add() method : Success', function () {
@@ -16,8 +16,20 @@ describe('Filters', function () {
             process : require('../filters/filterTest.js'),
             name : 'filterTest'
         };
+        const dayTestFilter = {
+            process: require('../filters/dayTest.js'),
+            name: 'dayTest'
+        };
+        const halfTestFilter = {
+            process: require('../filters/halfTest.js'),
+            name: 'halfTest'
+        };
         filters.add(filter);
+        filters.add(dayTestFilter);
+        filters.add(halfTestFilter);
         assert.isFunction(filters.filterTest);
+        assert.isFunction(filters.dayTest);
+        assert.isFunction(filters.halfTest);
     });
 
     it('Filters add() method : First parameter is not an object', function () {
