@@ -203,6 +203,55 @@ describe('TemplateEngine', function () {
         });
     });
 
+    it('TemplateEngine render() method : Success with nested filters #2', function (done) {
+        const templateEngine = new TemplateEngine();
+        const template = '<p>{{"HELLO_WORD" | translate( { firstname : users[0].firstname, sentence : translate(sentence)} )}}</p>';
+        const test = {
+            title: "Welcome",
+            users: [
+                {
+                    firstname: "Antoine",
+                    age: 30,
+                    hobby: null,
+                },
+                {
+                    firstname: "Bonz",
+                    lastname: "Atron",
+                    age: "25",
+                    hobby: "Kendama"
+                }
+            ],
+            sentence : "SENTENCE",
+            day: 'Friday',
+        };
+        const context = new Context(test);
+        const translations = {
+            'HELLO_WORD': {
+                en: 'Hello %firstname% %sentence%',
+                fr: 'Bonjour',
+                de: 'Hallo'
+            },
+            'SENTENCE': {
+                en: 'A sentence',
+                fr: 'Une phrase',
+                de: 'Ein Satz'
+            }
+        };
+        const language = 'en';
+        const fallbackLanguage = 'fr';
+        translator.translations = translations;
+        translator.language = language;
+        translator.fallbackLanguage = fallbackLanguage;
+
+        templateEngine.render(template, context).then((result) => {
+            expect(result.content).to.equal('<p>Hello Antoine A sentence</p>');
+            done();
+        }, (error) => {
+            assert.isUndefined(error);
+            done();
+        });
+    });
+
     it('TemplateEngine render() method : Success with many brothers couple of for-tags', function (done) {
         const templateEngine = new TemplateEngine();
         const template = '<p>{% for sport in sports %}<p>{{ sport.name }} is played {{sport.place }}</p>{%endfor%}</p><p>{% for user in users %}<a>{{user.firstname}} is here</a>{% endfor %}</p>';
