@@ -2,6 +2,7 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
+const filters = require('../lib/filters.js');
 const Variables = require('../lib/methods/variables.js');
 const TemplateEngine = require('../lib/templateEngine.js');
 const Context = require('../lib/context.js');
@@ -353,6 +354,16 @@ describe('TemplateEngine', function () {
     });
 
     it('TemplateEngine render() method : Success with for-tags, if-tags, and variables', function (done) {
+        const dayTestFilter = {
+            process: require('../filters/dayTest.js'),
+            name: 'dayTest'
+        };
+        const halfTestFilter = {
+            process: require('../filters/halfTest.js'),
+            name: 'halfTest'
+        };
+        filters.add(dayTestFilter);
+        filters.add(halfTestFilter);
         const templateEngine = new TemplateEngine();
         const template = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>{%if title %}{{title}}{% endif %}</main><div>{% for user in users %}<p>{%if user.hobby %}{{user.firstname}} enjoys {{user.hobby}}{% endif %}{% if user.age < 30 %} and is {{user.age}} {% endif %}{{user.firstname}} lastname is {{user.lastname}}</p>{% endfor %}</div></body></html>';
         const test = {
@@ -484,10 +495,36 @@ describe('TemplateEngine', function () {
             day: 'Friday',
             month: 'September'
         };
-        const template = "<a href=\"{{ 'ABOUT_LINK' | translate({}) }}\" target=\"_blank\">";
+        const template = "<a href=\"{{ 'ABOUT_LINK' | translate }}\" target=\"_blank\">";
         const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
             assert.equal(result.content, "<a href=\"Bonjour\" target=\"_blank\">");
+            done();
+        }, function (error) {
+            assert.isUndefined(error);
+            done();
+        });
+    });
+
+    it("TemplateEngine render() with date filter : Success", function (done) {
+        const templateEngine = new TemplateEngine();
+        const translations = {
+            'HOW_ARE_YOU': {
+                en: 'Hello, how are you? today is %date%',
+                fr: 'Bonjour %date%',
+                de: 'Hallo'
+            }
+        };
+        translator.translations = translations;
+        translator.language = "en";
+        translator.fallbackLanguage = "en";
+        const test = {
+            timestamp : 1516724607
+        };
+        const template = "{{'HOW_ARE_YOU' | translate({ date : date(timestamp, {format : 'dddd Do MMMM, YYYY'})}) }}";
+        const context = new Context(test);
+        templateEngine.render(template, context).then((result) => {
+            assert.equal(result.content, "Hello, how are you? today is Tuesday 23rd January, 2018");
             done();
         }, function (error) {
             assert.isUndefined(error);
