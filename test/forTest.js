@@ -13,7 +13,7 @@ describe('For', function () {
         const test = function () {
             forLoop._checkTags('Not a number', 2);
         }
-        expect(test).to.throw('First parameter of for-process _checkTags() method must be a number.');
+        expect(test).to.throw();
     });
 
     it('For _checktags() method : Second parameter is not a number', function () {
@@ -21,7 +21,7 @@ describe('For', function () {
         const test = function () {
             forLoop._checkTags(1, 'Not a number');
         }
-        expect(test).to.throw('Second parameter of for-process _checkTags() method must be a number.');
+        expect(test).to.throw();
     });
 
     it('For process() method : Success', function (done) {
@@ -73,7 +73,7 @@ describe('For', function () {
             assert.isUndefined(result);
             done();
         }, (error) => {
-            assert.equal(error.message, 'One opening for-tag is missing, at least.');
+            assert.isDefined(error);
             done();
         });
     });
@@ -100,7 +100,7 @@ describe('For', function () {
             assert.isUndefined(result);
             done();
         }, (error) => {
-            assert.equal(error.message, 'One closing for-tag is missing, at least.');
+            assert.isDefined(error);
             done();
         });
     });

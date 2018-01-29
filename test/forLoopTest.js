@@ -55,7 +55,7 @@ describe('ForLoop', function () {
         const testFunc = function () {
             const forLoop = new ForLoop('not a Template object', context, openingTag, closingTag);
         };
-        expect(testFunc).to.throw('First parameter of ForLoop constructor() must be a Template object.');
+        expect(testFunc).to.throw();
     });
 
     it('ForLoop build : First parameter is an integer', function () {
@@ -81,7 +81,7 @@ describe('ForLoop', function () {
         const testFunc = function () {
             const forLoopBis = new ForLoop(2, context, openingTag, closingTag);
         };
-        expect(testFunc).to.throw('First parameter of ForLoop constructor() must be a Template object.');
+        expect(testFunc).to.throw();
     });
 
     it('ForIteration build : First parameter is not defined', function () {
@@ -107,7 +107,7 @@ describe('ForLoop', function () {
         const testFunc = function () {
             const forLoop = new ForLoop(undefined, context, openingTag, closingTag);
         };
-        expect(testFunc).to.throw('First parameter of ForLoop constructor() must be a Template object.');
+        expect(testFunc).to.throw();
     });
 
     it('ForIteration build : Second parameter is a string', function () {
@@ -134,7 +134,7 @@ describe('ForLoop', function () {
             const forLoop = new ForLoop(template, 'not a context object', openingTag, closingTag);
         };
 
-        expect(testFunc).to.throw('Second parameter of ForLoop constructor() must be a Context object.');
+        expect(testFunc).to.throw();
     });
 
     it('ForIteration build : Second parameter is an integer', function () {
@@ -160,7 +160,7 @@ describe('ForLoop', function () {
         const testFunc = function () {
             const forLoop = new ForLoop(template, 2, openingTag, closingTag);
         };
-        expect(testFunc).to.throw('Second parameter of ForLoop constructor() must be a Context object.');
+        expect(testFunc).to.throw();
     });
 
     it('ForIteration build : Second parameter is not defined', function () {
@@ -171,7 +171,7 @@ describe('ForLoop', function () {
         const testFunc = function () {
             const forLoop = new ForLoop(template, undefined, openingTag, closingTag);
         };
-        expect(testFunc).to.throw('Second parameter of ForLoop constructor() must be a Context object.');
+        expect(testFunc).to.throw();
     });
 
     it('ForIteration build : Third parameter is not an array', function () {
@@ -197,7 +197,7 @@ describe('ForLoop', function () {
         const testFunc = function () {
             const forLoop = new ForLoop(template, context, openingTag, closingTag);
         };
-        expect(testFunc).to.throw('Third parameter of ForLoop constructor() must be an array.');
+        expect(testFunc).to.throw();
     });
 
     it('ForIteration build : Third parameter is not defined', function () {
@@ -223,7 +223,7 @@ describe('ForLoop', function () {
         const testFunc = function () {
             const forLoop = new ForLoop(template, context, openingTag, closingTag);
         };
-        expect(testFunc).to.throw('Third parameter of ForLoop constructor() must be an array.');
+        expect(testFunc).to.throw();
     });
 
     it('ForIteration build : Forth parameter is not an array', function () {
@@ -249,7 +249,7 @@ describe('ForLoop', function () {
         const testFunc = function () {
             const forLoop = new ForLoop(template, context, openingTag, closingTag);
         };
-        expect(testFunc).to.throw('Forth parameter of ForLoop constructor() must be an array.');
+        expect(testFunc).to.throw();
     });
 
     it('ForIteration build : Forth parameter is not defined', function () {
@@ -275,7 +275,7 @@ describe('ForLoop', function () {
         const testFunc = function () {
             const forLoop = new ForLoop(template, context, openingTag, closingTag);
         };
-        expect(testFunc).to.throw('Forth parameter of ForLoop constructor() must be an array.');
+        expect(testFunc).to.throw();
     });
 
     it('ForIteration build : Third parameter do not reference an opening tag', function () {
@@ -301,7 +301,7 @@ describe('ForLoop', function () {
         const testFunc = function () {
             const forLoop = new ForLoop(template, context, openingTag, closingTag);
         };
-        expect(testFunc).to.throw('Third parameter of ForLoop constructor() must refer to an opening tag.');
+        expect(testFunc).to.throw();
     });
 
     it('ForIteration build : Forth parameter do not reference an closing tag', function () {
@@ -327,7 +327,7 @@ describe('ForLoop', function () {
         const testFunc = function () {
             const forLoop = new ForLoop(template, context, openingTag, closingTag);
         };
-        expect(testFunc).to.throw('Forth parameter of ForLoop constructor() must refer to a closing tag.');
+        expect(testFunc).to.throw();
     });
 
     it('ForIteration build : One parameter is missing', function () {
@@ -353,7 +353,7 @@ describe('ForLoop', function () {
         const testFunc = function () {
             const forLoop = new ForLoop(template, context, openingTag);
         };
-        expect(testFunc).to.throw('Forth parameter of ForLoop constructor() must be an array.');
+        expect(testFunc).to.throw();
     });
 
 

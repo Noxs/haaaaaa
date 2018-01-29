@@ -119,7 +119,7 @@ describe('Variables', function () {
         variables.process(undefined, context).then( () => {
             done();
         }, function (error) {
-            assert.equal(error.message, 'First parameter must be a Template object');
+            assert.isDefined(error);
             done();
         });
     });
@@ -130,7 +130,7 @@ describe('Variables', function () {
         variables.process(template, undefined).then( () => {
             done();
         }, function (error) {
-            assert.equal(error.message, 'Second parameter must be a Context object');
+            assert.isDefined(error);
             done();
         });
     });

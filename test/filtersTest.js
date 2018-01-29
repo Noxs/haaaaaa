@@ -36,7 +36,7 @@ describe('Filters', function () {
         const testFunc = function () {
             filters.add('This is not an object');
         };
-        expect(testFunc).to.throw('First parameter of filters add() method must be an object.');
+        expect(testFunc).to.throw();
     });
 
     it('Filters add() method : First parameter process attribute is not defined.', function () {
@@ -46,7 +46,7 @@ describe('Filters', function () {
         const testFunc = function () {
             filters.add(filter);
         };
-        expect(testFunc).to.throw('First parameter of filters add() method must have a process attribute.');
+        expect(testFunc).to.throw();
     });
 
     it('Filters add() method : First parameter process value is not a function.', function () {
@@ -57,7 +57,7 @@ describe('Filters', function () {
         const testFunc = function () {
             filters.add(filter);
         };
-        expect(testFunc).to.throw('First parameter\'s process attribute of filters add() method must be a function.');
+        expect(testFunc).to.throw();
     });
 
     it('Filters add() method : First parameter name attribute is not defined.', function () {
@@ -67,7 +67,7 @@ describe('Filters', function () {
         const testFunc = function () {
             filters.add(filter);
         };
-        expect(testFunc).to.throw('First parameter of filters add() method must have a name attribute.');
+        expect(testFunc).to.throw();
     });
 
     it('Filters add() method : First parameter name attribute is not a string.', function () {
@@ -78,7 +78,7 @@ describe('Filters', function () {
         const testFunc = function () {
             filters.add(filter);
         };
-        expect(testFunc).to.throw('First parameter\'s name attribute of filters add() method must be a string.');
+        expect(testFunc).to.throw();
     });
 
     it('Filters applyFilter() method : The filter is not defined in the filters instance', function (done) {
@@ -89,7 +89,7 @@ describe('Filters', function () {
             assert.isUndefined(result);
             done();
         }, (error) => {
-            assert.equal(error.message, 'Filter ' + tag[2] + ' is not defined, it might not be added.');
+            assert.isDefined(error);
             done();
         });
 
