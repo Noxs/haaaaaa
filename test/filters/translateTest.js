@@ -27,6 +27,26 @@ describe('Translate Filter', function () {
         translator.fallbackLanguage = fallbackLanguage;
         assert.equal(filters['translate'].apply({}, ['HELLO_WORD']), 'Bonjour');
     });
+    it('Translate Filter translate() method : with a keyword inside a translation', function () {
+        const translations = {
+            'HELLO_WORD': {
+                en: 'Hello',
+                fr: 'Bonjour %evening%',
+                de: 'Hallo'
+            },
+            'HOW_ARE_YOU_QUESTION': {
+                en: 'How are you?',
+                fr: 'Comment ça va?',
+                de: "Wie geht's?"
+            }
+        };
+        const language = 'fr';
+        const fallbackLanguage = 'en';
+        translator.translations = translations;
+        translator.language = language;
+        translator.fallbackLanguage = fallbackLanguage;
+        assert.equal(filters['translate'].apply({}, ['HELLO_WORD', {'evening' : "ou bonsoir"}]), 'Bonjour ou bonsoir');
+    });
 
     it('Translate Filter translate() method : First parameter is not a string', function () {
         const translations = {
@@ -75,6 +95,32 @@ describe('Translate Filter', function () {
         testFunc = function () {
             const result = filters['translate'].apply({}, ["HELLO_WORD", "It should be an object"]);
         };
+        expect(testFunc).to.throw();
+    });
+
+    it('Translate Filter translate() method : with a translation inside parameters that is not defined', function () {
+        const translations = {
+            'HELLO_WORD': {
+                en: 'Hello',
+                fr: 'Bonjour %evening%',
+                de: 'Hallo'
+            },
+            'HOW_ARE_YOU_QUESTION': {
+                en: 'How are you?',
+                fr: 'Comment ça va?',
+                de: "Wie geht's?"
+            }
+        };
+        const language = 'fr';
+        const fallbackLanguage = 'en';
+        translator.translations = translations;
+        translator.language = language;
+        translator.fallbackLanguage = fallbackLanguage;
+
+        testFunc = function () {
+            filters['translate'].apply({}, ['HELLO_WORD', {'evening' : undefined}]);
+        };
+
         expect(testFunc).to.throw();
     });
 });
