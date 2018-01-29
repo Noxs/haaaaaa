@@ -489,6 +489,23 @@ describe('TemplateEngine', function () {
         });
     });
 
+    it('TemplateEngine render() method : Success with a style tag', function (done) {
+        const templateEngine = new TemplateEngine();
+        const template = '<style>{% style %}{% endstyle %}</style> <p>Some HTML</p>';
+        const test = {
+            displayed: true
+        };
+        const context = new Context(test);
+        const style = ".class{display: block;}";
+        templateEngine.render(template, context, style).then((result) => {
+            expect(result.content).to.equal('<style>.class{display: block;}</style> <p>Some HTML</p>');
+            done();
+        }, (error) => {
+            assert.isUndefined(error);
+            done();
+        });
+    });
+
     //TODO success with variables tags
     //TODO success with variables & for tags
     //TODO success with for & if
