@@ -62,6 +62,24 @@ describe('Variables', function () {
         });
     });
 
+    it('Variables process() method : One variable in template is undefined', function (done) {
+        const variables = new Variables();
+        const template = new Template('It is {{hour}}');
+        const test = {
+            year : 2017,
+            day : 'Friday',
+            month : 'September'
+        };
+        const context = new Context(test);
+        variables.process(template, context).then( (result) => {
+            assert.isUndefined(result);
+            done();
+        }, function (error) {
+            assert.isDefined(error);
+            done();
+        });
+    });
+
     it('Variables process() method : several variables in template are undefined', function (done) {
         const variables = new Variables();
         const template = new Template('The current year is {{ year }}, and it is {{hour}}, and this {{variable}} does\'nt exist');

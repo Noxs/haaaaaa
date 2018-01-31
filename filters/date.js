@@ -2,9 +2,7 @@ const translator = require('../lib/translator.js');
 const moment = require('moment');
 
 fallbackFormat = (language) => {
-    if (language === "es" || language === "fr") {
-        return "DD MMMM YYYY";
-    } else if (language === "en"){
+    if (language === "en"){
         return "MMMM DD, YYYY";
     } else {
         return "DD MMMM YYYY";
