@@ -139,7 +139,7 @@ describe('If', function () {
 
     it('If process() method : Success with two nested else tag', function (done) {
         const ifCondition = new If();
-        const template = new Template("<div>{% if key === 'Value' %}<p>It has to be hidden</p>{% else %}<p>Please</p>{% if key === 'A random value' %}<p>It has to be hidden</p>{% else %}<p>Show me</p>{% endif %}{% endif %}</div>");
+        const template = new Template("<div>{% if key === 'Value' %}<p>It has to be hidden</p>{% else %}<p>Please</p>{% if key === 'A random value' %}<p>Show me</p>{% else %}<p>It has to be hidden</p>{% endif %}{% endif %}</div>");
         const test = {
             key : 'A random value',
         };
