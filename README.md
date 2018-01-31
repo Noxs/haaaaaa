@@ -45,6 +45,16 @@ templateEngine.render(string[, parameters, style]).then(function (template) {
 });
 ```
 
+### Seperated CSS
+
+If you want to use a seperated CSS file, don't forget to specify it as third parameter of templateEngine.render().
+
+To tell the templateEngine where to insert the CSS in your template, you will need :
+
+```
+{% style %}{% endstyle %}
+```
+
 ### Translate Filter
 
 If you pretend to use the translate filter you will have to check few easy peasy steps before.
