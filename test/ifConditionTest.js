@@ -99,6 +99,19 @@ describe('IfCondition', function () {
         expect(testFunc).to.throw();
     });
 
+    it('IfCondition build failure : Fifth parameter is not an array', function () {
+        const template = new Template("{% if test %} {% endif %}");
+        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const openingTag = tags[0];
+        const closingTag = tags[1];
+        const context = new Context({});
+
+        const testFunc = function () {
+            const ifCondition = new IfCondition(template, context, openingTag, closingTag, "Not an array");
+        };
+        expect(testFunc).to.throw();
+    });
+
     it('IfCondition _evalutateString() method : Success with one variable only (type : string)', function () {
         const template = new Template("{% if test %} {% endif %}");
         const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
