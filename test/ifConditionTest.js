@@ -17,7 +17,7 @@ describe('IfCondition', function () {
         const testFunc = function () {
             const ifCondition = new IfCondition(template, context, openingTag, closingTag);
         };
-        expect(testFunc).to.not.throw(Error);
+        expect(testFunc).to.not.throw();
     });
 
 
@@ -31,7 +31,7 @@ describe('IfCondition', function () {
         const testFunc = function () {
             const ifCondition = new IfCondition('It is not a Template object', context, openingTag, closingTag);
         };
-        expect(testFunc).to.throw(Error);
+        expect(testFunc).to.throw();
     });
 
     it('IfCondition build : Second parameter is not a Context object', function () {
@@ -44,7 +44,7 @@ describe('IfCondition', function () {
         const testFunc = function () {
             const ifCondition = new IfCondition(template, 2, openingTag, closingTag);
         };
-        expect(testFunc).to.throw(Error);
+        expect(testFunc).to.throw();
     });
 
     it('IfCondition build : Third parameter is not an array', function () {
@@ -57,7 +57,7 @@ describe('IfCondition', function () {
         const testFunc = function () {
             const ifCondition = new IfCondition(template, context, "This is not an array refering to an opening tag", closingTag);
         };
-        expect(testFunc).to.throw('Third parameter of IfCondition constructor() must be an array.');
+        expect(testFunc).to.throw();
     });
 
     it('IfCondition build : Third parameter refers to an opening tag', function () {
@@ -70,7 +70,7 @@ describe('IfCondition', function () {
         const testFunc = function () {
             const ifCondition = new IfCondition(template, context, closingTag, closingTag);
         };
-        expect(testFunc).to.throw('Third parameter of IfCondition constructor() must refer to an opening tag.');
+        expect(testFunc).to.throw();
     });
 
     it('IfCondition build : Forth parameter is not an array', function () {
@@ -83,7 +83,7 @@ describe('IfCondition', function () {
         const testFunc = function () {
             const ifCondition = new IfCondition(template, context, openingTag, 123);
         };
-        expect(testFunc).to.throw('Forth parameter of IfCondition constructor() must be an array.');
+        expect(testFunc).to.throw();
     });
 
     it('IfCondition build : Forth parameter refers to an opening tag', function () {
@@ -96,7 +96,20 @@ describe('IfCondition', function () {
         const testFunc = function () {
             const ifCondition = new IfCondition(template, context, openingTag, openingTag);
         };
-        expect(testFunc).to.throw('Forth parameter of IfCondition constructor() must refer to a closing tag.');
+        expect(testFunc).to.throw();
+    });
+
+    it('IfCondition build failure : Fifth parameter is not an array', function () {
+        const template = new Template("{% if test %} {% endif %}");
+        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const openingTag = tags[0];
+        const closingTag = tags[1];
+        const context = new Context({});
+
+        const testFunc = function () {
+            const ifCondition = new IfCondition(template, context, openingTag, closingTag, "Not an array");
+        };
+        expect(testFunc).to.throw();
     });
 
     it('IfCondition _evalutateString() method : Success with one variable only (type : string)', function () {
@@ -115,7 +128,7 @@ describe('IfCondition', function () {
         };
 
         expect(testFunc()).to.equal(true);
-        expect(testFunc).to.not.throw(Error);
+        expect(testFunc).to.not.throw();
     });
 
     it('IfCondition _evalutateString() method : Success with one variable only (type : object)', function () {
@@ -134,7 +147,7 @@ describe('IfCondition', function () {
         };
 
         expect(testFunc()).to.equal(true);
-        expect(testFunc).to.not.throw(Error);
+        expect(testFunc).to.not.throw();
     });
 
     it('IfCondition _evalutateString() method : Success with one variable only (type : array)', function () {
@@ -153,7 +166,7 @@ describe('IfCondition', function () {
         };
 
         expect(testFunc()).to.equal(true);
-        expect(testFunc).to.not.throw(Error);
+        expect(testFunc).to.not.throw();
     });
 
     it('IfCondition _evalutateString() method : Success with one variable only (type : null)', function () {
@@ -172,7 +185,7 @@ describe('IfCondition', function () {
         };
 
         expect(testFunc()).to.equal(false);
-        expect(testFunc).to.not.throw(Error);
+        expect(testFunc).to.not.throw();
     });
 
     it('IfCondition _evalutateString() method : Success with one variable only (type : undefined)', function () {
@@ -188,7 +201,7 @@ describe('IfCondition', function () {
             return ifCondition._evaluateString("variable", context);
         };
 
-        expect(testFunc).to.throw('variable is not defined');
+        expect(testFunc).to.throw();
     });
 
     it('IfCondition _evalutateString() method : Success with one variable only (type : number)', function () {
@@ -207,7 +220,7 @@ describe('IfCondition', function () {
         };
 
         expect(testFunc()).to.equal(true);
-        expect(testFunc).to.not.throw(Error);
+        expect(testFunc).to.not.throw();
     });
 
     it('IfCondition _evalutateString() method : Success with two statements (types : string, string)', function () {
@@ -223,7 +236,7 @@ describe('IfCondition', function () {
         };
 
         expect(testFunc()).to.equal(false);
-        expect(testFunc).to.not.throw(Error);
+        expect(testFunc).to.not.throw();
     });
 
     it('IfCondition _evalutateString() method : Success with two statements (types : variable, string)', function () {
@@ -242,7 +255,7 @@ describe('IfCondition', function () {
         };
 
         expect(testFunc()).to.equal(true);
-        expect(testFunc).to.not.throw(Error);
+        expect(testFunc).to.not.throw();
     });
 
     it("IfCondition _evalutateString() method : Success with two statements (types : object's property, object's property)", function () {
@@ -275,8 +288,8 @@ describe('IfCondition', function () {
         expect(testEqualFunc()).to.equal(true);
         expect(testDifferentFunc()).to.equal(false);
 
-        expect(testEqualFunc).to.not.throw(Error);
-        expect(testDifferentFunc).to.not.throw(Error);
+        expect(testEqualFunc).to.not.throw();
+        expect(testDifferentFunc).to.not.throw();
     });
 
     it("IfCondition _evalutateString() method : Success with three statements and '&&' logical operator ( if true && true )", function () {
@@ -296,7 +309,7 @@ describe('IfCondition', function () {
         };
 
         expect(testFunc()).to.equal(true);
-        expect(testFunc).to.not.throw(Error);
+        expect(testFunc).to.not.throw();
     });
 
     it("IfCondition _evalutateString() method : Success with three statements and '&&' logical operator and '!' operator ( if true && !true )", function () {
@@ -315,7 +328,7 @@ describe('IfCondition', function () {
             return ifCondition._evaluateString("variable === 1 && !string", context);
         };
         expect(testFunc()).to.equal(false);
-        expect(testFunc).to.not.throw(Error);
+        expect(testFunc).to.not.throw();
     });
 
     it("IfCondition _evalutateString() method : Success with four statements and '&&' logical operator ( if true && true )", function () {
@@ -335,7 +348,7 @@ describe('IfCondition', function () {
         };
 
         expect(testFunc()).to.equal(true);
-        expect(testFunc).to.not.throw(Error);
+        expect(testFunc).to.not.throw();
     });
 
     it("IfCondition _evalutateString() method : Success with four statements and '||' logical operator ( if false || true )", function () {
@@ -355,7 +368,7 @@ describe('IfCondition', function () {
         };
 
         expect(testFunc()).to.equal(true);
-        expect(testFunc).to.not.throw(Error);
+        expect(testFunc).to.not.throw();
     });
 
     it("IfCondition _evalutateString() method : First parameter is not defined", function () {
@@ -374,7 +387,7 @@ describe('IfCondition', function () {
             return ifCondition._evaluateString(undefined, context);
         };
 
-        expect(testFunc).to.throw('Fisrt parameter of ifCondition must be a string.');
+        expect(testFunc).to.throw();
     });
 
     it("IfCondition _evalutateString() method : Second parameter is not a Context object", function () {
@@ -393,7 +406,7 @@ describe('IfCondition', function () {
             return ifCondition._evaluateString("variable === 2 || string === 'It is a test'", "This is not a Context object");
         };
 
-        expect(testFunc).to.throw('Second parameter of ifCondition must be a Context object.');
+        expect(testFunc).to.throw();
     });
 
     it('IfCondition process() method : Success with a condition that return false', function (done) {

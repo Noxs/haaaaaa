@@ -20,7 +20,7 @@ describe('Variables', function () {
         assert.isObject(variables);
 
         variables.process(template, context).then( (result) => {
-            expect(template._content).to.equal('The current year is 2017');
+            expect(template.content).to.equal('The current year is 2017');
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -37,7 +37,7 @@ describe('Variables', function () {
         };
         const context = new Context(test);
         variables.process(template, context).then( () => {
-            expect(template._content).to.equal('The current day is Friday, the current month is September and the current year is 2017');
+            expect(template.content).to.equal('The current day is Friday, the current month is September and the current year is 2017');
             done();
         }, function (error) {
             assert.isUndefined(error);
@@ -62,6 +62,24 @@ describe('Variables', function () {
         });
     });
 
+    it('Variables process() method : One variable in template is undefined', function (done) {
+        const variables = new Variables();
+        const template = new Template('It is {{hour}}');
+        const test = {
+            year : 2017,
+            day : 'Friday',
+            month : 'September'
+        };
+        const context = new Context(test);
+        variables.process(template, context).then( (result) => {
+            assert.isUndefined(result);
+            done();
+        }, function (error) {
+            assert.isDefined(error);
+            done();
+        });
+    });
+
     it('Variables process() method : several variables in template are undefined', function (done) {
         const variables = new Variables();
         const template = new Template('The current year is {{ year }}, and it is {{hour}}, and this {{variable}} does\'nt exist');
@@ -72,10 +90,11 @@ describe('Variables', function () {
         };
         const context = new Context(test);
         variables.process(template, context).then( () => {
+            assert.equals("Should reject", true);
             done();
-        }, function (error) {
+        }, (error) => {
             //Reject at the first undefined met => the last in the list
-            expect(error.message).to.equal("variable is not defined");
+            assert.isDefined(error);
             done();
         });
     });
@@ -118,7 +137,7 @@ describe('Variables', function () {
         variables.process(undefined, context).then( () => {
             done();
         }, function (error) {
-            assert.equal(error.message, 'First parameter must be a Template object');
+            assert.isDefined(error);
             done();
         });
     });
@@ -129,7 +148,7 @@ describe('Variables', function () {
         variables.process(template, undefined).then( () => {
             done();
         }, function (error) {
-            assert.equal(error.message, 'Second parameter must be a Context object');
+            assert.isDefined(error);
             done();
         });
     });
@@ -144,7 +163,7 @@ describe('Variables', function () {
         const template = new Template("The current year is {{ 'year' }}, and it is {{day}}");
         const context = new Context(test);
         variables.process(template, context).then( () => {
-            assert.equal(template._content, "The current year is year, and it is Friday");
+            assert.equal(template.content, "The current year is year, and it is Friday");
             done();
         }, function(error) {
             assert.isUndefined(error);
@@ -162,7 +181,7 @@ describe('Variables', function () {
         const template = new Template("The current year is {{ \"year\" }}, and it is {{day}}");
         const context = new Context(test);
         variables.process(template, context).then( () => {
-            assert.equal(template._content, "The current year is year, and it is Friday");
+            assert.equal(template.content, "The current year is year, and it is Friday");
             done();
         }, function(error) {
             assert.isUndefined(error);
@@ -178,7 +197,7 @@ describe('Variables', function () {
         const template = new Template("{{ number | halfTest }}");
         const context = new Context(test);
         variables.process(template, context).then( () => {
-            assert.equal(template._content, "20");
+            assert.equal(template.content, "20");
             done();
         }, function(error) {
             assert.isUndefined(error);
@@ -194,7 +213,7 @@ describe('Variables', function () {
         const template = new Template("{{ day | dayTest('Friday') }}");
         const context = new Context(test);
         variables.process(template, context).then( () => {
-            assert.equal(template._content, "It is Friday.");
+            assert.equal(template.content, "It is Friday.");
             done();
         }, function(error) {
             assert.isUndefined(error);
@@ -212,7 +231,7 @@ describe('Variables', function () {
         const template = new Template("{{ day | dayTest('Tuesday') }}");
         const context = new Context(test);
         variables.process(template, context).then( () => {
-            assert.equal(template._content, "It is not Tuesday. It is Friday.");
+            assert.equal(template.content, "It is not Tuesday. It is Friday.");
             done();
         }, function(error) {
             assert.isUndefined(error);

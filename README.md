@@ -30,18 +30,29 @@ const templateEngine = new STE.TemplateEngine();
 The only method you need is templateEngine.render().
 It takes two parameters :<br />
 &ensp;&ensp;- The first one is a string, which is actually your template<br />
-&ensp;&ensp;- The second one is an object, it corresponds to your context, containing all the variables used in the template<br />
+&ensp;&ensp;- The second one (optional) is an object, it corresponds to your context, containing all the variables used in the template<br />
+&ensp;&ensp;- The third one (optional) is a string that corresponds to your stylesheet. You can put your css into a seperated file, to improve performances <br />
 
 templateEngine.render() method is asynchronous, it resolves an object with a content attribute which is basically the compiled template.
 
 To make it simple, it should look like :
 
 ```
-templateEngine.render(string, parameters).then(function (template) {
+templateEngine.render(string[, parameters, style]).then(function (template) {
     let renderer = template.content;
 },function (error) {
     console.log(error);
 });
+```
+
+### Seperated CSS
+
+If you want to use a seperated CSS file, don't forget to specify it as third parameter of templateEngine.render().
+
+To tell the templateEngine where to insert the CSS in your template, you will need :
+
+```
+{% style %}{% endstyle %}
 ```
 
 ### Translate Filter
@@ -83,10 +94,14 @@ It is the most common feature, it allow you to insert variables from a context i
 
 ### If condition
 
-Everything between the opening and the closing tag will be either inserted or removed in the compiled template depending on if the condition is checked or not.
+Everything between the opening and the closing tag will be either inserted or removed in the compiled template depending on if the condition is checked or not. The else statement also works as known.
 
 ```
-{% if 'hello' === 'world' %} It won't be inserted {% endif %}
+{% if 'hello' === 'world' %}
+    It won't be inserted
+{% else %}
+    It will be inserted
+{% endif %}
 {% if 1 === 1 %} It will be inserted {% endif %}
 ```
 
@@ -100,13 +115,90 @@ Everything between the opening and the closing will be repeated as many as there
 
 ### Filters
 
-Filters allow to apply treatment on a variable. There's a translate filter build in, it looks like this :
+Filters allow to apply treatment on a variable. They are few filters build-in : Translate, date and size.
+
+#### Translate filter
+
+Quite useful to deal with several languages. it looks like this :
 
 ```
 {{ 'HELLO_KEYWORD' | translate }}
 ```
 
+You can also add variable into translations, it is made so :
+
+```
+// Considering
+const translations : {
+    "HELLO_WORD" : {
+        "en" : "Hello %name%"
+    }
+};
+// And name defined in the global context
+
+{{ 'HELLO_KEYWORD' | translate({name : "James"}) }}  // Hello James
+```
+
 NB : In order to use translate filter, you'll need to tell translator your intention, make sure you've read [Translate Filter](#translate-filter)
+
+#### Date filter
+
+The build-in date filter allow you to transform all your UNIX timestamp into a string formatted as you wish and translated into the language you want.
+
+It can have no parameter specified, so the format will be defined thanks to the language set in the translator.
+
+```
+const timestamp = 1517407220;
+{{ timestamp | date }} // January 31, 2018
+```
+
+But you can set the format you want as parameter :
+
+```
+const timestamp = 1517407220;
+{{ timestamp | date({format : "MM-DD-YYYY"}) }} // 31-01-2018
+```
+
+This filter is based on [MomentJS](https://momentjs.com/), just check it out for specific format.
+
+#### size filter
+
+It convert a Bytes number into a appropriated unit :
+
+```
+{{ 1 | size }}                      // "1 B"
+{{ 10 | size }}                     // "10 B"
+{{ 100 | size }}                    // "100 B"
+{{ 1000 | size }}                   // "1 KB"
+{{ 10000 | size }}                  // "10 KB"
+{{ 100000 | size }}                 // "100 KB"
+{{ 1000000 | size }}                // "1 MB"
+{{ 10000000 | size }}               // "10 MB"
+{{ 100000000 | size }}              // "100 MB"
+{{ 1000000000 | size }}             // "1 GB"
+{{ 10000000000 | size }}            // "10 GB"
+{{ 100000000000 | size }}           // "100 GB"
+{{ 1000000000000 | size }}          // "1 TB"
+{{ 10000000000000 | size }}         // "10 TB"
+{{ 100000000000000 | size }}        // "100 TB"
+{{ 1000000000000000 | size }}       // "1 PB"
+{{ 10000000000000000 | size }}      // "10 PB"
+{{ 100000000000000000 | size }}     // "100 PB"
+```
+
+### Nested filters
+
+Sometimes, you may need nested filter, to apply a filter on the result of another filter.
+
+Let's have a look of a case you may face : use date into a translation.
+
+```
+const translations : {
+    "HELLO_WORD" : "Hello %name%. Today is %date%"
+};
+const timestamp = 1517407220;
+{{"HELLO_WORD" | translate( { name : "James", date : date(timestamp, {format : ""MMMM Do YYYY"})} )}} // Hello James. Today is January 31st 2018
+```
 
 #### Custom filters
 
@@ -116,12 +208,11 @@ Let's consider the template hereunder as an example :
 {{variable | myFilter(param1, param2)}}
 ```
 
-Filter have been thought as promise, so a very basic filter structure may look like this :
+Avery basic filter structure may look like this :
 ```
 function myFilter(variable, param1, param2){
-    return new Promise(function(resolve, reject) {
-        resolve();
-    });
+    //do things
+    return;
 }
 
 module.exports = myFilter;

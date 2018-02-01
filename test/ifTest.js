@@ -48,7 +48,7 @@ describe('If', function () {
         };
         const context = new Context(test);
         ifCondition.process(template, context).then( (result) => {
-            assert.deepEqual(result._content, "<div><p>It has to be displayed</p></div>");
+            assert.deepEqual(result.content, "<div><p>It has to be displayed</p></div>");
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -81,7 +81,7 @@ describe('If', function () {
         };
         const context = new Context(test);
         ifCondition.process(template, context).then( (result) => {
-            assert.deepEqual(result._content, "<div><p>Jake has to be displayed</p><p>Bonz has to be displayed</p></div>");
+            assert.deepEqual(result.content, "<div><p>Jake has to be displayed</p><p>Bonz has to be displayed</p></div>");
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -117,6 +117,38 @@ describe('If', function () {
             done();
         }, (error) => {
             assert.isDefined(error);
+            done();
+        });
+    });
+
+    it('If process() method : Success with one else tag', function (done) {
+        const ifCondition = new If();
+        const template = new Template("<div>{% if key === 'Value' %}<p>It has to be hidden</p>{% else %}<p>It has to be displayed</p>{% endif %}</div>");
+        const test = {
+            key : 'A random value',
+        };
+        const context = new Context(test);
+        ifCondition.process(template, context).then( (result) => {
+            assert.deepEqual(result.content, "<div><p>It has to be displayed</p></div>");
+            done();
+        }, (error) => {
+            assert.isUndefined(error);
+            done();
+        });
+    });
+
+    it('If process() method : Success with two nested else tag', function (done) {
+        const ifCondition = new If();
+        const template = new Template("<div>{% if key === 'Value' %}<p>It has to be hidden</p>{% else %}<p>Please</p>{% if key === 'A random value' %}<p>Show me</p>{% else %}<p>It has to be hidden</p>{% endif %}{% endif %}</div>");
+        const test = {
+            key : 'A random value',
+        };
+        const context = new Context(test);
+        ifCondition.process(template, context).then( (result) => {
+            assert.deepEqual(result.content, "<div><p>Please</p><p>Show me</p></div>");
+            done();
+        }, (error) => {
+            assert.isUndefined(error);
             done();
         });
     });

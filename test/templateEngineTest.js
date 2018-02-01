@@ -2,6 +2,7 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
+const filters = require('../lib/filters.js');
 const Variables = require('../lib/methods/variables.js');
 const TemplateEngine = require('../lib/templateEngine.js');
 const Context = require('../lib/context.js');
@@ -18,7 +19,16 @@ describe('TemplateEngine', function () {
         const template = 'A test template with no tags';
         const context = {};
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('A test template with no tags');
+            expect(result.content).to.equal('A test template with no tags');
+            done();
+        });
+    });
+
+    it('TemplateEngine render() method : Success with no context', function (done) {
+        const templateEngine = new TemplateEngine();
+        const template = 'A test template with no context';
+        templateEngine.render(template).then((result) => {
+            expect(result.content).to.equal('A test template with no context');
             done();
         });
     });
@@ -42,7 +52,20 @@ describe('TemplateEngine', function () {
         };
         const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('<a><p>Jake</p><p>Bonz</p></a>');
+            expect(result.content).to.equal('<a><p>Jake</p><p>Bonz</p></a>');
+            done();
+        });
+    });
+
+    it('TemplateEngine render() method : Success with no context specified', function (done) {
+        const templateEngine = new TemplateEngine();
+        const template = '<h1>Just a title template</h1>';
+
+        templateEngine.render(template).then((result) => {
+            expect(result.content).to.equal('<h1>Just a title template</h1>');
+            done();
+        }, (error) => {
+            assert.isUndefined(error);
             done();
         });
     });
@@ -82,54 +105,10 @@ describe('TemplateEngine', function () {
         translator.language = language;
         translator.fallbackLanguage = fallbackLanguage;
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('<p>Hello Antoine Dupont</p>');
-            assert.equal(result._content, '<p>Hello Antoine Dupont</p>');
+            assert.equal(result.content, '<p>Hello Antoine Dupont</p>');
             done();
         }, (error) => {
             assert.isUndefined(error);
-            done();
-        });
-    });
-
-    it('TemplateEngine render() method : Success with a variable used in the translate filter parameters is not defined in global context', function (done) {
-        const templateEngine = new TemplateEngine();
-        const template = '<p>{{"HELLO_WORD" | translate( { firstname : users[0].firstname, lastname : users[0].lastname} )}}</p>';
-        const test = {
-            title: "Welcome",
-            users: [
-                {
-                    firstname: "Antoine",
-                    age: 30,
-                    hobby: null,
-                },
-                {
-                    firstname: "Bonz",
-                    lastname: "Atron",
-                    age: "25",
-                    hobby: "Kendama"
-                }
-            ],
-            day: 'Friday',
-        };
-        const context = new Context(test);
-        const translations = {
-            'HELLO_WORD': {
-                en: 'Hello %firstname% %lastname%',
-                fr: 'Bonjour',
-                de: 'Hallo'
-            },
-        };
-        const language = 'en';
-        const fallbackLanguage = 'fr';
-        translator.translations = translations;
-        translator.language = language;
-        translator.fallbackLanguage = fallbackLanguage;
-
-        templateEngine.render(template, context).then((result) => {
-            assert.isUndefined(result._content);
-            done();
-        }, (error) => {
-            assert.equal(error.message, 'lastname is not defined');
             done();
         });
     });
@@ -152,6 +131,55 @@ describe('TemplateEngine', function () {
                     hobby: "Kendama"
                 }
             ],
+            day: 'Friday',
+        };
+        const context = new Context(test);
+        const translations = {
+            'HELLO_WORD': {
+                en: 'Hello %firstname% %sentence%',
+                fr: 'Bonjour',
+                de: 'Hallo'
+            },
+            'SENTENCE': {
+                en: 'A sentence',
+                fr: 'Une phrase',
+                de: 'Ein Satz'
+            }
+        };
+        const language = 'en';
+        const fallbackLanguage = 'fr';
+        translator.translations = translations;
+        translator.language = language;
+        translator.fallbackLanguage = fallbackLanguage;
+
+        templateEngine.render(template, context).then((result) => {
+            expect(result.content).to.equal('<p>Hello Antoine A sentence</p>');
+            done();
+        }, (error) => {
+            assert.isUndefined(error);
+            done();
+        });
+    });
+
+    it('TemplateEngine render() method : Success with nested filters #2', function (done) {
+        const templateEngine = new TemplateEngine();
+        const template = '<p>{{"HELLO_WORD" | translate( { firstname : users[0].firstname, sentence : translate(sentence)} )}}</p>';
+        const test = {
+            title: "Welcome",
+            users: [
+                {
+                    firstname: "Antoine",
+                    age: 30,
+                    hobby: null,
+                },
+                {
+                    firstname: "Bonz",
+                    lastname: "Atron",
+                    age: "25",
+                    hobby: "Kendama"
+                }
+            ],
+            sentence : "SENTENCE",
             day: 'Friday',
         };
         const context = new Context(test);
@@ -213,7 +241,7 @@ describe('TemplateEngine', function () {
         };
         const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('<p><p>Handball is played indoor</p><p>Tennis is played outdoor</p></p><p><a>Jake is here</a><a>Bonz is here</a></p>');
+            expect(result.content).to.equal('<p><p>Handball is played indoor</p><p>Tennis is played outdoor</p></p><p><a>Jake is here</a><a>Bonz is here</a></p>');
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -229,7 +257,7 @@ describe('TemplateEngine', function () {
         };
         const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('<p>It is displayed</p>');
+            expect(result.content).to.equal('<p>It is displayed</p>');
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -246,7 +274,7 @@ describe('TemplateEngine', function () {
         };
         const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('<p>It is displayed</p>');
+            expect(result.content).to.equal('<p>It is displayed</p>');
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -274,7 +302,7 @@ describe('TemplateEngine', function () {
         };
         const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('<p>TestTest</p>');
+            expect(result.content).to.equal('<p>TestTest</p>');
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -283,6 +311,16 @@ describe('TemplateEngine', function () {
     });
 
     it('TemplateEngine render() method : Success with for-tags, if-tags, and variables', function (done) {
+        const dayTestFilter = {
+            process: require('../filters/dayTest.js'),
+            name: 'dayTest'
+        };
+        const halfTestFilter = {
+            process: require('../filters/halfTest.js'),
+            name: 'halfTest'
+        };
+        filters.add(dayTestFilter);
+        filters.add(halfTestFilter);
         const templateEngine = new TemplateEngine();
         const template = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>{%if title %}{{title}}{% endif %}</main><div>{% for user in users %}<p>{%if user.hobby %}{{user.firstname}} enjoys {{user.hobby}}{% endif %}{% if user.age < 30 %} and is {{user.age}} {% endif %}{{user.firstname}} lastname is {{user.lastname}}</p>{% endfor %}</div></body></html>';
         const test = {
@@ -304,7 +342,7 @@ describe('TemplateEngine', function () {
         };
         const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p></div></body></html>');
+            assert.equal(result.content, '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p></div></body></html>');
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -335,7 +373,7 @@ describe('TemplateEngine', function () {
         };
         const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body></html>');
+            assert.equal(result.content, '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body></html>');
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -384,7 +422,7 @@ describe('TemplateEngine', function () {
         translator.fallbackLanguage = fallbackLanguage;
 
         templateEngine.render(template, context).then((result) => {
-            expect(result._content).to.equal('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Hello</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body></html>');
+            assert.equal(result.content, '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Hello</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body></html>');
             done();
         }, (error) => {
             assert.isUndefined(error);
@@ -414,12 +452,55 @@ describe('TemplateEngine', function () {
             day: 'Friday',
             month: 'September'
         };
-        const template = "<a href=\"{{ 'ABOUT_LINK' | translate({}) }}\" target=\"_blank\">";
+        const template = "<a href=\"{{ 'ABOUT_LINK' | translate }}\" target=\"_blank\">";
         const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
-            assert.equal(result._content, "<a href=\"Bonjour\" target=\"_blank\">");
+            assert.equal(result.content, "<a href=\"Bonjour\" target=\"_blank\">");
             done();
         }, function (error) {
+            assert.isUndefined(error);
+            done();
+        });
+    });
+
+    it("TemplateEngine render() with date filter : Success", function (done) {
+        const templateEngine = new TemplateEngine();
+        const translations = {
+            'HOW_ARE_YOU': {
+                en: 'Hello, how are you? today is %date%',
+                fr: 'Bonjour %date%',
+                de: 'Hallo'
+            }
+        };
+        translator.translations = translations;
+        translator.language = "en";
+        translator.fallbackLanguage = "en";
+        const test = {
+            timestamp : 1516724607
+        };
+        const template = "{{'HOW_ARE_YOU' | translate({ date : date(timestamp, {format : 'dddd Do MMMM, YYYY'})}) }}";
+        const context = new Context(test);
+        templateEngine.render(template, context).then((result) => {
+            assert.equal(result.content, "Hello, how are you? today is Tuesday 23rd January, 2018");
+            done();
+        }, function (error) {
+            assert.isUndefined(error);
+            done();
+        });
+    });
+
+    it('TemplateEngine render() method : Success with a style tag', function (done) {
+        const templateEngine = new TemplateEngine();
+        const template = '<style>{% style %}{% endstyle %}</style> <p>Some HTML</p>';
+        const test = {
+            displayed: true
+        };
+        const context = new Context(test);
+        const style = ".class{display: block;}";
+        templateEngine.render(template, context, style).then((result) => {
+            expect(result.content).to.equal('<style>.class{display: block;}</style> <p>Some HTML</p>');
+            done();
+        }, (error) => {
             assert.isUndefined(error);
             done();
         });

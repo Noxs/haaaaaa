@@ -55,6 +55,18 @@ describe('Context', function () {
         expect(context.byString('sports.handball.team')).to.equal(7);
     });
 
+    it('Context byString() method failure : Value is not in the object', function () {
+        const testObject = {
+            sports : {
+                handball : {
+                    team : 7,
+                }
+            },
+        };
+        const context = new Context(testObject);
+        assert.isUndefined(context.byString('sports.handball.place'));
+    });
+
     it('Context byString() method : First parameter is an object', function () {
         const test = {
             year : 2017,

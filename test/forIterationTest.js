@@ -32,7 +32,7 @@ describe('ForIteration', function () {
         const forIteration = new ForIteration();
         forIteration.process(template, context).then( (result) => {
             assert.isObject(result);
-            expect(result._content).equal("<p>Jake</p>");
+            expect(result.content).equal("<p>Jake</p>");
             done();
         }, (error) => {
             assert.isUndefined(error);
