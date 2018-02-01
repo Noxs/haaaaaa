@@ -123,7 +123,8 @@ describe('If', function () {
 
     it('If process() method : Success with one else tag', function (done) {
         const ifCondition = new If();
-        const template = new Template("<div>{% if key === 'Value' %}<p>It has to be hidden</p>{% else %}<p>It has to be displayed</p>{% endif %}</div>");
+        const template = new Template("<div>{% if key === 'Value' %}<p>It has to be hidden</p>{% else %}\
+        <p>It has to be displayed</p>{% endif %}</div>");
         const test = {
             key : 'A random value',
         };
