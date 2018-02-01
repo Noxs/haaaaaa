@@ -92,6 +92,5 @@ describe('Filters', function () {
             assert.isDefined(error);
             done();
         });
-
     });
 });
