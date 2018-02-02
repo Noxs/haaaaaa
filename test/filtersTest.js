@@ -2,6 +2,7 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
+const Context = require("../lib/context.js");
 const filters = require('../lib/filters.js');
 
 describe('Filters', function () {
@@ -84,12 +85,26 @@ describe('Filters', function () {
     it('Filters applyFilter() method : The filter is not defined in the filters instance', function (done) {
         const tag = [ '{{ test | notExisting }}', 'test', 'notExisting', undefined ];
         const variable = 'test';
-        const context = {data : 'Value'};
+        const context = new Context({data : 'Value'});
         filters.applyFilter(tag, variable, context).then( (result) => {
             assert.isUndefined(result);
             done();
         }, (error) => {
             assert.isDefined(error);
+            done();
+        });
+    });
+
+    it('Filters applyFilter() method failure : A variable in a translation is not defined in parameters', function (done) {
+        const tag = [ '{{ "KEYWORD" | translate({"title" : title}) }}','"KEYWORD"','translate','{"title" : title}'];
+        const variable = "KEYWORD";
+        const context = new Context({});
+        filters.applyFilter(tag, variable, context).then( (result) => {
+            assert.isUndefined(result);
+            done();
+        }, (error) => {
+            assert.isDefined(error);
+            assert.isDefined(error.templateFailure);
             done();
         });
     });

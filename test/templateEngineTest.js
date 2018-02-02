@@ -430,7 +430,7 @@ describe('TemplateEngine', function () {
         });
     });
 
-    it("TemplateEngine render() with html: Success ", function (done) {
+    it("TemplateEngine render() with html: Success", function (done) {
         const templateEngine = new TemplateEngine();
         const translations = {
             'ABOUT_LINK': {
