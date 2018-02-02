@@ -123,14 +123,13 @@ describe('If', function () {
 
     it('If process() method : Success with one else tag', function (done) {
         const ifCondition = new If();
-        const template = new Template("<div>{% if key === 'Value' %}<p>It has to be hidden</p>{% else %}\
-        <p>It has to be displayed</p>{% endif %}</div>");
+        const template = new Template("<div>\n{% if key === 'Value' %}\n<p>It has to be hidden</p>\n{% else %}\n<p>\nIt has to be displayed</p>\n{% endif %}\n</div>");
         const test = {
             key : 'A random value',
         };
         const context = new Context(test);
         ifCondition.process(template, context).then( (result) => {
-            assert.deepEqual(result.content, "<div><p>It has to be displayed</p></div>");
+            assert.deepEqual(result.content, "<div>\n<p>\nIt has to be displayed</p>\n\n</div>");
             done();
         }, (error) => {
             assert.isUndefined(error);
