@@ -5,11 +5,11 @@ const should = chai.should();
 const Template = require('../lib/template.js');
 const Context = require('../lib/context.js');
 const IfCondition = require('../lib/methods/if/ifCondition.js');
-
+const regexp = new RegExp("{%\\s?(if)\\s(.+?)\\s?%}|{%\\s?(else)\\s?%}|{%\\s?(endif)\\s?%}", "g");
 describe('IfCondition', function () {
     it('IfCondition build : Success', function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const context = new Context({});
@@ -23,7 +23,7 @@ describe('IfCondition', function () {
 
     it('IfCondition build : First parameter is not a Template object', function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const context = new Context({});
@@ -36,7 +36,7 @@ describe('IfCondition', function () {
 
     it('IfCondition build : Second parameter is not a Context object', function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const context = new Context({});
@@ -49,7 +49,7 @@ describe('IfCondition', function () {
 
     it('IfCondition build : Third parameter is not an array', function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const context = new Context({});
@@ -62,7 +62,7 @@ describe('IfCondition', function () {
 
     it('IfCondition build : Third parameter refers to an opening tag', function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const context = new Context({});
@@ -75,7 +75,7 @@ describe('IfCondition', function () {
 
     it('IfCondition build : Forth parameter is not an array', function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const context = new Context({});
@@ -88,7 +88,7 @@ describe('IfCondition', function () {
 
     it('IfCondition build : Forth parameter refers to an opening tag', function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const context = new Context({});
@@ -99,22 +99,9 @@ describe('IfCondition', function () {
         expect(testFunc).to.throw();
     });
 
-    it('IfCondition build failure : Fifth parameter is not an array', function () {
-        const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
-        const openingTag = tags[0];
-        const closingTag = tags[1];
-        const context = new Context({});
-
-        const testFunc = function () {
-            const ifCondition = new IfCondition(template, context, openingTag, closingTag, "Not an array");
-        };
-        expect(testFunc).to.throw();
-    });
-
     it('IfCondition _evalutateString() method : Success with one variable only (type : string)', function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
@@ -133,7 +120,7 @@ describe('IfCondition', function () {
 
     it('IfCondition _evalutateString() method : Success with one variable only (type : object)', function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
@@ -152,7 +139,7 @@ describe('IfCondition', function () {
 
     it('IfCondition _evalutateString() method : Success with one variable only (type : array)', function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
@@ -171,7 +158,7 @@ describe('IfCondition', function () {
 
     it('IfCondition _evalutateString() method : Success with one variable only (type : null)', function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
@@ -190,7 +177,7 @@ describe('IfCondition', function () {
 
     it('IfCondition _evalutateString() method : Success with one variable only (type : undefined)', function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {};
@@ -206,7 +193,7 @@ describe('IfCondition', function () {
 
     it('IfCondition _evalutateString() method : Success with one variable only (type : number)', function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
@@ -225,7 +212,7 @@ describe('IfCondition', function () {
 
     it('IfCondition _evalutateString() method : Success with two statements (types : string, string)', function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const context = new Context({});
@@ -241,7 +228,7 @@ describe('IfCondition', function () {
 
     it('IfCondition _evalutateString() method : Success with two statements (types : variable, string)', function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
@@ -260,7 +247,7 @@ describe('IfCondition', function () {
 
     it("IfCondition _evalutateString() method : Success with two statements (types : object's property, object's property)", function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
@@ -294,7 +281,7 @@ describe('IfCondition', function () {
 
     it("IfCondition _evalutateString() method : Success with three statements and '&&' logical operator ( if true && true )", function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
@@ -314,7 +301,7 @@ describe('IfCondition', function () {
 
     it("IfCondition _evalutateString() method : Success with three statements and '&&' logical operator and '!' operator ( if true && !true )", function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
@@ -333,7 +320,7 @@ describe('IfCondition', function () {
 
     it("IfCondition _evalutateString() method : Success with four statements and '&&' logical operator ( if true && true )", function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
@@ -353,7 +340,7 @@ describe('IfCondition', function () {
 
     it("IfCondition _evalutateString() method : Success with four statements and '||' logical operator ( if false || true )", function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
@@ -373,7 +360,7 @@ describe('IfCondition', function () {
 
     it("IfCondition _evalutateString() method : First parameter is not defined", function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
@@ -392,7 +379,7 @@ describe('IfCondition', function () {
 
     it("IfCondition _evalutateString() method : Second parameter is not a Context object", function () {
         const template = new Template("{% if test %} {% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
@@ -411,7 +398,7 @@ describe('IfCondition', function () {
 
     it('IfCondition process() method : Success with a condition that return false', function (done) {
         const template = new Template("{% if test !== 'Value' %}It has to be displayed{% endif %}");
-        const tags = template.search(new RegExp("{%\\s?if\\s(.+?)\\s?%}|{%\\s?endif\\s?%}", 'g'));
+        const tags = template.search(regexp);
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
