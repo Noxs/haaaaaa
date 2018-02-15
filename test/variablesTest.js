@@ -6,6 +6,15 @@ const Variables = require('../lib/methods/variables.js');
 const Template = require('../lib/template.js');
 const Context = require('../lib/context.js');
 const regexp = new RegExp("{{\\s?((?:[a-zA-Z0-9.]+)|(?:'[a-zA-Z0-9. ]+')|(?:\"[a-zA-Z0-9. ]+\"))\\s?(?:\\|+\\s?([a-zA-Z0-9.]+)(?:\\(([a-zA-Z0-9.,'\"]+)\\))?)?\\s?}}", "g");
+const filters = require('../lib/filters.js');
+const dayTestFilter = {
+    process: require('../filters/dayTest.js'),
+    name: 'dayTest'
+};
+const halfTestFilter = {
+    process: require('../filters/halfTest.js'),
+    name: 'halfTest'
+};
 
 describe('Variables', function () {
     it('Variables process() method : Success', function (done) {
@@ -54,35 +63,19 @@ describe('Variables', function () {
             month : 'September'
         };
         const context = new Context(test);
-        variables.process(template, context).then( () => {
-            done();
-        }, function (error) {
-            expect(error.message).to.equal("hour is not defined");
-            done();
-        });
-    });
-
-    it('Variables process() method : One variable in template is undefined', function (done) {
-        const variables = new Variables();
-        const template = new Template('It is {{hour}}');
-        const test = {
-            year : 2017,
-            day : 'Friday',
-            month : 'September'
-        };
-        const context = new Context(test);
         variables.process(template, context).then( (result) => {
-            assert.isUndefined(result);
+            assert.equal("Should reject", true);
             done();
         }, function (error) {
             assert.isDefined(error);
+            assert.isDefined(error.templateFailure);
             done();
         });
     });
 
     it('Variables process() method : several variables in template are undefined', function (done) {
         const variables = new Variables();
-        const template = new Template('The current year is {{ year }}, and it is {{hour}}, and this {{variable}} does\'nt exist');
+        const template = new Template('The current year is {{ year }}, and it is {{hour}}, and this {{something}} does\'nt exist');
         const test = {
             year : 2017,
             day : 'Friday',
@@ -90,11 +83,12 @@ describe('Variables', function () {
         };
         const context = new Context(test);
         variables.process(template, context).then( () => {
-            assert.equals("Should reject", true);
+            assert.equal("Should reject", true);
             done();
         }, (error) => {
             //Reject at the first undefined met => the last in the list
             assert.isDefined(error);
+            assert.isDefined(error.templateFailure);
             done();
         });
     });
@@ -189,7 +183,27 @@ describe('Variables', function () {
         });
     });
 
+    it("Variables process() method failure : a variable is not defined", function (done) {
+        const variables = new Variables();
+        const test = {
+            year : 2017,
+            day : 'Friday',
+            month : 'September'
+        };
+        const template = new Template("The current year is {{ something }}, and it is {{day}}");
+        const context = new Context(test);
+        variables.process(template, context).then( () => {
+            assert.equal("Shoud reject", true);
+            done();
+        }, function(error) {
+            assert.isDefined(error);
+            assert.isDefined(error.templateFailure);
+            done();
+        });
+    });
+
     it("Variables process() method : Success with a function filter (halfTest)", function (done) {
+        filters.add(halfTestFilter);
         const variables = new Variables();
         const test = {
             number : 40,
@@ -206,6 +220,7 @@ describe('Variables', function () {
     });
 
     it("Variables process() method : Success with a function filter (dayTest)", function (done) {
+        filters.add(dayTestFilter);
         const variables = new Variables();
         const test = {
             day : 'Friday',
@@ -222,6 +237,7 @@ describe('Variables', function () {
     });
 
     it("Variables process() method : Success#2 with a function filter (dayTest)", function (done) {
+        filters.add(dayTestFilter);
         const variables = new Variables();
         const test = {
             year : 2017,

@@ -1,0 +1,242 @@
+{
+    "EMAIL_OBJECT" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "[%title%]Confirmation d'envoi à %email%",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_OBJECT_PLURAL" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "[%title%]Confirmation d'envoi à vos %number% destinataires",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_NO_OBJECT" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "Confirmation d'envoi à %email%",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_NO_OBJECT_PLURAL" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "Confirmation d'envoi à vos %number% destinataires",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_TITLE_ONE_RECEIVER" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "Votre fichier a bien été envoyé à %email%",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_TITLE_ONE_RECEIVER_PLURAL" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "Vos fichiers ont bien été envoyés à %email%",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_TITLE_MANY_RECEIVERS" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "Votre fichier a bien été envoyé à vos %number% destinataires !",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_TITLE_MANY_RECEIVERS_PLURAL" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "Vos fichiers ont bien été envoyés à vos %number% destinataires !",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_NOTIFICATION_ONE_RECEIVER" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "Nous vous enverrons un e-mail de notification chaque fois que %email% aura visualisé et téléchargé votre fichier",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_NOTIFICATION_ONE_RECEIVER_PLURAL" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "Nous vous enverrons un e-mail de notification chaque fois que %email% aura visualisé et téléchargé vos fichiers",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_NOTIFICATION_MANY_RECEIVERS" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "Nous vous enverrons un e-mail de notification chaque fois qu'un de vos destinataires aura visualisé et téléchargé votre fichier",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_NOTIFICATION_MANY_RECEIVERS_PLURAL" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "Nous vous enverrons un e-mail de notification chaque fois qu'un de vos destinataires aura visualisé et téléchargé vos fichiers",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_SUBJECT" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "Objet",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_DESCRIPTION" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "Message",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_SENDER" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "Destinataire",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_SENDER_PLURAL" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "Destinataires",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_LINK" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "Lien du Smash",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_CREATED" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "Date de création",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_DELETED_ITEM" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "Durée de validité",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_DELETED" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : " jusqu'au %date%",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_FILE" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "%number% fichier (%size%)",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_FILES" : {
+        "de" : "%number% dateien (%size%)",
+        "en" : "",
+        "es" : "",
+        "fr" : "%number% fichiers (%size%)",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_DETAILS" : {
+        "de" : "",
+        "en" : "",
+        "es" : "",
+        "fr" : "Supprimer votre Smash",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_ADDRESS" : {
+        "de" : "2 rue de la claire, Lyon, 69009, France",
+        "en" : "",
+        "es" : "",
+        "fr" : "2 rue de la claire, Lyon, 69009, France",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_ABOUT_LINK" : {
+        "de" : "https://about.fromsmash.com/",
+        "en" : "",
+        "es" : "",
+        "fr" : "https://apropos.fromsmash.com/",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_ABOUT" : {
+        "de" : "Über Smash",
+        "en" : "",
+        "es" : "",
+        "fr" : "A propos de Smash",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_CONTACT_LINK" : {
+        "de" : "https://about.fromsmash.com/contact-us/",
+        "en" : "",
+        "es" : "",
+        "fr" : "https://apropos.fromsmash.com/nous-contacter/",
+        "it" : "",
+        "pt" : ""
+    },
+    "EMAIL_CONTACT" : {
+        "de" : "Kontakt",
+        "en" : "",
+        "es" : "",
+        "fr" : "Contact",
+        "it" : "",
+        "pt" : ""
+    },
+    "MB" : {
+        "de" : "MB",
+        "en" : "",
+        "es" : "",
+        "fr" : "Mo",
+        "it" : "",
+        "pt" : ""
+    },
+    "GB" : {
+        "de" : "GB",
+        "en" : "",
+        "es" : "",
+        "fr" : "Go",
+        "it" : "",
+        "pt" : ""
+    }
+}

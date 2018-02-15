@@ -1,0 +1,323 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+    <head>
+        <!-- NAME: 1 COLUMN -->
+        <!--[if gte mso 15]>
+        <xml>
+          <o:officedocumentsettings>
+            <o:allowpng />
+            <o:pixelsperinch>96</o:pixelsperinch>
+          </o:officedocumentsettings>
+        </xml>
+        <![endif]-->
+        <meta charset="UTF-8"/>
+        <meta http-equiv="x-ua-compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        {% if smash.emails.length === 1 %}
+            {% if smash.title %}
+                <title>{{ "EMAIL_OBJECT" | translate({'title': smash.title, 'email' : smash.emails[0]}) }}</title>
+            {% endif %}
+            {% if !smash.title %}
+                <title>{{ "EMAIL_NO_OBJECT" | translate({'email': smash.emails[0]}) }}</title>
+            {% endif %}
+        {% else %}
+            {% if smash.title %}
+                <title>{{ "EMAIL_OBJECT_PLURAL" | translate({'title': smash.title, 'number': smash.emails.length}) }}</title>
+            {% endif %}
+            {% if !smash.title %}
+                <title>{{ "EMAIL_NO_OBJECT_PLURAL" | translate({'number': smash.emails.length}) }}</title>
+            {% endif %}
+        {% endif %}
+        <style type="text/css">
+            {% style %}{% endstyle %}
+        </style>
+    </head>
+    <body>
+        <center>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" id="bodyTable" style="height:100%;">
+                <tr>
+                    <td align="center" valign="top" id="bodyCell">
+                        <!-- BEGIN TEMPLATE // -->
+                        <!--[if gte mso 9]>
+                        <table align="center" border="0" cellspacing="0" cellpadding="0" width="400" style="width:400px;">
+                          <tr>
+                            <td align="center" valign="top" width="400" style="width:400px;">
+                              <![endif]-->
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%" class="templateContainer">
+                            <tr>
+                                <td valign="top" id="templatePreheader">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td valign="top" id="templateBody">
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width:100%; border-collapse:separate;">
+                                        <tbody class="mcnTextBlockOuter">
+                                            <tr>
+                                                <td valign="top" class="mcnTextBlockInner" style="padding:40px 0;border-radius:3px 3px 0px 0px;border-top:1px solid #ccc;border-left:1px solid #ccc;border-right:1px solid #ccc;">
+                                                    <!--[if mso]>
+                                                    <table align="left" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;">
+                                                      <tr>
+                                                        <![endif]-->
+                                                    <!--[if mso]>
+                                                    <td valign="top" width="400" style="width:400px;">
+                                                      <![endif]-->
+                                                    <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%;min-width:100%;" width="100%" class="mcnTextContentContainer">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td valign="top" class="mcnTextContent" style="padding:0px 18px 0px;font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:16px;font-style:normal;font-weight:normal;">
+                                                                    {% if smash.emails.length === 1 %}
+                                                                        {% if smash.files.length === 1 %}
+                                                                            <div style="text-align:center;padding:0 13%;font-size:20px;line-height:28px;">{{ "EMAIL_TITLE_ONE_RECEIVER" | translate({"email" : smash.emails[0]}) }}</div>
+                                                                        {% endif %}
+                                                                        {% if smash.files.length > 1 %}
+                                                                            <div style="text-align:center;padding:0 13%;font-size:20px;line-height:28px;">{{ "EMAIL_TITLE_ONE_RECEIVER_PLURAL" | translate({"email" : smash.emails[0]}) }}</div>
+                                                                        {% endif %}
+                                                                    {% else %}
+                                                                        {% if smash.files.length === 1 %}
+                                                                            <div style="text-align:center;padding:0 13%;font-size:20px;line-height:28px;">{{ "EMAIL_TITLE_MANY_RECEIVERS" | translate({"number" : smash.emails.length}) }}</div>
+                                                                        {% endif %}
+                                                                        {% if smash.files.length > 1 %}
+                                                                            <div style="text-align:center;padding:0 13%;font-size:20px;line-height:28px;">{{ "EMAIL_TITLE_MANY_RECEIVERS_PLURAL" | translate({"number" : smash.emails.length}) }}</div>
+                                                                        {% endif %}
+                                                                    {% endif %}
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <!--[if mso]>
+                                                  </td>
+                                                  <![endif]-->
+                                                    <!--[if mso]>
+                                                  </tr>
+                                                </table>
+                                                <![endif]-->
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width:100%;border-collapse:separate;">
+                                        <tbody class="mcnTextBlockOuter">
+                                            <tr>
+                                                <td valign="top" class="mcnTextBlockInner" style="padding-bottom:40px;padding-top:20px;border-left:1px solid #ccc;border-right:1px solid #ccc;border-bottom:1px solid #ccc;border-radius:0 0 0 0!important;">
+                                                    <!--[if mso]>
+                                                    <table align="left" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;">
+                                                      <tr>
+                                                        <![endif]-->
+                                                    <!--[if mso]>
+                                                    <td valign="top" width="400" style="width:400px;">
+                                                      <![endif]-->
+                                                    <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%;min-width:100%;" width="100%" class="mcnTextContentContainer">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td valign="top" class="mcnTextContent" style="padding-top:0;padding-right:18px;padding-left:18px;width:364px;">
+                                                                    <div style="text-align:center;">
+                                                                        {% if smash.emails.length === 1 %}
+                                                                            {% if smash.files.length === 1 %}
+                                                                                <span style="color:#333; font-size:14px; font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif">{{ "EMAIL_NOTIFICATION_ONE_RECEIVER" | translate({"email" : smash.emails[0]}) }}</span>
+                                                                            {% endif %}
+                                                                            {% if smash.files.length > 1 %}
+                                                                                <span style="color:#333; font-size:14px; font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif">{{ "EMAIL_NOTIFICATION_ONE_RECEIVER_PLURAL" | translate({"email" : smash.emails[0]}) }}</span>
+                                                                            {% endif %}
+                                                                        {% else %}
+                                                                            {% if smash.files.length === 1 %}
+                                                                                <span style="color:#333; font-size:14px; font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif">{{ "EMAIL_NOTIFICATION_MANY_RECEIVERS" | translate }}</span>
+                                                                            {% endif %}
+                                                                            {% if smash.files.length > 1 %}
+                                                                            <span style="color:#333; font-size:14px; font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif">{{ "EMAIL_NOTIFICATION_MANY_RECEIVERS_PLURAL" | translate }}</span>
+                                                                            {% endif %}
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <!--[if mso]>
+                                                  </td>
+                                                  <![endif]-->
+                                                    <!--[if mso]>
+                                                  </tr>
+                                                </table>
+                                                <![endif]-->
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width:100%;border-collapse:separate;">
+                                        <tbody class="mcnTextBlockOuter">
+                                            <tr>
+                                                <td valign="top" class="mcnTextBlockInner" style="padding-bottom:40px;padding-top:20px;border-left:1px solid #ccc;border-right:1px solid #ccc;border-bottom:1px solid #ccc;border-radius:0 0 3px 3px;">
+                                                    <!--[if mso]>
+                                                    <table align="left" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;">
+                                                      <tr>
+                                                        <![endif]-->
+                                                    <!--[if mso]>
+                                                    <td valign="top" width="400" style="width:400px;">
+                                                      <![endif]-->
+                                                    <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%;min-width:100%;" width="100%" class="mcnTextContentContainer">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td valign="top" class="mcnTextContent" style="padding-top:0;padding-right:18px;padding-left:18px;width:364px;">
+                                                                    <div style="text-align:left;">
+                                                                        <div style="font-size: 12px;font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif;font-style:normal;font-weight:bold;">
+                                                                            {{ "EMAIL_SUBJECT" | translate }}
+                                                                        </div>
+                                                                        <a style="font-size: 11px;font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif;font-style:normal;font-weight:normal;">
+                                                                            {{ smash.subject }}
+                                                                        </a>
+                                                                    </div>
+                                                                    <br/>
+                                                                    {% if smash.description %}
+                                                                        <div style="text-align:left;">
+                                                                            <div style="font-size: 12px;font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif;font-style:normal;font-weight:bold;">
+                                                                                {{ "EMAIL_DESCRIPTION" | translate }}
+                                                                            </div>
+                                                                            <a style="font-size: 11px;font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif;font-style:normal;font-weight:normal;">
+                                                                                {{ smash.description }}
+                                                                            </a>
+                                                                        </div>
+                                                                        <br/>
+                                                                    {% endif %}
+                                                                    <div style="text-align:left;">
+                                                                        <div style="font-size: 12px;font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif;font-style:normal;font-weight:bold;">
+                                                                            {% if smash.emails.length === 1 %}
+                                                                                {{ "EMAIL_SENDER" | translate }}
+                                                                            {% else %}
+                                                                                {{ "EMAIL_SENDER_PLURAL" | translate }}
+                                                                            {% endif %}
+                                                                        </div>
+                                                                        {% for email in smash.emails %}
+                                                                            <a style="font-size: 11px;font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif;font-style:normal;font-weight:normal;">
+                                                                                {{ email }}
+                                                                            </a>
+                                                                            <br/>
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                    <br/>
+                                                                    <div style="text-align:left;">
+                                                                        <div style="font-size: 12px;font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif;font-style:normal;font-weight:bold;">
+                                                                            {{ "EMAIL_LINK" | translate }}
+                                                                        </div>
+                                                                        <a href="https://{{smash.domain}}/{{smash.id}}" target="_blank" style="font-size: 11px;font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif;font-style:normal;font-weight:normal;">
+                                                                            https://{{smash.domain}}/{{smash.id}}
+                                                                        </a>
+                                                                    </div>
+                                                                    <br/>
+                                                                    <div style="text-align:left;">
+                                                                        <div style="font-size: 12px;font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif;font-style:normal;font-weight:bold;">
+                                                                            {{ "EMAIL_CREATED" | translate }}
+                                                                        </div>
+                                                                        <a style="font-size: 11px;font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif;font-style:normal;font-weight:normal;">
+                                                                            {{ smash.created | date }}
+                                                                        </a>
+                                                                    </div>
+                                                                    <br/>
+                                                                    <div style="text-align:left;">
+                                                                        <div style="font-size: 12px;font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif;font-style:normal;font-weight:bold;">
+                                                                            {{ "EMAIL_DELETED_ITEM" | translate }}
+                                                                        </div>
+                                                                        <a style="font-size: 11px;font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif;font-style:normal;font-weight:normal;">
+                                                                            {{ "EMAIL_DELETED" | translate({"date" : date(smash.deleted)}) }}
+                                                                        </a>
+                                                                    </div>
+                                                                    <br/>
+                                                                    <div style="text-align:left;">
+                                                                        <div style="font-size: 12px;font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif;font-style:normal;font-weight:bold;">
+                                                                            {% if smash.files.length === 1 %}
+                                                                                {{ "EMAIL_FILE" | translate({'number': smash.files.length, 'size': size(smash.size) }) }}
+                                                                            {% else %}
+                                                                                {{ "EMAIL_FILES" | translate({'number': smash.files.length, 'size': size(smash.size) }) }}
+                                                                            {% endif %}
+                                                                        </div>
+                                                                        {% for file in smash.files %}
+                                                                            <a style="font-size: 11px;font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif;font-style:normal;font-weight:normal;">
+                                                                                {{ file.name }} ({{file.size|size}})
+                                                                            </a>
+                                                                            <br/>
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                    <br/>
+                                                                    <div style="text-align:left;">
+                                                                        <a href="https://{{smash.domain}}/delete/{{smash.report.url}}" target="_blank" style="font-size: 11px;font-family:'Open Sans','Segoe UI','SanFrancisco Display',Arial,sans-serif,'Helvetica Neue',Helvetica,Arial,sans-serif;font-style:normal;font-weight:normal;">
+                                                                            {{ "EMAIL_DETAILS" | translate }}
+                                                                        </a>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <!--[if mso]>
+                                                  </td>
+                                                  <![endif]-->
+                                                    <!--[if mso]>
+                                                  </tr>
+                                                </table>
+                                                <![endif]-->
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td valign="top" id="templateFooter">
+                                    {% if !smash.premium %}
+                                        <table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width:100%; border-collapse:separate;">
+                                            <tbody class="mcnTextBlockOuter">
+                                                <tr>
+                                                    <td valign="top" class="mcnTextBlockInner" style="padding-top:50px;">
+                                                        <!--[if mso]>
+                                                        <table align="left" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;">
+                                                          <tr>
+                                                            <![endif]-->
+                                                        <!--[if mso]>
+                                                        <td valign="top" width="400" style="width:400px;">
+                                                          <![endif]-->
+                                                        <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width:100%;min-width:100%;" width="100%" class="mcnTextContentContainer">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td valign="top" class="mcnTextContent" style="padding:0 18px 9px 18px;">
+                                                                        <table width="100%" style="margin-bottom:10px;">
+                                                                            <tbody>
+                                                                                <tr style="width:100%;">
+                                                                                    <td height="20" align="center" style="padding:0;">
+                                                                                        <a href="https://fromsmash.com" target="_blank">
+                                                                                            <img style="display: block; margin : 0 auto" width="70" src="https://fromsmash.com/smash_150x39.png" alt=""></a>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                        <div>
+                                                                            <span style="font-size:12px">{{ "EMAIL_ADDRESS" | translate }}</span>
+                                                                            <br><span style="font-size:12px"><a href="{{ 'EMAIL_ABOUT_LINK' | translate }}" target="_blank">{{ "EMAIL_ABOUT" | translate }}</a> | <a href="{{ 'EMAIL_CONTACT_LINK' | translate }}" target="_blank">{{ "EMAIL_CONTACT" | translate }}</a></span>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                        <!--[if mso]>
+                                                      </td>
+                                                      <![endif]-->
+                                                        <!--[if mso]>
+                                                      </tr>
+                                                    </table>
+                                                    <![endif]-->
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                        <!--[if gte mso 9]>
+                      </td>
+                    </tr>
+                  </table>
+                  <![endif]-->
+                        <!-- // END TEMPLATE -->
+                    </td>
+                </tr>
+            </table>
+        </center>
+    </body>
+</html>

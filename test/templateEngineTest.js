@@ -7,6 +7,8 @@ const Variables = require('../lib/methods/variables.js');
 const TemplateEngine = require('../lib/templateEngine.js');
 const Context = require('../lib/context.js');
 const translator = require('../lib/translator.js');
+const fs = require('fs');
+const path = require("path");
 
 describe('TemplateEngine', function () {
     it('TemplateEngine build : Success', function () {
@@ -430,7 +432,7 @@ describe('TemplateEngine', function () {
         });
     });
 
-    it("TemplateEngine render() with html: Success ", function (done) {
+    it("TemplateEngine render() with html: Success", function (done) {
         const templateEngine = new TemplateEngine();
         const translations = {
             'ABOUT_LINK': {
@@ -506,8 +508,26 @@ describe('TemplateEngine', function () {
         });
     });
 
-    //TODO success with variables tags
-    //TODO success with variables & for tags
-    //TODO success with for & if
+    it('TemplateEngine render() method : Complete template', function (done) {
+        const templateEngine = new TemplateEngine();
+        const template = fs.readFileSync(path.resolve(__dirname, "./emailTest/body.html.ste")).toString();
+        const test = require("./emailTest/parameters.json");
+        const context = new Context(test);
+        const style = fs.readFileSync(path.resolve(__dirname, "./emailTest/style.css")).toString();
+        const translations = require("./emailTest/translations.json");
+        const language = 'fr';
+        const fallbackLanguage = 'en';
+        translator.translations = translations;
+        translator.language = language;
+        translator.fallbackLanguage = fallbackLanguage;
+        templateEngine.render(template, context, style).then((result) => {
+            fs.writeFileSync(path.resolve(__dirname, "./emailTest/result.html"), result.content);
+            expect(result.content).to.equal(fs.readFileSync(path.resolve(__dirname, "./emailTest/body.html")).toString());
+            done();
+        }, (error) => {
+            assert.isUndefined(error);
+            done();
+        });
+    });
 
 });
