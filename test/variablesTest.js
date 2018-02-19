@@ -68,7 +68,7 @@ describe('Variables', function () {
             done();
         }, function (error) {
             assert.isDefined(error);
-            assert.isDefined(error.templateFailure);
+            assert.isDefined(error.steUsageFailure);
             done();
         });
     });
@@ -88,7 +88,7 @@ describe('Variables', function () {
         }, (error) => {
             //Reject at the first undefined met => the last in the list
             assert.isDefined(error);
-            assert.isDefined(error.templateFailure);
+            assert.isDefined(error.steUsageFailure);
             done();
         });
     });
@@ -197,7 +197,7 @@ describe('Variables', function () {
             done();
         }, function(error) {
             assert.isDefined(error);
-            assert.isDefined(error.templateFailure);
+            assert.isDefined(error.steUsageFailure);
             done();
         });
     });
