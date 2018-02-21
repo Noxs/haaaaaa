@@ -121,4 +121,60 @@ describe('Translate Filter', function () {
         };
         expect(testFunc).to.throw();
     });
+
+    it('Translate Filter translate() method : with a translation inside parameters that is not defined #2', function () {
+        const translations = {
+            'HELLO_WORD': {
+                en: 'Hello',
+                fr: 'Bonjour %evening%',
+                de: 'Hallo'
+            },
+            'HOW_ARE_YOU_QUESTION': {
+                en: 'How are you?',
+                fr: 'Comment ça va?',
+                de: "Wie geht's?"
+            }
+        };
+        const context = {
+            files : []
+        };
+        const language = 'fr';
+        const fallbackLanguage = 'en';
+        translator.translations = translations;
+        translator.language = language;
+        translator.fallbackLanguage = fallbackLanguage;
+
+        testFunc = function () {
+            translate('HELLO_WORD', {'evening' : context.files.length});
+        };
+        expect(testFunc).to.not.throw();
+    });
+
+    it('Translate Filter translate() method : with a translation inside parameters that is not defined #3', function () {
+        const translations = {
+            'HELLO_WORD': {
+                en: 'Hello',
+                fr: 'Bonjour %evening%',
+                de: 'Hallo'
+            },
+            'HOW_ARE_YOU_QUESTION': {
+                en: 'How are you?',
+                fr: 'Comment ça va?',
+                de: "Wie geht's?"
+            }
+        };
+        const context = {
+            zero : 0
+        };
+        const language = 'fr';
+        const fallbackLanguage = 'en';
+        translator.translations = translations;
+        translator.language = language;
+        translator.fallbackLanguage = fallbackLanguage;
+
+        testFunc = function () {
+            translate('HELLO_WORD', {'evening' : context.zero});
+        };
+        expect(testFunc).to.not.throw();
+    });
 });

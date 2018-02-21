@@ -12,12 +12,18 @@ function translate(keyword, parameters) {
         }
         let renderer = translator.translate(keyword);
         for (let key in parameters) {
-            if (!parameters[key]) {
+            if (typeof parameters[key] === "undefined") {
                 let error = new Error(key + " is not defined");
                 error.steMissingParameter = true;
                 throw error;
             }
-            renderer = renderer.replace('%' + key + '%', parameters[key]);
+            try {
+                renderer = renderer.replace('%' + key + '%', parameters[key]);
+                console.log(renderer);
+            } catch (error) {
+                error.steUsageFailure = true;
+                throw error;
+            }
         }
         return renderer;
     } else {
