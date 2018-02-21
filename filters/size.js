@@ -11,7 +11,12 @@ const units = {
 
 function size(number) {
     if (!Number.isInteger(number)) {
-        throw new Error('First parameter of size filter must be an integer, ' + typeof number + " given");
+        number.parseInt(number);
+    }
+    if (isNaN(number)) {
+        let error = new Error("Failed to parse, " + number + " (type : " + typeof number + ") into number");
+        error.steUsageFailure = true;
+        throw error;
     }
     let formattedNumber = number;
     let index = 0;

@@ -2,7 +2,9 @@ const translator = require('../lib/translator.js');
 
 function translate(keyword, parameters) {
     if (typeof keyword !== 'string') {
-        throw new Error('First parameter of translate filter must be a string, ' + typeof keyword + " given");
+        let error = new Error('Keyword ' + keyword + ' must be a string, ' + typeof keyword + " given");
+        error.steUsageFailure = true;
+        throw error;
     }
     if (parameters) {
         if (typeof parameters !== 'object') {
@@ -11,7 +13,9 @@ function translate(keyword, parameters) {
         let renderer = translator.translate(keyword);
         for (let key in parameters) {
             if (!parameters[key]) {
-                throw new Error(key + " is not defined");
+                let error = new Error(key + " is not defined");
+                error.steMissingParameter = true;
+                throw error;
             }
             renderer = renderer.replace('%' + key + '%', parameters[key]);
         }
