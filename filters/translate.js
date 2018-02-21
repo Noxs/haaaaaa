@@ -19,7 +19,6 @@ function translate(keyword, parameters) {
             }
             try {
                 renderer = renderer.replace('%' + key + '%', parameters[key]);
-                console.log(renderer);
             } catch (error) {
                 error.steUsageFailure = true;
                 throw error;
