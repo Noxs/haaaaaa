@@ -11,7 +11,9 @@ fallbackFormat = (language) => {
 
 function date(timestamp, parameters) {
     if (typeof timestamp !== 'number') {
-        throw new Error('First parameter of date filter must be a number (UNIX timestamp), ' + typeof timestamp + " given");
+        let error = new Error('Date must be a number (UNIX timestamp), ' + typeof timestamp + " given");
+        error.steUsageFailure = true;
+        throw error;
     }
 
     if (parameters) {
@@ -23,7 +25,9 @@ function date(timestamp, parameters) {
     let format;
     if (parameters && parameters.format) {
         if (typeof parameters.format !== "string") {
-            throw new Error('Date format must be a string, ' + typeof parameters.format + " given");
+            let error = new Error('Date format must be a string, ' + typeof parameters.format + " given");
+            error.steUsageFailure = true;
+            throw error;
         } else {
             format = parameters.format;
         }

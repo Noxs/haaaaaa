@@ -104,7 +104,7 @@ describe('Filters', function () {
             done();
         }, (error) => {
             assert.isDefined(error);
-            assert.isDefined(error.templateFailure);
+            assert.isDefined(error.steMissingParameter);
             done();
         });
     });

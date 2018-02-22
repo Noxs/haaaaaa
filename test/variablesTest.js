@@ -68,7 +68,7 @@ describe('Variables', function () {
             done();
         }, function (error) {
             assert.isDefined(error);
-            assert.isDefined(error.templateFailure);
+            assert.isDefined(error.steMissingParameter);
             done();
         });
     });
@@ -88,7 +88,7 @@ describe('Variables', function () {
         }, (error) => {
             //Reject at the first undefined met => the last in the list
             assert.isDefined(error);
-            assert.isDefined(error.templateFailure);
+            assert.isDefined(error.steMissingParameter);
             done();
         });
     });
@@ -197,7 +197,27 @@ describe('Variables', function () {
             done();
         }, function(error) {
             assert.isDefined(error);
-            assert.isDefined(error.templateFailure);
+            assert.isDefined(error.steMissingParameter);
+            done();
+        });
+    });
+
+    it("Variables process() method failure : a variable is undefined", function (done) {
+        const variables = new Variables();
+        const test = {
+            year : 2017,
+            day : 'Friday',
+            month : 'September',
+            something : undefined
+        };
+        const template = new Template("The current year is {{ something }}, and it is {{day}}");
+        const context = new Context(test);
+        variables.process(template, context).then( () => {
+            assert.equal("Shoud reject", true);
+            done();
+        }, function(error) {
+            assert.isDefined(error);
+            assert.isDefined(error.steUndefinedValue);
             done();
         });
     });

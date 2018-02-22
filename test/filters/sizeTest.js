@@ -33,7 +33,10 @@ describe('Size Filter', function () {
         const test = function () {
             size("FOOBAR");
         };
-
         expect(test).to.throw();
+    });
+
+    it('Size Filter: Success with a stringified number', function () {
+        assert.equal(size("102754321"), "102.7 MB");
     });
 });
