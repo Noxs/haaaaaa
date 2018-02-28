@@ -75,7 +75,7 @@ describe('TemplateEngine', function () {
     it('TemplateEngine render() method : Success with translate filter', function (done) {
         const templateEngine = new TemplateEngine();
         const template = '<p>{{"HELLO_WORD" | translate( { firstname : users[0].firstname, lastname : users[0].lastname} )}}</p>';
-        const test = {
+        const context = {
             title: "Welcome",
             users: [
                 {
@@ -93,7 +93,6 @@ describe('TemplateEngine', function () {
             ],
             day: 'Friday',
         };
-        const context = new Context(test);
         const translations = {
             'HELLO_WORD': {
                 en: 'Hello %firstname% %lastname%',
@@ -118,7 +117,7 @@ describe('TemplateEngine', function () {
     it('TemplateEngine render() method : Success with nested filters', function (done) {
         const templateEngine = new TemplateEngine();
         const template = '<p>{{"HELLO_WORD" | translate( { firstname : users[0].firstname, sentence : translate("SENTENCE")} )}}</p>';
-        const test = {
+        const context = {
             title: "Welcome",
             users: [
                 {
@@ -135,7 +134,6 @@ describe('TemplateEngine', function () {
             ],
             day: 'Friday',
         };
-        const context = new Context(test);
         const translations = {
             'HELLO_WORD': {
                 en: 'Hello %firstname% %sentence%',
@@ -166,7 +164,7 @@ describe('TemplateEngine', function () {
     it('TemplateEngine render() method : Success with nested filters #2', function (done) {
         const templateEngine = new TemplateEngine();
         const template = '<p>{{"HELLO_WORD" | translate( { firstname : users[0].firstname, sentence : translate(sentence)} )}}</p>';
-        const test = {
+        const context = {
             title: "Welcome",
             users: [
                 {
@@ -184,7 +182,6 @@ describe('TemplateEngine', function () {
             sentence : "SENTENCE",
             day: 'Friday',
         };
-        const context = new Context(test);
         const translations = {
             'HELLO_WORD': {
                 en: 'Hello %firstname% %sentence%',
@@ -215,7 +212,7 @@ describe('TemplateEngine', function () {
     it('TemplateEngine render() method : Success with many brothers couple of for-tags', function (done) {
         const templateEngine = new TemplateEngine();
         const template = '<p>{% for sport in sports %}<p>{{ sport.name }} is played {{sport.place }}</p>{%endfor%}</p><p>{% for user in users %}<a>{{user.firstname}} is here</a>{% endfor %}</p>';
-        const test = {
+        const context = {
             users: [
                 {
                     firstname: "Jake",
@@ -241,7 +238,6 @@ describe('TemplateEngine', function () {
                 }
             ]
         };
-        const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
             expect(result.content).to.equal('<p><p>Handball is played indoor</p><p>Tennis is played outdoor</p></p><p><a>Jake is here</a><a>Bonz is here</a></p>');
             done();
@@ -254,10 +250,9 @@ describe('TemplateEngine', function () {
     it('TemplateEngine render() method : Success with one if-tag', function (done) {
         const templateEngine = new TemplateEngine();
         const template = '<p>{% if displayed === true %}It is displayed{% endif %}</p>';
-        const test = {
+        const context = {
             displayed: true
         };
-        const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
             expect(result.content).to.equal('<p>It is displayed</p>');
             done();
@@ -270,11 +265,10 @@ describe('TemplateEngine', function () {
     it('TemplateEngine render() method : Success with two if-tag', function (done) {
         const templateEngine = new TemplateEngine();
         const template = '<p>{% if displayed === true %}It is displayed{% endif %}{% if hidden === false %}It is hidden{% endif %}</p>';
-        const test = {
+        const context = {
             displayed: true,
             hidden: true
         };
-        const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
             expect(result.content).to.equal('<p>It is displayed</p>');
             done();
@@ -287,7 +281,7 @@ describe('TemplateEngine', function () {
     it('TemplateEngine render() method : Success with a fortag and a if', function (done) {
         const templateEngine = new TemplateEngine();
         const template = '<p>{% for user in users %}{% if displayed === true %}Test{% endif %}{% endfor %}</p>';
-        const test = {
+        const context = {
             displayed: true,
             users: [
                 {
@@ -302,7 +296,6 @@ describe('TemplateEngine', function () {
                 }
             ]
         };
-        const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
             expect(result.content).to.equal('<p>TestTest</p>');
             done();
@@ -325,7 +318,7 @@ describe('TemplateEngine', function () {
         filters.add(halfTestFilter);
         const templateEngine = new TemplateEngine();
         const template = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>{%if title %}{{title}}{% endif %}</main><div>{% for user in users %}<p>{%if user.hobby %}{{user.firstname}} enjoys {{user.hobby}}{% endif %}{% if user.age < 30 %} and is {{user.age}} {% endif %}{{user.firstname}} lastname is {{user.lastname}}</p>{% endfor %}</div></body></html>';
-        const test = {
+        const context = {
             title: "Welcome",
             users: [
                 {
@@ -342,7 +335,6 @@ describe('TemplateEngine', function () {
                 }
             ],
         };
-        const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
             assert.equal(result.content, '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p></div></body></html>');
             done();
@@ -355,7 +347,7 @@ describe('TemplateEngine', function () {
     it('TemplateEngine render() method : Success with for-tags, if-tags, variables, and filters', function (done) {
         const templateEngine = new TemplateEngine();
         const template = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>{%if title %}{{title}}{% endif %}</main><div>{% for user in users %}<p>{%if user.hobby %}{{user.firstname}} enjoys {{user.hobby}}{% endif %}{% if user.age < 30 %} and is {{user.age}} {% endif %}{{user.firstname}} lastname is {{user.lastname}}</p>{% endfor %}<p>{{day | dayTest(\'Monday\')}}</p></div></body></html>';
-        const test = {
+        const context = {
             title: "Welcome",
             users: [
                 {
@@ -373,7 +365,6 @@ describe('TemplateEngine', function () {
             ],
             day: 'Friday',
         };
-        const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
             assert.equal(result.content, '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body></html>');
             done();
@@ -386,7 +377,7 @@ describe('TemplateEngine', function () {
     it('TemplateEngine render() method : Success with for-tags, if-tags, variables, filters, and translations', function (done) {
         const templateEngine = new TemplateEngine();
         const template = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>{{"HELLO_WORD" | translate}}</title></head><body><main>{%if title %}{{title}}{% endif %}</main><div>{% for user in users %}<p>{%if user.hobby %}{{user.firstname}} enjoys {{user.hobby}}{% endif %}{% if user.age < 30 %} and is {{user.age}} {% endif %}{{user.firstname}} lastname is {{user.lastname}}</p>{% endfor %}<p>{{day | dayTest(\'Monday\')}}</p></div></body></html>';
-        const test = {
+        const context = {
             title: "Welcome",
             users: [
                 {
@@ -404,7 +395,6 @@ describe('TemplateEngine', function () {
             ],
             day: 'Friday',
         };
-        const context = new Context(test);
         const translations = {
             'HELLO_WORD': {
                 en: 'Hello',
@@ -449,13 +439,12 @@ describe('TemplateEngine', function () {
         translator.translations = translations;
         translator.language = "fr";
         translator.fallbackLanguage = "en";
-        const test = {
+        const template = "<a href=\"{{ 'ABOUT_LINK' | translate }}\" target=\"_blank\">";
+        const context = {
             year: 2017,
             day: 'Friday',
             month: 'September'
         };
-        const template = "<a href=\"{{ 'ABOUT_LINK' | translate }}\" target=\"_blank\">";
-        const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
             assert.equal(result.content, "<a href=\"Bonjour\" target=\"_blank\">");
             done();
@@ -477,11 +466,10 @@ describe('TemplateEngine', function () {
         translator.translations = translations;
         translator.language = "en";
         translator.fallbackLanguage = "en";
-        const test = {
+        const template = "{{'HOW_ARE_YOU' | translate({ date : date(timestamp, {format : 'dddd Do MMMM, YYYY'})}) }}";
+        const context = {
             timestamp : 1516724607
         };
-        const template = "{{'HOW_ARE_YOU' | translate({ date : date(timestamp, {format : 'dddd Do MMMM, YYYY'})}) }}";
-        const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
             assert.equal(result.content, "Hello, how are you? today is Tuesday 23rd January, 2018");
             done();
@@ -494,10 +482,9 @@ describe('TemplateEngine', function () {
     it('TemplateEngine render() method : Success with a style tag', function (done) {
         const templateEngine = new TemplateEngine();
         const template = '<style>{% style %}{% endstyle %}</style> <p>Some HTML</p>';
-        const test = {
+        const context = {
             displayed: true
         };
-        const context = new Context(test);
         const style = ".class{display: block;}";
         templateEngine.render(template, context, style).then((result) => {
             expect(result.content).to.equal('<style>.class{display: block;}</style> <p>Some HTML</p>');
@@ -511,8 +498,7 @@ describe('TemplateEngine', function () {
     it('TemplateEngine render() method : Complete template', function (done) {
         const templateEngine = new TemplateEngine();
         const template = fs.readFileSync(path.resolve(__dirname, "./emailTest/body.html.ste")).toString();
-        const test = require("./emailTest/parameters.json");
-        const context = new Context(test);
+        const context = require("./emailTest/parameters.json");
         const style = fs.readFileSync(path.resolve(__dirname, "./emailTest/style.css")).toString();
         const translations = require("./emailTest/translations.json");
         const language = 'fr';
