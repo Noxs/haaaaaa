@@ -38,7 +38,7 @@ describe('TemplateEngine', function () {
     it('TemplateEngine render() method : Success with one couple of for-tags', function (done) {
         const templateEngine = new TemplateEngine();
         const template = '<a>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</a>';
-        const test = {
+        const context = {
             users: [
                 {
                     firstname: "Jake",
@@ -52,7 +52,6 @@ describe('TemplateEngine', function () {
                 }
             ]
         };
-        const context = new Context(test);
         templateEngine.render(template, context).then((result) => {
             expect(result.content).to.equal('<a><p>Jake</p><p>Bonz</p></a>');
             done();
