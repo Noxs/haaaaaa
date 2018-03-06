@@ -1,8 +1,7 @@
-const translator = require('../lib/translator.js');
 const moment = require('moment');
 
 fallbackFormat = (language) => {
-    if (language === "en"){
+    if (language === "en") {
         return "MMMM DD, YYYY";
     } else {
         return "DD MMMM YYYY";
@@ -10,8 +9,9 @@ fallbackFormat = (language) => {
 };
 
 function date(timestamp, parameters) {
+    const translator = this._templateEngine.translator;
     if (typeof timestamp !== 'number') {
-        let error = new Error('Date must be a number (UNIX timestamp), ' + typeof timestamp + " given");
+        const error = new Error('Date must be a number (UNIX timestamp), ' + typeof timestamp + " given");
         error.steUsageFailure = true;
         throw error;
     }
@@ -25,7 +25,7 @@ function date(timestamp, parameters) {
     let format;
     if (parameters && parameters.format) {
         if (typeof parameters.format !== "string") {
-            let error = new Error('Date format must be a string, ' + typeof parameters.format + " given");
+            const error = new Error('Date format must be a string, ' + typeof parameters.format + " given");
             error.steUsageFailure = true;
             throw error;
         } else {
@@ -36,7 +36,7 @@ function date(timestamp, parameters) {
     }
 
     moment.locale(translator.language);
-    return moment(timestamp*1000).format(format);
+    return moment(timestamp * 1000).format(format);
 }
 
 module.exports = date;

@@ -2,11 +2,12 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
-const translator = require('../lib/translator.js');
+const Translator = require('../lib/translator.js');
 
 
 describe('Translator', function () {
     it('Translator build : Success', function () {
+        const translator = new Translator();
         const translations = {
             'HELLO_WORD': {
                 en: 'Hello',
@@ -30,6 +31,7 @@ describe('Translator', function () {
     });
 
     it('Translator translate() method : Success with fallback language', function () {
+        const translator = new Translator();
         const translations = {
             'HELLO_WORD': {
                 en: 'Hello',
@@ -52,6 +54,7 @@ describe('Translator', function () {
     });
 
     it('Translator translate() method : First parameter is not a string', function () {
+        const translator = new Translator();
         const translations = {
             'HELLO_WORD': {
                 en: 'Hello',
@@ -77,6 +80,7 @@ describe('Translator', function () {
     });
 
     it('Translator translate() method : The keyword doesn\'t exist in translator.translations', function () {
+        const translator = new Translator();
         const translations = {
             'HELLO_WORD': {
                 en: 'Hello',
@@ -102,6 +106,7 @@ describe('Translator', function () {
     });
 
     it('Translator translate() method : Keyword is only defined in the fallbackLanguage', function () {
+        const translator = new Translator();
         const translations = {
             'HELLO_WORD': {
                 en: 'Hello',
@@ -123,6 +128,7 @@ describe('Translator', function () {
     });
 
     it('Translator translate() method : Keyword is defined neither in language nor in fallbackLanguage', function () {
+        const translator = new Translator();
         const translations = {
             'HELLO_WORD': {
                 de: 'Hallo'
@@ -146,6 +152,7 @@ describe('Translator', function () {
     });
 
     it('Translator translate() method : First parameter of translator.translations setter is not an object', function () {
+        const translator = new Translator();
         const translations = 'This shouldn’t be a string.';
         testFunc = function () {
             translator.translations = translations;
@@ -154,6 +161,7 @@ describe('Translator', function () {
     });
 
     it('Translator translate() method : First parameter of translator.language setter is not a string', function () {
+        const translator = new Translator();
         const language = 2;
         testFunc = function () {
             translator.language = language;
@@ -162,6 +170,7 @@ describe('Translator', function () {
     });
 
     it('Translator translate() method : First parameter of translator.fallbackLanguage setter is not a string', function () {
+        const translator = new Translator();
         const fallbackLanguage = 3;
         testFunc = function () {
             translator.fallbackLanguage = fallbackLanguage;

@@ -4,6 +4,7 @@ const expect = chai.expect;
 const should = chai.should();
 const Template = require('../lib/template.js');
 const Context = require('../lib/context.js');
+const TemplateEngine = require('../lib/templateEngine.js');
 const IfCondition = require('../lib/methods/if/ifCondition.js');
 const regexp = new RegExp("{%\\s?(if)\\s(.+?)\\s?%}|{%\\s?(else)\\s?%}|{%\\s?(endif)\\s?%}", "g");
 describe('IfCondition', function () {
@@ -15,7 +16,9 @@ describe('IfCondition', function () {
         const context = new Context({});
 
         const testFunc = function () {
-            const ifCondition = new IfCondition(template, context, openingTag, closingTag);
+            const templateEngine = new TemplateEngine();
+            const ifCondition = new IfCondition(templateEngine);
+            ifCondition.process(template, context, openingTag, closingTag);
         };
         expect(testFunc).to.not.throw();
     });
@@ -29,7 +32,9 @@ describe('IfCondition', function () {
         const context = new Context({});
 
         const testFunc = function () {
-            const ifCondition = new IfCondition('It is not a Template object', context, openingTag, closingTag);
+            const templateEngine = new TemplateEngine();
+            const ifCondition = new IfCondition(templateEngine);
+            ifCondition.process('It is not a Template object', context, openingTag, closingTag);
         };
         expect(testFunc).to.throw();
     });
@@ -42,7 +47,9 @@ describe('IfCondition', function () {
         const context = new Context({});
 
         const testFunc = function () {
-            const ifCondition = new IfCondition(template, 2, openingTag, closingTag);
+            const templateEngine = new TemplateEngine();
+            const ifCondition = new IfCondition(templateEngine);
+            ifCondition.process(template, 2, openingTag, closingTag);
         };
         expect(testFunc).to.throw();
     });
@@ -55,7 +62,9 @@ describe('IfCondition', function () {
         const context = new Context({});
 
         const testFunc = function () {
-            const ifCondition = new IfCondition(template, context, "This is not an array refering to an opening tag", closingTag);
+            const templateEngine = new TemplateEngine();
+            const ifCondition = new IfCondition(templateEngine);
+            ifCondition.process(template, context, "This is not an array refering to an opening tag", closingTag);
         };
         expect(testFunc).to.throw();
     });
@@ -68,7 +77,9 @@ describe('IfCondition', function () {
         const context = new Context({});
 
         const testFunc = function () {
-            const ifCondition = new IfCondition(template, context, closingTag, closingTag);
+            const templateEngine = new TemplateEngine();
+            const ifCondition = new IfCondition(templateEngine);
+            ifCondition.process(template, context, closingTag, closingTag);
         };
         expect(testFunc).to.throw();
     });
@@ -81,7 +92,9 @@ describe('IfCondition', function () {
         const context = new Context({});
 
         const testFunc = function () {
-            const ifCondition = new IfCondition(template, context, openingTag, 123);
+            const templateEngine = new TemplateEngine();
+            const ifCondition = new IfCondition(templateEngine);
+            ifCondition.process(template, context, openingTag, 123);
         };
         expect(testFunc).to.throw();
     });
@@ -94,7 +107,9 @@ describe('IfCondition', function () {
         const context = new Context({});
 
         const testFunc = function () {
-            const ifCondition = new IfCondition(template, context, openingTag, openingTag);
+            const templateEngine = new TemplateEngine();
+            const ifCondition = new IfCondition(templateEngine);
+            ifCondition.process(template, context, openingTag, openingTag);
         };
         expect(testFunc).to.throw();
     });
@@ -105,10 +120,11 @@ describe('IfCondition', function () {
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
-            variable : "This is a test",
+            variable: "This is a test",
         };
         const context = new Context(test);
-        const ifCondition = new IfCondition(template, context, openingTag, closingTag);
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new IfCondition(templateEngine);
 
         const testFunc = function () {
             return ifCondition._evaluateString("variable", context);
@@ -124,10 +140,11 @@ describe('IfCondition', function () {
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
-            variable : {},
+            variable: {},
         };
         const context = new Context(test);
-        const ifCondition = new IfCondition(template, context, openingTag, closingTag);
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new IfCondition(templateEngine);
 
         const testFunc = function () {
             return ifCondition._evaluateString("variable", context);
@@ -143,10 +160,11 @@ describe('IfCondition', function () {
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
-            variable : [],
+            variable: [],
         };
         const context = new Context(test);
-        const ifCondition = new IfCondition(template, context, openingTag, closingTag);
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new IfCondition(templateEngine);
 
         const testFunc = function () {
             return ifCondition._evaluateString("variable", context);
@@ -162,10 +180,11 @@ describe('IfCondition', function () {
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
-            variable : null,
+            variable: null,
         };
         const context = new Context(test);
-        const ifCondition = new IfCondition(template, context, openingTag, closingTag);
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new IfCondition(templateEngine);
 
         const testFunc = function () {
             return ifCondition._evaluateString("variable", context);
@@ -182,7 +201,8 @@ describe('IfCondition', function () {
         const closingTag = tags[1];
         const test = {};
         const context = new Context(test);
-        const ifCondition = new IfCondition(template, context, openingTag, closingTag);
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new IfCondition(templateEngine);
 
         const testFunc = function () {
             return ifCondition._evaluateString("variable", context);
@@ -197,10 +217,11 @@ describe('IfCondition', function () {
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
-            variable : 123,
+            variable: 123,
         };
         const context = new Context(test);
-        const ifCondition = new IfCondition(template, context, openingTag, closingTag);
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new IfCondition(templateEngine);
 
         const testFunc = function () {
             return ifCondition._evaluateString("variable", context);
@@ -216,7 +237,8 @@ describe('IfCondition', function () {
         const openingTag = tags[0];
         const closingTag = tags[1];
         const context = new Context({});
-        const ifCondition = new IfCondition(template, context, openingTag, closingTag);
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new IfCondition(templateEngine);
 
         const testFunc = function () {
             return ifCondition._evaluateString("'foo' === 'bar'", context);
@@ -232,10 +254,11 @@ describe('IfCondition', function () {
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
-            variable : "This is a test",
+            variable: "This is a test",
         };
         const context = new Context(test);
-        const ifCondition = new IfCondition(template, context, openingTag, closingTag);
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new IfCondition(templateEngine);
 
         const testFunc = function () {
             return ifCondition._evaluateString("variable === 'This is a test'", context);
@@ -251,18 +274,19 @@ describe('IfCondition', function () {
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
-            int : {
-                value : 123,
+            int: {
+                value: 123,
             },
-            string : {
-                value : "It is a string.",
+            string: {
+                value: "It is a string.",
             },
-            key : {
-                value : 123,
+            key: {
+                value: 123,
             }
         };
         const context = new Context(test);
-        const ifCondition = new IfCondition(template, context, openingTag, closingTag);
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new IfCondition(templateEngine);
 
         const testEqualFunc = function () {
             return ifCondition._evaluateString("int.value === key.value", context);
@@ -285,11 +309,12 @@ describe('IfCondition', function () {
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
-            variable : 1,
-            string : "It is a test",
+            variable: 1,
+            string: "It is a test",
         };
         const context = new Context(test);
-        const ifCondition = new IfCondition(template, context, openingTag, closingTag);
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new IfCondition(templateEngine);
 
         const testFunc = function () {
             return ifCondition._evaluateString("variable === 1 && string", context);
@@ -305,11 +330,12 @@ describe('IfCondition', function () {
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
-            variable : 1,
-            string : "It is a test",
+            variable: 1,
+            string: "It is a test",
         };
         const context = new Context(test);
-        const ifCondition = new IfCondition(template, context, openingTag, closingTag);
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new IfCondition(templateEngine);
 
         const testFunc = function () {
             return ifCondition._evaluateString("variable === 1 && !string", context);
@@ -324,11 +350,12 @@ describe('IfCondition', function () {
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
-            variable : 1,
-            string : "It is a test",
+            variable: 1,
+            string: "It is a test",
         };
         const context = new Context(test);
-        const ifCondition = new IfCondition(template, context, openingTag, closingTag);
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new IfCondition(templateEngine);
 
         const testFunc = function () {
             return ifCondition._evaluateString("variable === 1 && string === 'It is a test'", context);
@@ -344,11 +371,12 @@ describe('IfCondition', function () {
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
-            variable : 1,
-            string : "It is a test",
+            variable: 1,
+            string: "It is a test",
         };
         const context = new Context(test);
-        const ifCondition = new IfCondition(template, context, openingTag, closingTag);
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new IfCondition(templateEngine);
 
         const testFunc = function () {
             return ifCondition._evaluateString("variable === 2 || string === 'It is a test'", context);
@@ -364,11 +392,12 @@ describe('IfCondition', function () {
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
-            variable : 1,
-            string : "It is a test",
+            variable: 1,
+            string: "It is a test",
         };
         const context = new Context(test);
-        const ifCondition = new IfCondition(template, context, openingTag, closingTag);
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new IfCondition(templateEngine);
 
         const testFunc = function () {
             return ifCondition._evaluateString(undefined, context);
@@ -383,11 +412,12 @@ describe('IfCondition', function () {
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
-            variable : 1,
-            string : "It is a test",
+            variable: 1,
+            string: "It is a test",
         };
         const context = new Context(test);
-        const ifCondition = new IfCondition(template, context, openingTag, closingTag);
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new IfCondition(templateEngine);
 
         const testFunc = function () {
             return ifCondition._evaluateString("variable === 2 || string === 'It is a test'", "This is not a Context object");
@@ -402,12 +432,13 @@ describe('IfCondition', function () {
         const openingTag = tags[0];
         const closingTag = tags[1];
         const test = {
-            test : 'Value'
-        }
+            test: 'Value'
+        };
         const context = new Context(test);
-        const ifCondition = new IfCondition(template, context, openingTag, closingTag);
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new IfCondition(templateEngine);
 
-        ifCondition.process().then( (result) => {
+        ifCondition.process(template, context, openingTag, closingTag).then((result) => {
             assert.equal(result._template, "");
             done();
         }, (error) => {

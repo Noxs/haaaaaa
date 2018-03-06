@@ -2,11 +2,10 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
-const filters = require('../lib/filters.js');
+const Filters = require('../lib/filters.js');
 const Variables = require('../lib/methods/variables.js');
 const TemplateEngine = require('../lib/templateEngine.js');
 const Context = require('../lib/context.js');
-const translator = require('../lib/translator.js');
 const fs = require('fs');
 const path = require("path");
 
@@ -101,9 +100,10 @@ describe('TemplateEngine', function () {
         };
         const language = 'en';
         const fallbackLanguage = 'fr';
-        translator.translations = translations;
-        translator.language = language;
-        translator.fallbackLanguage = fallbackLanguage;
+        templateEngine.translator
+        templateEngine.translator.translations = translations;
+        templateEngine.translator.language = language;
+        templateEngine.translator.fallbackLanguage = fallbackLanguage;
         templateEngine.render(template, context).then((result) => {
             assert.equal(result.content, '<p>Hello Antoine Dupont</p>');
             done();
@@ -147,9 +147,9 @@ describe('TemplateEngine', function () {
         };
         const language = 'en';
         const fallbackLanguage = 'fr';
-        translator.translations = translations;
-        translator.language = language;
-        translator.fallbackLanguage = fallbackLanguage;
+        templateEngine.translator.translations = translations;
+        templateEngine.translator.language = language;
+        templateEngine.translator.fallbackLanguage = fallbackLanguage;
 
         templateEngine.render(template, context).then((result) => {
             expect(result.content).to.equal('<p>Hello Antoine A sentence</p>');
@@ -178,7 +178,7 @@ describe('TemplateEngine', function () {
                     hobby: "Kendama"
                 }
             ],
-            sentence : "SENTENCE",
+            sentence: "SENTENCE",
             day: 'Friday',
         };
         const translations = {
@@ -195,9 +195,9 @@ describe('TemplateEngine', function () {
         };
         const language = 'en';
         const fallbackLanguage = 'fr';
-        translator.translations = translations;
-        translator.language = language;
-        translator.fallbackLanguage = fallbackLanguage;
+        templateEngine.translator.translations = translations;
+        templateEngine.translator.language = language;
+        templateEngine.translator.fallbackLanguage = fallbackLanguage;
 
         templateEngine.render(template, context).then((result) => {
             expect(result.content).to.equal('<p>Hello Antoine A sentence</p>');
@@ -313,9 +313,10 @@ describe('TemplateEngine', function () {
             process: require('../filters/halfTest.js'),
             name: 'halfTest'
         };
-        filters.add(dayTestFilter);
-        filters.add(halfTestFilter);
+
         const templateEngine = new TemplateEngine();
+        templateEngine.filters.add(dayTestFilter);
+        templateEngine.filters.add(halfTestFilter);
         const template = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>{%if title %}{{title}}{% endif %}</main><div>{% for user in users %}<p>{%if user.hobby %}{{user.firstname}} enjoys {{user.hobby}}{% endif %}{% if user.age < 30 %} and is {{user.age}} {% endif %}{{user.firstname}} lastname is {{user.lastname}}</p>{% endfor %}</div></body></html>';
         const context = {
             title: "Welcome",
@@ -344,7 +345,18 @@ describe('TemplateEngine', function () {
     });
 
     it('TemplateEngine render() method : Success with for-tags, if-tags, variables, and filters', function (done) {
+        const dayTestFilter = {
+            process: require('../filters/dayTest.js'),
+            name: 'dayTest'
+        };
+        const halfTestFilter = {
+            process: require('../filters/halfTest.js'),
+            name: 'halfTest'
+        };
+
         const templateEngine = new TemplateEngine();
+        templateEngine.filters.add(dayTestFilter);
+        templateEngine.filters.add(halfTestFilter);
         const template = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Document</title></head><body><main>{%if title %}{{title}}{% endif %}</main><div>{% for user in users %}<p>{%if user.hobby %}{{user.firstname}} enjoys {{user.hobby}}{% endif %}{% if user.age < 30 %} and is {{user.age}} {% endif %}{{user.firstname}} lastname is {{user.lastname}}</p>{% endfor %}<p>{{day | dayTest(\'Monday\')}}</p></div></body></html>';
         const context = {
             title: "Welcome",
@@ -374,7 +386,19 @@ describe('TemplateEngine', function () {
     });
 
     it('TemplateEngine render() method : Success with for-tags, if-tags, variables, filters, and translations', function (done) {
+        const dayTestFilter = {
+            process: require('../filters/dayTest.js'),
+            name: 'dayTest'
+        };
+        const halfTestFilter = {
+            process: require('../filters/halfTest.js'),
+            name: 'halfTest'
+        };
+
         const templateEngine = new TemplateEngine();
+        templateEngine.filters.add(dayTestFilter);
+        templateEngine.filters.add(halfTestFilter);
+
         const template = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>{{"HELLO_WORD" | translate}}</title></head><body><main>{%if title %}{{title}}{% endif %}</main><div>{% for user in users %}<p>{%if user.hobby %}{{user.firstname}} enjoys {{user.hobby}}{% endif %}{% if user.age < 30 %} and is {{user.age}} {% endif %}{{user.firstname}} lastname is {{user.lastname}}</p>{% endfor %}<p>{{day | dayTest(\'Monday\')}}</p></div></body></html>';
         const context = {
             title: "Welcome",
@@ -408,9 +432,9 @@ describe('TemplateEngine', function () {
         };
         const language = 'en';
         const fallbackLanguage = 'fr';
-        translator.translations = translations;
-        translator.language = language;
-        translator.fallbackLanguage = fallbackLanguage;
+        templateEngine.translator.translations = translations;
+        templateEngine.translator.language = language;
+        templateEngine.translator.fallbackLanguage = fallbackLanguage;
 
         templateEngine.render(template, context).then((result) => {
             assert.equal(result.content, '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="few words to describe the page"><title>Hello</title></head><body><main>Welcome</main><div><p>Antoine lastname is Dupont</p><p>Bonz enjoys Kendama and is 25 Bonz lastname is Atron</p><p>It is not Monday. It is Friday.</p></div></body></html>');
@@ -435,9 +459,9 @@ describe('TemplateEngine', function () {
                 de: "Wie geht's?"
             }
         };
-        translator.translations = translations;
-        translator.language = "fr";
-        translator.fallbackLanguage = "en";
+        templateEngine.translator.translations = translations;
+        templateEngine.translator.language = "fr";
+        templateEngine.translator.fallbackLanguage = "en";
         const template = "<a href=\"{{ 'ABOUT_LINK' | translate }}\" target=\"_blank\">";
         const context = {
             year: 2017,
@@ -462,12 +486,12 @@ describe('TemplateEngine', function () {
                 de: 'Hallo'
             }
         };
-        translator.translations = translations;
-        translator.language = "en";
-        translator.fallbackLanguage = "en";
+        templateEngine.translator.translations = translations;
+        templateEngine.translator.language = "en";
+        templateEngine.translator.fallbackLanguage = "en";
         const template = "{{'HOW_ARE_YOU' | translate({ date : date(timestamp, {format : 'dddd Do MMMM, YYYY'})}) }}";
         const context = {
-            timestamp : 1516724607
+            timestamp: 1516724607
         };
         templateEngine.render(template, context).then((result) => {
             assert.equal(result.content, "Hello, how are you? today is Tuesday 23rd January, 2018");
@@ -502,9 +526,9 @@ describe('TemplateEngine', function () {
         const translations = require("./emailTest/translations.json");
         const language = 'fr';
         const fallbackLanguage = 'en';
-        translator.translations = translations;
-        translator.language = language;
-        translator.fallbackLanguage = fallbackLanguage;
+        templateEngine.translator.translations = translations;
+        templateEngine.translator.language = language;
+        templateEngine.translator.fallbackLanguage = fallbackLanguage;
         templateEngine.render(template, context, style).then((result) => {
             fs.writeFileSync(path.resolve(__dirname, "./emailTest/result.html"), result.content);
             expect(result.content).to.equal(fs.readFileSync(path.resolve(__dirname, "./emailTest/body.html")).toString());

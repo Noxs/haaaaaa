@@ -10,6 +10,7 @@ const units = {
 };
 
 function size(number) {
+    const translator = this._templateEngine.translator;
     if (!Number.isInteger(number)) {
         number = parseInt(number);
     }
