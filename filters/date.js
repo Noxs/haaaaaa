@@ -1,14 +1,5 @@
-const moment = require('moment');
-
-fallbackFormat = (language) => {
-    if (language === "en") {
-        return "MMMM DD, YYYY";
-    } else {
-        return "DD MMMM YYYY";
-    }
-};
-
-function date(timestamp, parameters) {
+const date = function (timestamp, parameters) {
+    const moment = require('moment');
     const translator = this._templateEngine.translator;
     if (typeof timestamp !== 'number') {
         const error = new Error('Date must be a number (UNIX timestamp), ' + typeof timestamp + " given");
@@ -16,10 +7,8 @@ function date(timestamp, parameters) {
         throw error;
     }
 
-    if (parameters) {
-        if (typeof parameters !== 'object') {
-            throw new Error('Second parameter of date filter must be an object, ' + typeof parameters + " given");
-        }
+    if (parameters && typeof parameters !== 'object') {
+        throw new Error('Second parameter of date filter must be an object, ' + typeof parameters + " given");
     }
 
     let format;
@@ -28,11 +17,14 @@ function date(timestamp, parameters) {
             const error = new Error('Date format must be a string, ' + typeof parameters.format + " given");
             error.steUsageFailure = true;
             throw error;
-        } else {
-            format = parameters.format;
         }
+        format = parameters.format;
     } else {
-        format = fallbackFormat(translator.language);
+        if (translator.language === "en") {
+            format = "MMMM DD, YYYY";
+        } else {
+            format = "DD MMMM YYYY";
+        }
     }
 
     moment.locale(translator.language);

@@ -1,6 +1,4 @@
-const translator = require('../lib/translator.js');
-
-function translate(keyword, parameters) {
+const translate = function (keyword, parameters) {
     const translator = this._templateEngine.translator;
     if (typeof keyword !== 'string') {
         const error = new Error('Keyword ' + keyword + ' must be a string, ' + typeof keyword + " given");
