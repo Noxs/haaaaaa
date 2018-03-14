@@ -12,7 +12,7 @@ const size = function (number) {
         number = parseInt(number);
     }
     if (isNaN(number)) {
-        let error = new Error("Failed to parse, " + number + " (type : " + typeof number + ") into number");
+        const error = new Error("Failed to parse, " + number + " (type : " + typeof number + ") into number");
         error.steUsageFailure = true;
         throw error;
     }
