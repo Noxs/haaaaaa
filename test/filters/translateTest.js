@@ -3,7 +3,7 @@ const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
 const translate = require('../../filters/translate.js');
-const translator = require('../../lib/translator.js');
+const TemplateEngine = require('../../lib/templateEngine.js');
 
 
 describe('Translate Filter', function () {
@@ -20,12 +20,12 @@ describe('Translate Filter', function () {
                 de: "Wie geht's?"
             }
         };
-        const language = 'fr';
-        const fallbackLanguage = 'en';
-        translator.translations = translations;
-        translator.language = language;
-        translator.fallbackLanguage = fallbackLanguage;
-        assert.equal(translate('HELLO_WORD'), 'Bonjour');
+        const templateEngine = new TemplateEngine();
+        templateEngine.translator.translations = translations;
+        templateEngine.translator.language = 'fr';
+        templateEngine.translator.fallbackLanguage = 'en';
+        const contextObj = { _templateEngine: templateEngine };
+        assert.equal(translate.apply(contextObj, ['HELLO_WORD']), 'Bonjour');
     });
     it('Translate Filter translate() method : with a keyword inside a translation', function () {
         const translations = {
@@ -40,12 +40,12 @@ describe('Translate Filter', function () {
                 de: "Wie geht's?"
             }
         };
-        const language = 'fr';
-        const fallbackLanguage = 'en';
-        translator.translations = translations;
-        translator.language = language;
-        translator.fallbackLanguage = fallbackLanguage;
-        assert.equal(translate('HELLO_WORD', {'evening' : "ou bonsoir"}), 'Bonjour ou bonsoir');
+        const templateEngine = new TemplateEngine();
+        templateEngine.translator.translations = translations;
+        templateEngine.translator.language = 'fr';
+        templateEngine.translator.fallbackLanguage = 'en';
+        const contextObj = { _templateEngine: templateEngine };
+        assert.equal(translate.apply(contextObj, ['HELLO_WORD', { 'evening': "ou bonsoir" }]), 'Bonjour ou bonsoir');
     });
 
     it('Translate Filter translate() method : First parameter is not a string', function () {
@@ -61,13 +61,13 @@ describe('Translate Filter', function () {
                 de: "Wie geht's?"
             }
         };
-        const language = 'fr';
-        const fallbackLanguage = 'en';
-        translator.translations = translations;
-        translator.language = language;
-        translator.fallbackLanguage = fallbackLanguage;
+        const templateEngine = new TemplateEngine();
+        templateEngine.translator.translations = translations;
+        templateEngine.translator.language = 'fr';
+        templateEngine.translator.fallbackLanguage = 'en';
+        const contextObj = { _templateEngine: templateEngine };
         const testFunc = function () {
-            const result = translate({ data: 'This is an object' });
+            const result = translate.apply(contextObj, [{ data: 'This is an object' }]);
         };
         expect(testFunc).to.throw();
     });
@@ -85,14 +85,13 @@ describe('Translate Filter', function () {
                 de: "Wie geht's?"
             }
         };
-        const language = 'fr';
-        const fallbackLanguage = 'en';
-        translator.translations = translations;
-        translator.language = language;
-        translator.fallbackLanguage = fallbackLanguage;
-
+        const templateEngine = new TemplateEngine();
+        templateEngine.translator.translations = translations;
+        templateEngine.translator.language = 'fr';
+        templateEngine.translator.fallbackLanguage = 'en';
+        const contextObj = { _templateEngine: templateEngine };
         testFunc = function () {
-            const result = translate("HELLO_WORD", "It should be an object");
+            const result = translate.apply(contextObj, ["HELLO_WORD", "It should be an object"]);
         };
         expect(testFunc).to.throw();
     });
@@ -110,14 +109,14 @@ describe('Translate Filter', function () {
                 de: "Wie geht's?"
             }
         };
-        const language = 'fr';
-        const fallbackLanguage = 'en';
-        translator.translations = translations;
-        translator.language = language;
-        translator.fallbackLanguage = fallbackLanguage;
+        const templateEngine = new TemplateEngine();
+        templateEngine.translator.translations = translations;
+        templateEngine.translator.language = 'fr';
+        templateEngine.translator.fallbackLanguage = 'en';
+        const contextObj = { _templateEngine: templateEngine };
 
         testFunc = function () {
-            translate('HELLO_WORD', {'evening' : undefined});
+            translate.apply(contextObj, ['HELLO_WORD', { 'evening': undefined }]);
         };
         expect(testFunc).to.throw();
     });
@@ -136,16 +135,16 @@ describe('Translate Filter', function () {
             }
         };
         const context = {
-            files : []
+            files: []
         };
-        const language = 'fr';
-        const fallbackLanguage = 'en';
-        translator.translations = translations;
-        translator.language = language;
-        translator.fallbackLanguage = fallbackLanguage;
+        const templateEngine = new TemplateEngine();
+        templateEngine.translator.translations = translations;
+        templateEngine.translator.language = 'fr';
+        templateEngine.translator.fallbackLanguage = 'en';
+        const contextObj = { _templateEngine: templateEngine };
 
         testFunc = function () {
-            translate('HELLO_WORD', {'evening' : context.files.length});
+            translate.apply(contextObj, ['HELLO_WORD', { 'evening': context.files.length }]);
         };
         expect(testFunc).to.not.throw();
     });
@@ -164,16 +163,16 @@ describe('Translate Filter', function () {
             }
         };
         const context = {
-            zero : 0
+            zero: 0
         };
-        const language = 'fr';
-        const fallbackLanguage = 'en';
-        translator.translations = translations;
-        translator.language = language;
-        translator.fallbackLanguage = fallbackLanguage;
+        const templateEngine = new TemplateEngine();
+        templateEngine.translator.translations = translations;
+        templateEngine.translator.language = 'fr';
+        templateEngine.translator.fallbackLanguage = 'en';
+        const contextObj = { _templateEngine: templateEngine };
 
         testFunc = function () {
-            translate('HELLO_WORD', {'evening' : context.zero});
+            translate.apply(contextObj, ['HELLO_WORD', { 'evening': context.zero }]);
         };
         expect(testFunc).to.not.throw();
     });

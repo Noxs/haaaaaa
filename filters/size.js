@@ -1,20 +1,18 @@
-const translator = require('../lib/translator.js');
-
-const units = {
-    0: "B",
-    3: "KB",
-    6: "MB",
-    9: "GB",
-    12: "TB",
-    15: "PB"
-};
-
-function size(number) {
+const size = function (number) {
+    const units = {
+        0: "B",
+        3: "KB",
+        6: "MB",
+        9: "GB",
+        12: "TB",
+        15: "PB"
+    };
+    const translator = this._templateEngine.translator;
     if (!Number.isInteger(number)) {
         number = parseInt(number);
     }
     if (isNaN(number)) {
-        let error = new Error("Failed to parse, " + number + " (type : " + typeof number + ") into number");
+        const error = new Error("Failed to parse, " + number + " (type : " + typeof number + ") into number");
         error.steUsageFailure = true;
         throw error;
     }

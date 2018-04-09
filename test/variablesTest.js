@@ -4,9 +4,10 @@ const expect = chai.expect;
 const should = chai.should();
 const Variables = require('../lib/methods/variables.js');
 const Template = require('../lib/template.js');
+const TemplateEngine = require('../lib/templateEngine.js');
 const Context = require('../lib/context.js');
 const regexp = new RegExp("{{\\s?((?:[a-zA-Z0-9.]+)|(?:'[a-zA-Z0-9. ]+')|(?:\"[a-zA-Z0-9. ]+\"))\\s?(?:\\|+\\s?([a-zA-Z0-9.]+)(?:\\(([a-zA-Z0-9.,'\"]+)\\))?)?\\s?}}", "g");
-const filters = require('../lib/filters.js');
+const Filters = require('../lib/filters.js');
 const dayTestFilter = {
     process: require('../filters/dayTest.js'),
     name: 'dayTest'
@@ -18,7 +19,8 @@ const halfTestFilter = {
 
 describe('Variables', function () {
     it('Variables process() method : Success', function (done) {
-        const variables = new Variables();
+        const templateEngine = new TemplateEngine();
+        const variables = new Variables(templateEngine);
         const template = new Template('The current year is {{ year }}');
         const test = {
             year : 2017,
@@ -37,7 +39,8 @@ describe('Variables', function () {
     });
 
     it('Variables process() method : Many variables', function (done) {
-        const variables = new Variables();
+        const templateEngine = new TemplateEngine();
+        const variables = new Variables(templateEngine);
         const template = new Template('The current day is {{day}}, the current month is {{month}} and the current year is {{year}}');
         const test = {
             year : 2017,
@@ -55,7 +58,8 @@ describe('Variables', function () {
     });
 
     it('Variables process() method : One variable in template is undefined', function (done) {
-        const variables = new Variables();
+        const templateEngine = new TemplateEngine();
+        const variables = new Variables(templateEngine);
         const template = new Template('The current year is {{ year }}, and it is {{hour}}');
         const test = {
             year : 2017,
@@ -74,7 +78,8 @@ describe('Variables', function () {
     });
 
     it('Variables process() method : several variables in template are undefined', function (done) {
-        const variables = new Variables();
+        const templateEngine = new TemplateEngine();
+        const variables = new Variables(templateEngine);
         const template = new Template('The current year is {{ year }}, and it is {{hour}}, and this {{something}} does\'nt exist');
         const test = {
             year : 2017,
@@ -94,7 +99,8 @@ describe('Variables', function () {
     });
 
     it('Variables process() method : First parameter is a string', function (done) {
-        const variables = new Variables();
+        const templateEngine = new TemplateEngine();
+        const variables = new Variables(templateEngine);
         const test = {
             year : 2017,
             day : 'Friday',
@@ -110,7 +116,8 @@ describe('Variables', function () {
     });
 
     it('Variables process() method : Second parameter is a string', function (done) {
-        const variables = new Variables();
+        const templateEngine = new TemplateEngine();
+        const variables = new Variables(templateEngine);
         const template = new Template('The current year is {{ year }}, and it is {{day}}');
         variables.process(template, "string").then( () => {
             done();
@@ -121,7 +128,8 @@ describe('Variables', function () {
     });
 
     it('Variables process() method : First parameter is undefined', function (done) {
-        const variables = new Variables();
+        const templateEngine = new TemplateEngine();
+        const variables = new Variables(templateEngine);
         const test = {
             year : 2017,
             day : 'Friday',
@@ -137,7 +145,8 @@ describe('Variables', function () {
     });
 
     it('Variables process() method : Second parameter is undefined', function (done) {
-        const variables = new Variables();
+        const templateEngine = new TemplateEngine();
+        const variables = new Variables(templateEngine);
         const template = new Template('The current year is {{ year }}, and it is {{day}}');
         variables.process(template, undefined).then( () => {
             done();
@@ -148,7 +157,8 @@ describe('Variables', function () {
     });
 
     it("Variables process() method : Success with {{ 'variable' }}", function (done) {
-        const variables = new Variables();
+        const templateEngine = new TemplateEngine();
+        const variables = new Variables(templateEngine);
         const test = {
             year : 2017,
             day : 'Friday',
@@ -166,7 +176,8 @@ describe('Variables', function () {
     });
 
     it("Variables process() method : Success with {{ \"variable\" }}", function (done) {
-        const variables = new Variables();
+        const templateEngine = new TemplateEngine();
+        const variables = new Variables(templateEngine);
         const test = {
             year : 2017,
             day : 'Friday',
@@ -184,7 +195,8 @@ describe('Variables', function () {
     });
 
     it("Variables process() method failure : a variable is not defined", function (done) {
-        const variables = new Variables();
+        const templateEngine = new TemplateEngine();
+        const variables = new Variables(templateEngine);
         const test = {
             year : 2017,
             day : 'Friday',
@@ -203,7 +215,8 @@ describe('Variables', function () {
     });
 
     it("Variables process() method failure : a variable is undefined", function (done) {
-        const variables = new Variables();
+        const templateEngine = new TemplateEngine();
+        const variables = new Variables(templateEngine);
         const test = {
             year : 2017,
             day : 'Friday',
@@ -223,8 +236,9 @@ describe('Variables', function () {
     });
 
     it("Variables process() method : Success with a function filter (halfTest)", function (done) {
-        filters.add(halfTestFilter);
-        const variables = new Variables();
+        const templateEngine = new TemplateEngine();
+        const variables = new Variables(templateEngine);
+        variables._filters.add(halfTestFilter);
         const test = {
             number : 40,
         };
@@ -239,9 +253,10 @@ describe('Variables', function () {
         });
     });
 
-    it("Variables process() method : Success with a function filter (dayTest)", function (done) {
-        filters.add(dayTestFilter);
-        const variables = new Variables();
+    it("Variables process() method : Success with a function filter (dayTest)", function (done) {        
+        const templateEngine = new TemplateEngine();
+        const variables = new Variables(templateEngine);
+        variables._filters.add(dayTestFilter);
         const test = {
             day : 'Friday',
         };
@@ -257,8 +272,9 @@ describe('Variables', function () {
     });
 
     it("Variables process() method : Success#2 with a function filter (dayTest)", function (done) {
-        filters.add(dayTestFilter);
-        const variables = new Variables();
+        const templateEngine = new TemplateEngine();
+        const variables = new Variables(templateEngine);
+        variables._filters.add(dayTestFilter);
         const test = {
             year : 2017,
             day : 'Friday',

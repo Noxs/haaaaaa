@@ -3,13 +3,15 @@ const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
 const Template = require('../lib/template.js');
+const TemplateEngine = require('../lib/templateEngine.js');
 const Context = require('../lib/context.js');
 const For = require('../lib/methods/for/for.js');
 const ForLoop = require('../lib/methods/for/forLoop.js');
 
 describe('For', function () {
     it('For _checktags() method : First parameter is not a number', function () {
-        const forLoop = new For();
+        const templateEngine = new TemplateEngine();
+        const forRepetition = new For(templateEngine);
         const test = function () {
             forLoop._checkTags('Not a number', 2);
         }
@@ -17,7 +19,8 @@ describe('For', function () {
     });
 
     it('For _checktags() method : Second parameter is not a number', function () {
-        const forLoop = new For();
+        const templateEngine = new TemplateEngine();
+        const forRepetition = new For(templateEngine);
         const test = function () {
             forLoop._checkTags(1, 'Not a number');
         }
@@ -41,7 +44,8 @@ describe('For', function () {
             ]
         };
         const context = new Context(test);
-        const forRepetition = new For();
+        const templateEngine = new TemplateEngine();
+        const forRepetition = new For(templateEngine);
         forRepetition.process(template, context).then( (result) => {
             assert.equal(result.content, "<p><p>Jake</p><p>Bonz</p></p>");
             done();
@@ -68,7 +72,8 @@ describe('For', function () {
             ]
         };
         const context = new Context(test);
-        const forRepetition = new For();
+        const templateEngine = new TemplateEngine();
+        const forRepetition = new For(templateEngine);
         forRepetition.process(template, context).then( (result) => {
             assert.isUndefined(result);
             done();
@@ -95,7 +100,8 @@ describe('For', function () {
             ]
         };
         const context = new Context(test);
-        const forRepetition = new For();
+        const templateEngine = new TemplateEngine();
+        const forRepetition = new For(templateEngine);
         forRepetition.process(template, context).then( (result) => {
             assert.isUndefined(result);
             done();
@@ -122,7 +128,8 @@ describe('For', function () {
             ]
         };
         const context = new Context(test);
-        const forRepetition = new For();
+        const templateEngine = new TemplateEngine();
+        const forRepetition = new For(templateEngine);
         forRepetition.process(template, context).then( (result) => {
             assert.isDefined(result);
             assert.deepEqual(result, template);
@@ -162,7 +169,8 @@ describe('For', function () {
             ]
         };
         const context = new Context(test);
-        const forRepetition = new For();
+        const templateEngine = new TemplateEngine();
+        const forRepetition = new For(templateEngine);
         forRepetition.process(template, context).then( (result) => {
             expect(result.content).to.equal('<p><p>Handball is played indoor</p><p>Tennis is played outdoor</p></p><p><a>Jake is here</a><a>Bonz is here</a></p>');
             done();
@@ -200,7 +208,8 @@ describe('For', function () {
             ]
         };
         const context = new Context(test);
-        const forRepetition = new For();
+        const templateEngine = new TemplateEngine();
+        const forRepetition = new For(templateEngine);
         forRepetition.process(template, context).then( (result) => {
             expect(result.content).to.equal('<p><p>Handball is played indoor <a>Jake plays Handball</a><a>Bonz plays Handball</a></p><p>Tennis is played outdoor <a>Jake plays Tennis</a><a>Bonz plays Tennis</a></p></p>');
             done();

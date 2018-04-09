@@ -1,8 +1,7 @@
-const translator = require('../lib/translator.js');
-
-function translate(keyword, parameters) {
+const translate = function (keyword, parameters) {
+    const translator = this._templateEngine.translator;
     if (typeof keyword !== 'string') {
-        let error = new Error('Keyword ' + keyword + ' must be a string, ' + typeof keyword + " given");
+        const error = new Error('Keyword ' + keyword + ' must be a string, ' + typeof keyword + " given");
         error.steUsageFailure = true;
         throw error;
     }
@@ -13,7 +12,7 @@ function translate(keyword, parameters) {
         let renderer = translator.translate(keyword);
         for (let key in parameters) {
             if (typeof parameters[key] === "undefined") {
-                let error = new Error(key + " is not defined");
+                const error = new Error(key + " is not defined");
                 error.steMissingParameter = true;
                 throw error;
             }
