@@ -90,7 +90,7 @@ describe('ForLoop', function () {
         expect(testFunc).to.throw();
     });
 
-    it('ForIteration build : First parameter is not defined', function () {
+    it('ForLoop build : First parameter is not defined', function () {
         const template = new Template('<p>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</p>');
         const test = {
             users: [
@@ -118,7 +118,7 @@ describe('ForLoop', function () {
         expect(testFunc).to.throw();
     });
 
-    it('ForIteration build : Second parameter is a string', function () {
+    it('ForLoop build : Second parameter is a string', function () {
         const template = new Template('<p>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</p>');
         const test = {
             users: [
@@ -147,7 +147,7 @@ describe('ForLoop', function () {
         expect(testFunc).to.throw();
     });
 
-    it('ForIteration build : Second parameter is an integer', function () {
+    it('ForLoop build : Second parameter is an integer', function () {
         const template = new Template('<p>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</p>');
         const test = {
             users: [
@@ -175,7 +175,7 @@ describe('ForLoop', function () {
         expect(testFunc).to.throw();
     });
 
-    it('ForIteration build : Second parameter is not defined', function () {
+    it('ForLoop build : Second parameter is not defined', function () {
         const template = new Template('<p>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</p>');
         const tags = template.search(new RegExp('{%\\s?for\\s([a-zA-Z0-9.]+)\\sin\\s([a-zA-Z0-9.]+)\\s%}|{%\\s?endfor\\s?%}', 'g'));
         const openingTag = tags[0];
@@ -188,7 +188,7 @@ describe('ForLoop', function () {
         expect(testFunc).to.throw();
     });
 
-    it('ForIteration build : Third parameter is not an array', function () {
+    it('ForLoop build : Third parameter is not an array', function () {
         const template = new Template('<p>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</p>');
         const test = {
             users: [
@@ -216,7 +216,7 @@ describe('ForLoop', function () {
         expect(testFunc).to.throw();
     });
 
-    it('ForIteration build : Third parameter is not defined', function () {
+    it('ForLoop build : Third parameter is not defined', function () {
         const template = new Template('<p>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</p>');
         const test = {
             users: [
@@ -244,7 +244,7 @@ describe('ForLoop', function () {
         expect(testFunc).to.throw();
     });
 
-    it('ForIteration build : Forth parameter is not an array', function () {
+    it('ForLoop build : Forth parameter is not an array', function () {
         const template = new Template('<p>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</p>');
         const test = {
             users: [
@@ -272,7 +272,7 @@ describe('ForLoop', function () {
         expect(testFunc).to.throw();
     });
 
-    it('ForIteration build : Forth parameter is not defined', function () {
+    it('ForLoop build : Forth parameter is not defined', function () {
         const template = new Template('<p>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</p>');
         const test = {
             users: [
@@ -300,7 +300,7 @@ describe('ForLoop', function () {
         expect(testFunc).to.throw();
     });
 
-    it('ForIteration build : Third parameter do not reference an opening tag', function () {
+    it('ForLoop build : Third parameter do not reference an opening tag', function () {
         const template = new Template('<p>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</p><p>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</p>');
         const test = {
             users: [
@@ -328,7 +328,7 @@ describe('ForLoop', function () {
         expect(testFunc).to.throw();
     });
 
-    it('ForIteration build : Forth parameter do not reference an closing tag', function () {
+    it('ForLoop build : Forth parameter do not reference an closing tag', function () {
         const template = new Template('<p>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</p><p>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</p>');
         const test = {
             users: [
@@ -356,7 +356,7 @@ describe('ForLoop', function () {
         expect(testFunc).to.throw();
     });
 
-    it('ForIteration build : One parameter is missing', function () {
+    it('ForLoop build : One parameter is missing', function () {
         const template = new Template('<p>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</p><p>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</p>');
         const test = {
             users: [
@@ -385,7 +385,7 @@ describe('ForLoop', function () {
     });
 
 
-    it('ForIteration process() method : Success', function (done) {
+    it('ForLoop process() method : Success', function (done) {
         const template = new Template('{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}');
         const test = {
             users: [
@@ -412,6 +412,46 @@ describe('ForLoop', function () {
             done();
         }, (error) => {
             assert.isUndefined(error);
+            done();
+        });
+    });
+
+    it('ForLoop process() method : The array is undefined', function (done) {
+        const template = new Template('{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}');
+        const test = {
+
+        };
+        const context = new Context(test);
+        const openingTag = { 0: '{% for user in users %}', 1: 'user', 2: 'users', index: 0 };
+        const closingTag = { 0: '{%endfor%}', 1: undefined, 2: undefined, index: 48 };
+        const templateEngine = new TemplateEngine();
+        const forLoop = new ForLoop(templateEngine);
+        forLoop.process(template, context, openingTag, closingTag).then((result) => {
+            expect(false).to.equal("This should reject");
+            done();
+        }, (error) => {
+            assert.isDefined(error);
+            assert.isDefined(error.steUsageFailure);
+            done();
+        });
+    });
+
+    it('ForLoop process() method : The array is null', function (done) {
+        const template = new Template('{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}');
+        const test = {
+            users : null
+        };
+        const context = new Context(test);
+        const openingTag = { 0: '{% for user in users %}', 1: 'user', 2: 'users', index: 0 };
+        const closingTag = { 0: '{%endfor%}', 1: undefined, 2: undefined, index: 48 };
+        const templateEngine = new TemplateEngine();
+        const forLoop = new ForLoop(templateEngine);
+        forLoop.process(template, context, openingTag, closingTag).then((result) => {
+            expect(false).to.equal("This should reject");
+            done();
+        }, (error) => {
+            assert.isDefined(error);
+            assert.isDefined(error.steUsageFailure);
             done();
         });
     });
