@@ -210,4 +210,117 @@ describe('If', function () {
             done();
         });
     });
+
+    it('If process() method : Success with a else and a single verified value', function (done) {
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new If(templateEngine);
+        const template = new Template("<div>\n{% if smash.text %}\n<p>\nIt has to be displayed</p>\n{% else %}\n<p>\nIt has to be hidden</p>\n{% endif %}\n</div>");
+        const test = {
+            smash : {
+                "text" : "This is a text"
+            }
+        };
+        const context = new Context(test);
+        ifCondition.process(template, context).then( (result) => {
+            assert.deepEqual(result.content, "<div>\n\n<p>\nIt has to be displayed</p>\n\n</div>");
+            done();
+        }, (error) => {
+            assert.isUndefined(error);
+            done();
+        });
+    });
+
+
+    it('If process() method : Success with a else and a single not verified value', function (done) {
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new If(templateEngine);
+        const template = new Template("<div>\n{% if smash.text %}\n<p>\nIt has to be hidden</p>\n{% else %}\n<p>\nIt has to be displayed</p>\n{% endif %}\n</div>");
+        const test = {
+            smash : {
+
+            }
+        };
+        const context = new Context(test);
+        ifCondition.process(template, context).then( (result) => {
+            assert.deepEqual(result.content, "<div>\n\n<p>\nIt has to be displayed</p>\n\n</div>");
+            done();
+        }, (error) => {
+            assert.isUndefined(error);
+            done();
+        });
+    });
+
+    it('If process() method : Success with one else tag and first value null', function (done) {
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new If(templateEngine);
+        const template = new Template("<div>\n{% if key %}\n<p>It has to be hidden</p>\n{% else %}\n<p>\nIt has to be displayed</p>\n{% endif %}\n</div>");
+        const test = {
+            "key" : null
+        };
+        const context = new Context(test);
+        ifCondition.process(template, context).then( (result) => {
+            assert.deepEqual(result.content, "<div>\n\n<p>\nIt has to be displayed</p>\n\n</div>");
+            done();
+        }, (error) => {
+            assert.isUndefined(error);
+            done();
+        });
+    });
+
+    it('If process() method : Success with a else and a single "" value', function (done) {
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new If(templateEngine);
+        const template = new Template("<div>\n{% if smash.text %}\n<p>\nIt has to be hidden</p>\n{% else %}\n<p>\nIt has to be displayed</p>\n{% endif %}\n</div>");
+        const test = {
+            smash : {
+                "text" : ""
+            }
+        };
+        const context = new Context(test);
+        ifCondition.process(template, context).then( (result) => {
+            assert.deepEqual(result.content, "<div>\n\n<p>\nIt has to be displayed</p>\n\n</div>");
+            done();
+        }, (error) => {
+            assert.isUndefined(error);
+            done();
+        });
+    });
+
+    it('If process() method : Success with a else and a single verified value', function (done) {
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new If(templateEngine);
+        const template = new Template("<div>\n{% if smash.text %}\n<p>\nIt has to be hidden</p>\n{% else %}\n<p>\nIt has to be displayed</p>\n{% endif %}\n</div>");
+        const test = {
+            smash : {
+                "text" : null
+            }
+        };
+        const context = new Context(test);
+        ifCondition.process(template, context).then( (result) => {
+            assert.deepEqual(result.content, "<div>\n\n<p>\nIt has to be displayed</p>\n\n</div>");
+            done();
+        }, (error) => {
+            assert.isUndefined(error);
+            done();
+        });
+    });
+
+    it('If process() method : Success with a else and a single verified value', function (done) {
+        const templateEngine = new TemplateEngine();
+        const ifCondition = new If(templateEngine);
+        const template = new Template("<div>\n{% if smash.text %}\n<p>\nIt has to be displayed</p>\n{% else %}\n<p>\nIt has to be hidden</p>\n{% endif %}\n</div>");
+        const test = {
+            smash : {
+                "text" : []
+            }
+        };
+        const context = new Context(test);
+        ifCondition.process(template, context).then( (result) => {
+            assert.deepEqual(result.content, "<div>\n\n<p>\nIt has to be displayed</p>\n\n</div>");
+            done();
+        }, (error) => {
+            assert.isUndefined(error);
+            done();
+        });
+    });
 });
