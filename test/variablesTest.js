@@ -235,6 +235,60 @@ describe('Variables', function () {
         });
     });
 
+    it("Variables process() method failure : a variable is a boolean", function (done) {
+        const templateEngine = new TemplateEngine();
+        const variables = new Variables(templateEngine);
+        const test = {
+            variable : true
+        };
+        const template = new Template("The variable is {{ variable }}");
+        const context = new Context(test);
+        variables.process(template, context).then( () => {
+            assert.equal("Shoud reject", true);
+            done();
+        }, function(error) {
+            assert.isDefined(error);
+            assert.isDefined(error.steNotPrintableValue);
+            done();
+        });
+    });
+
+    it("Variables process() method failure : a variable is []", function (done) {
+        const templateEngine = new TemplateEngine();
+        const variables = new Variables(templateEngine);
+        const test = {
+            variable : []
+        };
+        const template = new Template("The variable is {{ variable }}");
+        const context = new Context(test);
+        variables.process(template, context).then( () => {
+            assert.equal("Shoud reject", true);
+            done();
+        }, function(error) {
+            assert.isDefined(error);
+            assert.isDefined(error.steNotPrintableValue);
+            done();
+        });
+    });
+
+    it("Variables process() method failure : a variable is null", function (done) {
+        const templateEngine = new TemplateEngine();
+        const variables = new Variables(templateEngine);
+        const test = {
+            variable : null
+        };
+        const template = new Template("The variable is {{ variable }}");
+        const context = new Context(test);
+        variables.process(template, context).then( () => {
+            assert.equal("Shoud reject", true);
+            done();
+        }, function(error) {
+            assert.isDefined(error);
+            assert.isDefined(error.steNotPrintableValue);
+            done();
+        });
+    });
+
     it("Variables process() method : Success with a function filter (halfTest)", function (done) {
         const templateEngine = new TemplateEngine();
         const variables = new Variables(templateEngine);
