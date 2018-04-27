@@ -235,4 +235,33 @@ describe('Template', function () {
 
         assert.equal(template.length, 12);
     });
+
+    it('Template _searchNextIdentifier() method : success', function () {
+        const template = new Template("<h1>This is a test</h1> {% for user in users %} Do things {% endfor %}");
+
+        assert.equal(template._searchNextIdentifier(12).position, 24);
+        assert.equal(template._searchNextIdentifier(12).content, "{%");
+
+        assert.equal(template._searchNextIdentifier(29).position, 45);
+        assert.equal(template._searchNextIdentifier(29).content, "%}");
+    });
+
+    it('Template _searchNextIdentifier() method : success with no identifier', function () {
+        const template = new Template("<h1>This is a test</h1>");
+
+        assert.equal(template._searchNextIdentifier(1), null);
+    });
+
+    it('Template _searchNextIdentifier() method : success with no tag', function () {
+        const template = new Template("<h1>This is a test</h1>");
+
+        assert.equal(template.searchNextTag(1), null);
+    });
+
+    it('Template _searchNextTag() method : success', function () {
+        const template = new Template("<h1>This is a test</h1> {% for user in users %} Do things {% endfor %}");
+
+        assert.equal(template.searchNextTag(12).position, 24);
+        assert.equal(template.searchNextTag(12).content, "{% for user in users %}");
+    });
 });
