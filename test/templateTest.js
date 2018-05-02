@@ -14,14 +14,14 @@ describe('Template', function () {
         assert.isFunction(template.extract);
         assert.isFunction(template.search);
         assert.isFunction(template.replace);
-        const successFunc = function() {
+        const successFunc = function () {
             new Template(test);
         };
         expect(successFunc).to.not.throw();
     });
 
     it('Template build : First parameter is an object', function () {
-        const failureFunc = function() {
+        const failureFunc = function () {
             new Template({});
         };
         expect(failureFunc, "Template constructor function").to.throw();
@@ -71,16 +71,16 @@ describe('Template', function () {
 
     it('Template.extract() method : Success', function () {
         const template = new Template("It is a test");
-        const result = template.extract(6, 11);
+        const result = template.extract(6, 12);
         assert.isString(result);
         expect(result).to.equal('a test');
         const successFunc = function () {
-            template.extract(6, 11);
+            template.extract(6, 12);
         };
         expect(successFunc).to.not.throw();
 
         const templateTest = new Template('<a>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</a>');
-        const resultTest = templateTest.extract(3, 50);
+        const resultTest = templateTest.extract(3, 51);
 
         expect(resultTest).to.equal('{% for user in users %}<p>{{user.firstname}}</p>');
     });
@@ -104,7 +104,7 @@ describe('Template', function () {
     it('Template.extract() method : Second parameter is a string', function () {
         const template = new Template("It is a test");
         const stringParameterFunc = function () {
-            template.extract(6,'test');
+            template.extract(6, 'test');
         };
         expect(stringParameterFunc).to.throw();
     });
@@ -159,26 +159,26 @@ describe('Template', function () {
 
     it('Template.replace() method : Success', function () {
         const template = new Template("It is a test");
-        template.replace(8, 11, "success");
+        template.replace(8, 12, "success");
         assert.isString(template.content);
         expect(template.content).to.equal('It is a success');
 
         const successFunc = function () {
-            template.replace(8, 11, "success");
+            template.replace(8, 12, "success");
         };
         expect(successFunc).to.not.throw();
     });
 
     it('Template.replace() method : Multiple calls', function () {
         const template = new Template('It is a test');
-        template.replace(8, 11, "success");
-        template.replace(5,5, " not ");
-        template.replace(12, 18, "failure");
+        template.replace(8, 12, "success");
+        template.replace(5, 6, " not ");
+        template.replace(12, 19, "failure");
         expect(template.content).to.equal("It is not a failure");
 
         const anotherTemplate = new Template('It is the tested sentence');
-        anotherTemplate.replace(10, 15, "successful");
-        anotherTemplate.replace(21, 29, "test");
+        anotherTemplate.replace(10, 16, "successful");
+        anotherTemplate.replace(21, 30, "test");
         expect(anotherTemplate.content).to.equal("It is the successful test");
     });
 
@@ -216,7 +216,7 @@ describe('Template', function () {
         expect(undefinedThirdParameterFunc).to.throw();
 
         const objectThirdParameterFunc = function () {
-            template.replace(6, 12, {test : null});
+            template.replace(6, 12, { test: null });
         };
 
         expect(objectThirdParameterFunc).to.throw();
@@ -239,29 +239,33 @@ describe('Template', function () {
     it('Template _searchNextIdentifier() method : success', function () {
         const template = new Template("<h1>This is a test</h1> {% for user in users %} Do things {% endfor %}");
 
-        assert.equal(template._searchNextIdentifier(12).position, 24);
-        assert.equal(template._searchNextIdentifier(12).content, "{%");
+        const identifier1 = template._searchNextIdentifier();
+        assert.equal(identifier1.position, 24);
+        assert.equal(identifier1.content, "{%");
 
-        assert.equal(template._searchNextIdentifier(29).position, 45);
-        assert.equal(template._searchNextIdentifier(29).content, "%}");
+        const identifier2 = template._searchNextIdentifier();
+        assert.equal(identifier2.position, 45);
+        assert.equal(identifier2.content, "%}");
     });
 
     it('Template _searchNextIdentifier() method : success with no identifier', function () {
         const template = new Template("<h1>This is a test</h1>");
 
-        assert.equal(template._searchNextIdentifier(1), null);
+        assert.equal(template._searchNextIdentifier(), null);
     });
 
     it('Template _searchNextIdentifier() method : success with no tag', function () {
         const template = new Template("<h1>This is a test</h1>");
 
-        assert.equal(template.searchNextTag(1), null);
+        assert.equal(template.searchNextTag(), null);
     });
 
-    it('Template _searchNextTag() method : success', function () {
+    it('Template searchNextTag() method : success', function () {
         const template = new Template("<h1>This is a test</h1> {% for user in users %} Do things {% endfor %}");
 
-        assert.equal(template.searchNextTag(12).position, 24);
-        assert.equal(template.searchNextTag(12).content, "{% for user in users %}");
+        const identifier = template.searchNextTag();
+        assert.equal(identifier.position, 24);
+        assert.equal(identifier.rawContent, "{% for user in users %}");
+        assert.equal(identifier.content, "for user in users");
     });
 });

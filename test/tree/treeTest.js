@@ -6,7 +6,6 @@ const Tree = require('../../lib/tree/tree.js');
 const ForNode = require('../../lib/tree/forNode.js');
 const Tag = require('../../lib/tree/tag.js');
 const Template = require('../../lib/template.js');
-const constants = require("../../lib/tree/constants.js");
 const fs = require("fs");
 const path = require('path');
 
@@ -57,8 +56,9 @@ describe('Tree', function () {
         assert.deepEqual(tree._start.open.content, "for user in users");
         assert.deepEqual(tree._start.close.content, "endfor");
 
-        assert.deepEqual(tree._start.content, "{% for user in users %} Do things {% for email in user.emails %} Do other things {% endfor %} {% endfor%}");
-        tree.browse();
+        assert.deepEqual(tree._start.template.content, "{% for user in users %} Do things {% for email in user.emails %} Do other things {% endfor %} {% endfor%}");
+
+        //tree.execute();
     });
 
 
@@ -70,8 +70,8 @@ describe('Tree', function () {
 
         tree.create();
 
-        assert.deepEqual(tree._start.content, "{% for user in users %} Do things {% endfor %}");
-        assert.deepEqual(tree._start.next.content, "{% for email in emails %} Do other things {% endfor %}");
+        assert.deepEqual(tree._start.template.content, "{% for user in users %} Do things {% endfor %}");
+        assert.deepEqual(tree._start.next.template.content, "{% for email in emails %} Do other things {% endfor %}");
 
         assert.deepEqual(tree._start.children, []);
         assert.deepEqual(tree._start.next.children, []);
@@ -88,7 +88,7 @@ describe('Tree', function () {
 
         tree.create();
 
-        assert.deepEqual(tree._start.content, "{% for user in users %}{% for email in emails %} Do things {% endfor %}{% for key in values %} Do other things {%endfor %} {% endfor%}");
+        assert.deepEqual(tree._start.template.content, "{% for user in users %}{% for email in emails %} Do things {% endfor %}{% for key in values %} Do other things {%endfor %} {% endfor%}");
         assert.deepEqual(tree._start.next, null);
 
 
@@ -111,7 +111,7 @@ describe('Tree', function () {
 
         tree.create();
 
-        assert.deepEqual(tree._start.next.next.content, "{% for key in values %} Do few more things {% endfor %}");
+        assert.deepEqual(tree._start.next.next.template.content, "{% for key in values %} Do few more things {% endfor %}");
     });
 
     it('Tree create() method : success with three siblings for loops and a nested one', function () {
@@ -122,8 +122,8 @@ describe('Tree', function () {
 
         tree.create();
 
-        assert.deepEqual(tree._start.next.next.content, "{% for key in values %} {% for names in key %} {% endfor%}Do few more things {% endfor %}");
-        assert.deepEqual(tree._start.next.next.children[0].content, "{% for names in key %} {% endfor%}");
+        assert.deepEqual(tree._start.next.next.template.content, "{% for key in values %} {% for names in key %} {% endfor%}Do few more things {% endfor %}");
+        assert.deepEqual(tree._start.next.next.children[0].template.content, "{% for names in key %} {% endfor%}");
         assert.deepEqual(tree._start.next.next.next, null);
     });
 
@@ -135,8 +135,8 @@ describe('Tree', function () {
 
         tree.create();
 
-        assert.deepEqual(tree._start.children[0].content, "{% for names in key %} {% endfor%}");
-        assert.deepEqual(tree._start.next.content, "{% for email in emails %} Do other things {% endfor %}");
+        assert.deepEqual(tree._start.children[0].template.content, "{% for names in key %} {% endfor%}");
+        assert.deepEqual(tree._start.next.template.content, "{% for email in emails %} Do other things {% endfor %}");
         assert.deepEqual(tree._start.next.next, null);
     });
 
@@ -151,7 +151,7 @@ describe('Tree', function () {
         const IfNode = require("../../lib/tree/ifNode.js");
         assert.deepEqual(tree._start.children[0].constructor, IfNode);
         assert.deepEqual(tree._start.children[0].parent, tree._start);
-        assert.deepEqual(tree._start.children[0].content, "{% if user.name %} Do thing {% endif %}");
+        assert.deepEqual(tree._start.children[0].template.content, "{% if user.name %} Do thing {% endif %}");
     });
 
     it('Tree create() method : success with a if condition in another if condition', function () {
@@ -165,7 +165,7 @@ describe('Tree', function () {
         const IfNode = require("../../lib/tree/ifNode.js");
         assert.deepEqual(tree._start.constructor, IfNode);
         assert.deepEqual(tree._start.children[0].parent, tree._start);
-        assert.deepEqual(tree._start.children[0].content, "{% if user.age %} Do other things {% endif %}");
+        assert.deepEqual(tree._start.children[0].template.content, "{% if user.age %} Do other things {% endif %}");
         assert.deepEqual(tree._start.next, null);
     });
 
@@ -188,7 +188,7 @@ describe('Tree', function () {
         const tree = new Tree(template);
 
         tree.create();
-        assert.equal(tree._start.content, "{% if variable %} {{ variable }} {% endif %}");
+        assert.equal(tree._start.template.content, "{% if variable %} {{ variable }} {% endif %}");
         assert.equal(tree._start.children[0].open.rawContent, "{{ variable }}");
         assert.equal(tree._start.next, null);
     });
@@ -201,11 +201,11 @@ describe('Tree', function () {
 
         tree.create();
 
-        assert.equal(tree._start.content, "{% if variable %} {{ variable }} {% endif %}");
+        assert.equal(tree._start.template.content, "{% if variable %} {{ variable }} {% endif %}");
         assert.equal(tree._start.depth, 0);
 
         assert.equal(tree._start.children[0].depth, 1);
-        assert.equal(tree._start.next.content, "{% if variable2 %} {{ variable2 }} {% endif %}");
+        assert.equal(tree._start.next.template.content, "{% if variable2 %} {{ variable2 }} {% endif %}");
         assert.equal(tree._start.next.children[0].open.rawContent, "{{ variable2 }}");
     });
 
@@ -217,7 +217,7 @@ describe('Tree', function () {
 
         tree.create();
 
-        assert.equal(tree._start.content, "{% if variable %}  {% endif %}");
+        assert.equal(tree._start.template.content, "{% if variable %}  {% endif %}");
         assert.equal(tree._start.next.open.rawContent, "{{ variable }}");
         assert.equal(tree._start.next.open.rawContent, "{{ variable }}");
     });
@@ -230,11 +230,11 @@ describe('Tree', function () {
 
         tree.create();
 
-        assert.equal(tree._start.content, "{% if variable %}  {% endif %}");
+        assert.equal(tree._start.template.content, "{% if variable %}  {% endif %}");
         assert.equal(tree._start.depth, 0);
         assert.equal(tree._start.next.open.rawContent, "{{ variable }}");
         assert.equal(tree._start.next.depth, 0);
-        assert.equal(tree._start.next.next.content, "{%if variable %}{% endif%}");
+        assert.equal(tree._start.next.next.template.content, "{%if variable %}{% endif%}");
         assert.equal(tree._start.next.next.depth, 0);
     });
 
@@ -249,14 +249,14 @@ describe('Tree', function () {
 
         let currentNode = tree._start;
 
-        assert.equal(currentNode.content.replace(/\s/g, ""), "{% if variable %}{% if variables1.length === 1 %}<title>{{ variable }}</title>{% endif %}{% endif %}".replace(/\s/g, ""));
+        assert.equal(currentNode.template.content.replace(/\s/g, ""), "{% if variable %}{% if variables1.length === 1 %}<title>{{ variable }}</title>{% endif %}{% endif %}".replace(/\s/g, ""));
         assert.equal(currentNode.open.lineNumber, 7);
         assert.equal(currentNode.children.length, 1);
-        assert.equal(currentNode.children[0].category, constants.categories.IF);
+        assert.equal(currentNode.children[0].isIfCategory(), true);
         assert.equal(currentNode.children[0].open.rawContent, "{% if variables1.length === 1 %}");
         assert.equal(currentNode.children[0].open.lineNumber, 8);
         assert.equal(currentNode.children[0].depth, 1);
-        assert.equal(currentNode.children[0].children[0].category, constants.categories.VARIABLE);
+        assert.equal(currentNode.children[0].children[0].isVarCategory(), true);
         assert.equal(currentNode.children[0].children[0].open.rawContent, "{{ variable }}");
         assert.equal(currentNode.children[0].children[0].open.lineNumber, 9);
         assert.equal(currentNode.children[0].children[0].depth, 2);
@@ -273,7 +273,7 @@ describe('Tree', function () {
         assert.equal(currentNode.depth, 0);
         currentNode = currentNode.next;
 
-        assert.equal(currentNode.content.replace(/\s/g, ""), "{% if variables2.length === 1 %}<div>{{ variable }}</div>{% endif %}".replace(/\s/g, ""));
+        assert.equal(currentNode.template.content.replace(/\s/g, ""), "{% if variables2.length === 1 %}<div>{{ variable }}</div>{% endif %}".replace(/\s/g, ""));
         assert.equal(currentNode.open.lineNumber, 67);
         assert.equal(currentNode.depth, 0);
         assert.equal(currentNode.children[0].open.rawContent, "{{ variable }}");
@@ -282,7 +282,7 @@ describe('Tree', function () {
 
         currentNode = currentNode.next;
 
-        assert.equal(currentNode.content.replace(/\s/g, ""), "{% if variable %}<div><div>{{ variable }}</div><div>{{ variable }}</div></div><br/>{% endif %}".replace(/\s/g, ""));
+        assert.equal(currentNode.template.content.replace(/\s/g, ""), "{% if variable %}<div><div>{{ variable }}</div><div>{{ variable }}</div></div><br/>{% endif %}".replace(/\s/g, ""));
         assert.equal(currentNode.open.lineNumber, 86);
         assert.equal(currentNode.depth, 0);
         assert.equal(currentNode.children[0].open.rawContent, "{{ variable }}");
@@ -321,19 +321,19 @@ describe('Tree', function () {
         assert.equal(currentNode.open.lineNumber, 120);
         currentNode = currentNode.next;
 
-        assert.equal(currentNode.content.replace(/\s/g, ""), "{% if variables3.length === 1 %}{{ variable }}{% endif %}".replace(/\s/g, ""));
+        assert.equal(currentNode.template.content.replace(/\s/g, ""), "{% if variables3.length === 1 %}{{ variable }}{% endif %}".replace(/\s/g, ""));
         assert.equal(currentNode.open.lineNumber, 126);
         assert.equal(currentNode.children[0].open.rawContent, "{{ variable }}");
         assert.equal(currentNode.children[0].open.lineNumber, 127);
         currentNode = currentNode.next;
 
-        assert.equal(currentNode.content.replace(/\s/g, ""), "{% for variable in variables %}<a>{{ variable.key }}</a><br/>{% endfor %}".replace(/\s/g, ""));
+        assert.equal(currentNode.template.content.replace(/\s/g, ""), "{% for variable in variables %}<a>{{ variable.key }}</a><br/>{% endfor %}".replace(/\s/g, ""));
         assert.equal(currentNode.open.lineNumber, 130);
         assert.equal(currentNode.children[0].open.rawContent, "{{ variable.key }}");
         assert.equal(currentNode.children[0].open.lineNumber, 132);
         currentNode = currentNode.next;
 
-        assert.equal(currentNode.content.replace(/\s/g, ""), "{% if !variable %}<table><tbody><tr><td><table><tbody><tr><td><table><tbody><tr><td><a href=\"https:\/\/{{url}}\" target=\"_blank\"><img src=\"https:\/\/{{ url }}\" alt=\"\"></a></td></tr></tbody></table><div><span>{{ variable }}</span></div></td></tr></tbody></table></td></tr></tbody></table>{% endif %}".replace(/\s/g, ""));
+        assert.equal(currentNode.template.content.replace(/\s/g, ""), "{% if !variable %}<table><tbody><tr><td><table><tbody><tr><td><table><tbody><tr><td><a href=\"https:\/\/{{url}}\" target=\"_blank\"><img src=\"https:\/\/{{ url }}\" alt=\"\"></a></td></tr></tbody></table><div><span>{{ variable }}</span></div></td></tr></tbody></table></td></tr></tbody></table>{% endif %}".replace(/\s/g, ""));
         assert.equal(currentNode.open.lineNumber, 149);
         assert.equal(currentNode.children[0].open.rawContent, "{{url}}");
         assert.equal(currentNode.children[0].open.lineNumber, 162);
@@ -343,4 +343,14 @@ describe('Tree', function () {
         assert.equal(currentNode.children[2].open.lineNumber, 170);
         currentNode = currentNode.next;
     });
+
+
+    it('Tree _getNextNode() method: return the good node', function () {
+        // TODO
+    });
+
+    it('Tree execute() method: execute a template', function () {
+        // TODO
+    });
+
 });

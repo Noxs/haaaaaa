@@ -3,7 +3,6 @@ const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
 const Tag = require('../../lib/tree/tag.js');
-const constants = require('../../lib/tree/constants.js');
 
 describe('Tag', function () {
     it('Tag Build : success with a for openning tag', function () {
@@ -15,9 +14,13 @@ describe('Tag', function () {
 
         const tag = testFunc();
         assert.equal(tag.position, 23);
-        assert.equal(tag.type, constants.types.OPEN);
+        assert.equal(tag.isOpenType(), true);
+        assert.equal(tag.isCloseType(), false);
+        assert.equal(tag.isStandaloneType(), false);
         assert.equal(tag.content, "for user in users");
-        assert.equal(tag.category, constants.categories.FOR);
+        assert.equal(tag.isForCategory(), true);
+        assert.equal(tag.isIfCategory(), false);
+        assert.equal(tag.isVarCategory(), false);
         assert.equal(tag._rawContent, "{% for user in users %}");
     });
 
@@ -35,4 +38,22 @@ describe('Tag', function () {
         }
         expect(testFunc).to.throw();
     });
+
+    it('Tag isSameCategory()', function () {
+        const first = new Tag(23, "{% for user in users %}", 1);
+        const second = new Tag(23, "{% endfor %}", 1);
+        const third = new Tag(23, "{% if %}", 1);
+        const fourth = new Tag(23, "{{ test }}", 1);
+
+        assert.isTrue(first.isSameCategory(second));
+        assert.isFalse(first.isSameCategory(third));
+        assert.isFalse(first.isSameCategory(fourth));
+    });
+
+    it('Tag lineNumber()', function () {
+        const tag = new Tag(23, "{% for user in users %}", 1);
+
+        assert.equal(tag.lineNumber, 1);
+    });
+
 });
