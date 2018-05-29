@@ -7,6 +7,9 @@ const Node = require('../../lib/tree/node.js');
 const Tag = require('../../lib/tree/tag.js');
 const Template = require('../../lib/template.js');
 const Context = require('../../lib/context.js');
+const TemplateError = require('../../lib/tree/templateError.js');
+const BadParameterError = require('../../lib/tree/badParameterError.js');
+const LogicError = require('../../lib/tree/logicError.js');
 
 describe('Node', function () {
     it('Node constructor() failure', function () {
@@ -35,26 +38,127 @@ describe('Node', function () {
     });
 
     it('Node complete() failure', function () {
-        //TODO
+        const template = new Template("This is a template test. This is a template. This is a template.");
+        const node = new Node(new Tag(5, "{% if value %}", 0), 0);
+        const testFirstParam = function () {
+            node.complete("This is not a Tag", template);
+        };
+        expect(testFirstParam).to.throw(BadParameterError);
+
+        const testSecondParam = function () {
+            node.complete(new Tag(20, "{% endif %}", 3), "This is not a template");
+        };
+        expect(testSecondParam).to.throw(BadParameterError);
+
+        const testIsCloseType = function () {
+            node.complete(new Tag(20, "{% if test %}", 3), template);
+        }
+        expect(testIsCloseType).to.throw(LogicError);
+
+        const testIsCompatible = function () {
+            node.complete(new Tag(20, "{% endfor %}", 3), template);
+        };
+        expect(testIsCompatible).to.throw(TemplateError);
+
+        node.complete(new Tag(20, "{% endif %}", 3), template);
+        const testIsClosed = function () {
+            node.complete(new Tag(20, "{% endif %}", 3), template);
+        };
+        expect(testIsClosed).to.throw(TemplateError);
+
+
     });
 
-    it('Node complete() success', function () {
-        //TODO
+    it('Node complete() success #1', function () {
+        const template = new Template("{% if value %}late test. This is a template. This is a template.");
+        const node = new Node(new Tag(0, "{% if value %}", 0), 0);
+        const completeTag = new Tag(20, "{% endif %}", 3);
+        const testFunc = function () {
+            node.complete(completeTag, template);
+        }
+        expect(testFunc).to.not.throw();
+        assert.equal(node._close, completeTag);
+        const testTemplate = new Template("late t");
+        assert.deepEqual(node.template, testTemplate);
+
+        assert.equal(node.relativeStart, node.start);
+        assert.equal(node.relativeEnd, node.end);
+
+    });
+
+    it('Node complete() success #2', function () {
+        const template = new Template("This is a template test. This is a template. This is a template.");
+        const node = new Node(new Tag(0, "{% if value %}", 0), 0);
+        const completeTag = new Tag(20, "{% endif %}", 3);
+        node.addParent(new Node(new Tag(0, "{% if value2 %}", 5), 0));
+        node.complete(completeTag, template);
+
+        assert.equal(node.relativeStart, null);
+        assert.equal(node.relativeEnd, null);
+    });
+
+    it('Node complete() success #3', function () {
+        const template = new Template(" {% if value %}This is a template test.{% if value2 %}This is a template.{% endif %}This is a template.{% endif %}");
+        const node = new Node(new Tag(1, "{% if value %}", 0), 0);
+        const node1 = new Node(new Tag(39, "{% if value2 %}", 0), 0);
+        const completeTag1 = new Tag(103, "{% endif %}", 3);
+        const completeTag2 = new Tag(73, "{% endif %}", 3);
+        node1.complete(completeTag2, template);
+        node1.addParent(node);
+        node.complete(completeTag1, template);
+
+        assert.equal(node1.relativeStart, 24);
+        assert.equal(node1.relativeEnd, 69);
+    });
+
+    it('Node computeRelativePositions()', function () {
+        const node1 = new Node(new Tag(0, "  node1  ", 0), 0);
+        const tag1 = new Tag(23, "  tag2  ", 5);
+        node1._close = tag1;
+        const node2 = new Node(new Tag(0, "  node2  ", 0), 0);
+        const tag2 = new Tag(23, "  tag2  ", 5);
+        node2._close = tag2;
+
+        node1.computeRelativePositions(null);
+        assert.equal(node1.relativeStart, node1.open.start);
+        assert.equal(node1.relativeEnd, node1.close.end);
+    });
+
+    it('Node replaceRender()', function () {
+        const template = new Template("{% if value %}This is a template test.{% if value2 %}This is a template.{% endif %}This is a template.{% endif %}");
+        const node1 = new Node(new Tag(0, "{% if value %}", 0), 0);
+        const node2 = new Node(new Tag(38, "{% if value2 %}", 0), 0);
+        const completeTag1 = new Tag(102, "{% endif %}", 3);
+        const completeTag2 = new Tag(72, "{% endif %}", 3);
+        node2.addParent(node1);
+        node2.complete(completeTag2, template);
+        node1.complete(completeTag1, template);
+        node2.result = new Template("This is a template.");
+        node2.relativeStart = 0;
+        node2.relativeEnd = template.length - 1;
+
+        node2.replaceRender(node1.template);
+        assert.deepEqual(node1.template, node2.result);
     });
 
     it('Node get start()', function () {
-        const node = new Node(new Tag(0, "  node  ", 0), 0);
-        //TODO
+        const template = new Template("This is a template test. This is a template. This is a template.");
+        const node = new Node(new Tag(5, "{% if value %}", 0), 0);
+        node.complete(new Tag(20, "{% endif %}", 3), template);
+        assert.equal(node.start, 5);
     });
 
     it('Node get end() with close tag', function () {
-        const node = new Node(new Tag(0, "  node  ", 0), 0);
-        //TODO
+        const template = new Template("{% if value %}This is a template test.{% endif %} This is a template. This is a template.");
+        const node = new Node(new Tag(0, "{% if value %}", 0), 0);
+        node.complete(new Tag("{% if value %}This is a template test.".length - 1, "{% endif %}", 3), template);
+        assert.equal(node.end, "{% if value %}This is a template test.{% endif %}".length - 1);
     });
 
     it('Node get end() without close tag', function () {
-        const node = new Node(new Tag(0, "  node  ", 0), 0);
-        //TODO
+        const template = new Template("This is a template test. This is a template. This is a template.");
+        const node = new Node(new Tag(0, "{{ variableName }}", 0), 0);
+        assert.equal(node.end, 18);
     });
 
     it('Node isCompatibleTag() var category', function () {
@@ -460,6 +564,31 @@ describe('Node', function () {
         assert.equal(node.context, context);
     });
 
+    it('Node reset()', function () {
+        const node1 = new Node(new Tag(0, "node1", 0), 0);
+        const node2 = new Node(new Tag(0, "node2", 0), 0);
+        const node3 = new Node(new Tag(0, "node3", 0), 0);
+
+        node2.addParent(node1);
+        node1.addNext(node3);
+
+        node1.preExecutionDone();
+        node1.postExecutionDone();
+
+        node2.preExecutionDone();
+        node2.postExecutionDone();
+
+        const resetResult = node1.reset();
+
+        assert.equal(node1.isPreExecuted(), false);
+        assert.equal(node1.isPostExecuted(), false);
+
+        assert.equal(node2.isPreExecuted(), false);
+        assert.equal(node2.isPostExecuted(), false);
+
+        assert.equal(resetResult, node3);
+    });
+
     it('Node setContext()', function () {
         const context = new Context({});
         const node = new Node(new Tag(0, "  node  ", 0), 0);
@@ -469,6 +598,19 @@ describe('Node', function () {
         node.setContext(context);
 
         assert.equal(node.context, context);
+    });
+
+    it('Node getContextForChildren()', function () {
+        const parent = new Node(new Tag(0, "  parent  ", 0), 0);
+        const context = new Context({
+            value1: true,
+            value2: "This is a value"
+        });
+
+        parent.setContext(context);
+        const contextResult = parent.getContextForChildren();
+        assert.deepEqual(contextResult, context);
+        assert.notEqual(contextResult, context);
     });
 
     it('Node _fetchContext()', function () {
@@ -504,6 +646,7 @@ describe('Node', function () {
 
         assert.equal(child1.context, child2.context);
     });
+
 
     /*it('Node _create() : Success with a for', function () { // Why node factory ???
         const tag = new Tag(12, "{% for user in users %}", 1);

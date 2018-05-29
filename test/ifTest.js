@@ -5,322 +5,176 @@ const should = chai.should();
 const Template = require('../lib/template.js');
 const Context = require('../lib/context.js');
 const TemplateEngine = require('../lib/templateEngine.js');
-// const If = require('../lib/methods/if/if.js');
+const IfNode = require('../lib/tree/ifNode.js');
+const Tag = require('../lib/tree/tag.js');
+const TemplateError = require('../lib/tree/templateError.js');
 
 describe('If', function () {
-    // it('If _checktags() method : First parameter is not a number', function () {
-    //     const templateEngine = new TemplateEngine();
-    //     const ifCondition = new If(templateEngine);
-    //     const test = function () {
-    //         ifCondition._checkTags('Not a number', 2);
-    //     };
-    //     expect(test).to.throw();
-    // });
-    //
-    // it('If _checktags() method : Second parameter is not a number', function () {
-    //     const templateEngine = new TemplateEngine();
-    //     const ifCondition = new If(templateEngine);
-    //     const test = function () {
-    //         ifCondition._checkTags(1, 'Not a number');
-    //     };
-    //     expect(test).to.throw();
-    // });
-    //
-    // it('If _checktags() method : Many opening tags are missing', function () {
-    //     const templateEngine = new TemplateEngine();
-    //     const ifCondition = new If(templateEngine);
-    //     const test = function () {
-    //         ifCondition._checkTags(1, 3);
-    //     };
-    //     expect(test).to.throw();
-    // });
-    //
-    // it('If _checktags() method : Many closing tags are missing', function () {
-    //     const templateEngine = new TemplateEngine();
-    //     const ifCondition = new If(templateEngine);
-    //     const test = function () {
-    //         ifCondition._checkTags(3, 1);
-    //     };
-    //     expect(test).to.throw();
-    // });
-    //
-    // it('If process() method : Success with one checked tag', function (done) {
-    //     const templateEngine = new TemplateEngine();
-    //     const ifCondition = new If(templateEngine);
-    //     const template = new Template("<div>{% if key === 'Value' %}<p>It has to be displayed</p>{% endif %}</div>");
-    //     const test = {
-    //         key : 'Value',
-    //     };
-    //     const context = new Context(test);
-    //     ifCondition.process(template, context).then( (result) => {
-    //         assert.deepEqual(result.content, "<div><p>It has to be displayed</p></div>");
-    //         done();
-    //     }, (error) => {
-    //         assert.isUndefined(error);
-    //         done();
-    //     });
-    // });
-    //
-    // it('If process() method : Success with one for-tag in one checked tag', function (done) {
-    //     const templateEngine = new TemplateEngine();
-    //     const ifCondition = new If(templateEngine);
-    //     const template = new Template("<div>{% if key === true %}{%for user in users %}<p>{{user.firstname}} has to be displayed</p>{% endfor %}{% endif %}</div>");
-    //     const test = {
-    //         users : [
-    //             {
-    //                 firstname : "Jake",
-    //                 lastname : "Fisher",
-    //                 age : "21",
-    //             },
-    //             {
-    //                 firstname : "Bonz",
-    //                 lastname : "Atron",
-    //                 age : "22",
-    //             }
-    //         ],
-    //         key : true,
-    //         user : {
-    //             firstname : "Jake",
-    //             lastname : "Fisher",
-    //             age : "21",
-    //         }
-    //     };
-    //     const context = new Context(test);
-    //     ifCondition.process(template, context).then( (result) => {
-    //         assert.deepEqual(result.content, "<div><p>Jake has to be displayed</p><p>Bonz has to be displayed</p></div>");
-    //         done();
-    //     }, (error) => {
-    //         assert.isUndefined(error);
-    //         done();
-    //     });
-    // });
-    //
-    // it('If process() method : First parameter is not a Template object', function (done) {
-    //     const templateEngine = new TemplateEngine();
-    //     const ifCondition = new If(templateEngine);
-    //     const template = "<div>{% if key === 'Value' %}<p>It has to be displayed</p>{% endif %}</div>";
-    //     const test = {
-    //         key : 'Value',
-    //     };
-    //     const context = new Context(test);
-    //     ifCondition.process(template, context).then( (result) => {
-    //         assert.isUndefined(result);
-    //         done();
-    //     }, (error) => {
-    //         assert.isDefined(error);
-    //         done();
-    //     });
-    // });
-    //
-    // it('If process() method : Second parameter is not a Context object', function (done) {
-    //     const templateEngine = new TemplateEngine();
-    //     const ifCondition = new If(templateEngine);
-    //     const template = new Template("<div>{% if key === 'Value' %}<p>It has to be displayed</p>{% endif %}</div>");
-    //     const test = {
-    //         key : 'Value',
-    //     };
-    //     const context = "This is not a Context object";
-    //     ifCondition.process(template, context).then( (result) => {
-    //         assert.isUndefined(result);
-    //         done();
-    //     }, (error) => {
-    //         assert.isDefined(error);
-    //         done();
-    //     });
-    // });
-    //
-    // it('If process() method : Success with one else tag', function (done) {
-    //     const templateEngine = new TemplateEngine();
-    //     const ifCondition = new If(templateEngine);
-    //     const template = new Template("<div>\n{% if key === 'Value' %}\n<p>It has to be hidden</p>\n{% else %}\n<p>\nIt has to be displayed</p>\n{% endif %}\n</div>");
-    //     const test = {
-    //         key : 'A random value',
-    //     };
-    //     const context = new Context(test);
-    //     ifCondition.process(template, context).then( (result) => {
-    //         assert.deepEqual(result.content, "<div>\n\n<p>\nIt has to be displayed</p>\n\n</div>");
-    //         done();
-    //     }, (error) => {
-    //         assert.isUndefined(error);
-    //         done();
-    //     });
-    // });
-    //
-    // it('If process() method : Success with two nested else tag (first statement)', function (done) {
-    //     const templateEngine = new TemplateEngine();
-    //     const ifCondition = new If(templateEngine);
-    //     const template = new Template("<div>{% if key !== 'Value' %}<p>Please</p>{% if key === 'A random value' %}<p>Show me</p>{% else %}<p>It has to be hidden</p>{% endif %}{% else %}<p>It has to be hidden too</p>{% if key === 'A random value' %}<p>Show me</p>{% else %}<p>It has to be hidden</p>{% endif %}{% endif %}</div>");
-    //     const test = {
-    //         key : 'A random value',
-    //     };
-    //     const context = new Context(test);
-    //     ifCondition.process(template, context).then( (result) => {
-    //         assert.deepEqual(result.content, "<div><p>Please</p><p>Show me</p></div>");
-    //         done();
-    //     }, (error) => {
-    //         assert.isUndefined(error);
-    //         done();
-    //     });
-    // });
-    //
-    // it('If process() method : Success with two nested else tag (second statement)', function (done) {
-    //     const templateEngine = new TemplateEngine();
-    //     const ifCondition = new If(templateEngine);
-    //     const template = new Template("<div>{% if key === 'Value' %}<p>It has to be hidden</p>{% else %}<p>Please</p>{% if key === 'A random value' %}<p>Show me</p>{% else %}<p>It has to be hidden</p>{% endif %}{% endif %}</div>");
-    //     const test = {
-    //         key : 'A random value',
-    //     };
-    //     const context = new Context(test);
-    //     ifCondition.process(template, context).then( (result) => {
-    //         assert.deepEqual(result.content, "<div><p>Please</p><p>Show me</p></div>");
-    //         done();
-    //     }, (error) => {
-    //         assert.isUndefined(error);
-    //         done();
-    //     });
-    // });
-    // it('If process() method : Success with two nested else tag x2', function (done) {
-    //     const templateEngine = new TemplateEngine();
-    //     const ifCondition = new If(templateEngine);
-    //     const template = new Template("{% if smash.emails.length === 1 %}{% if smash.title %}<title>1111</title>{% endif %}{% if !smash.title %}<title>222</title>{% endif %}{% else %}{% if smash.title %}<title>333</title>{% endif %}{% if !smash.title %}<title>4444</title>{% endif %}{% endif %}{% if smash.emails.length === 1 %}{% if smash.title %}<title>1111</title>{% endif %}{% if !smash.title %}<title>222</title>{% endif %}{% else %}{% if smash.title %}<title>333</title>{% endif %}{% if !smash.title %}<title>4444</title>{% endif %}{% endif %}");
-    //     const test = {
-    //         smash : {
-    //             "files" : [
-    //                 {
-    //                     "name" : "First file",
-    //                     "size": 124134143
-    //                 },
-    //                 {
-    //                     "name" : "Second File",
-    //                     "size": 1241143
-    //                 }
-    //             ],
-    //             "emails" : [
-    //                 "tim@fromsmash.com",
-    //                 "fex@fromsmash.com"
-    //             ]
-    //         }
-    //     };
-    //     const context = new Context(test);
-    //     ifCondition.process(template, context).then( (result) => {
-    //         assert.deepEqual(result.content, "<title>4444</title><title>4444</title>");
-    //         done();
-    //     }, (error) => {
-    //         assert.isUndefined(error);
-    //         done();
-    //     });
-    // });
-    //
-    // it('If process() method : Success with a else and a single verified value', function (done) {
-    //     const templateEngine = new TemplateEngine();
-    //     const ifCondition = new If(templateEngine);
-    //     const template = new Template("<div>\n{% if smash.text %}\n<p>\nIt has to be displayed</p>\n{% else %}\n<p>\nIt has to be hidden</p>\n{% endif %}\n</div>");
-    //     const test = {
-    //         smash : {
-    //             "text" : "This is a text"
-    //         }
-    //     };
-    //     const context = new Context(test);
-    //     ifCondition.process(template, context).then( (result) => {
-    //         assert.deepEqual(result.content, "<div>\n\n<p>\nIt has to be displayed</p>\n\n</div>");
-    //         done();
-    //     }, (error) => {
-    //         assert.isUndefined(error);
-    //         done();
-    //     });
-    // });
-    //
-    //
-    // it('If process() method : Success with a else and a single not verified value', function (done) {
-    //     const templateEngine = new TemplateEngine();
-    //     const ifCondition = new If(templateEngine);
-    //     const template = new Template("<div>\n{% if smash.text %}\n<p>\nIt has to be hidden</p>\n{% else %}\n<p>\nIt has to be displayed</p>\n{% endif %}\n</div>");
-    //     const test = {
-    //         smash : {
-    //
-    //         }
-    //     };
-    //     const context = new Context(test);
-    //     ifCondition.process(template, context).then( (result) => {
-    //         assert.deepEqual(result.content, "<div>\n\n<p>\nIt has to be displayed</p>\n\n</div>");
-    //         done();
-    //     }, (error) => {
-    //         assert.isUndefined(error);
-    //         done();
-    //     });
-    // });
-    //
-    // it('If process() method : Success with one else tag and first value null', function (done) {
-    //     const templateEngine = new TemplateEngine();
-    //     const ifCondition = new If(templateEngine);
-    //     const template = new Template("<div>\n{% if key %}\n<p>It has to be hidden</p>\n{% else %}\n<p>\nIt has to be displayed</p>\n{% endif %}\n</div>");
-    //     const test = {
-    //         "key" : null
-    //     };
-    //     const context = new Context(test);
-    //     ifCondition.process(template, context).then( (result) => {
-    //         assert.deepEqual(result.content, "<div>\n\n<p>\nIt has to be displayed</p>\n\n</div>");
-    //         done();
-    //     }, (error) => {
-    //         assert.isUndefined(error);
-    //         done();
-    //     });
-    // });
-    //
-    // it('If process() method : Success with a else and a single "" value', function (done) {
-    //     const templateEngine = new TemplateEngine();
-    //     const ifCondition = new If(templateEngine);
-    //     const template = new Template("<div>\n{% if smash.text %}\n<p>\nIt has to be hidden</p>\n{% else %}\n<p>\nIt has to be displayed</p>\n{% endif %}\n</div>");
-    //     const test = {
-    //         smash : {
-    //             "text" : ""
-    //         }
-    //     };
-    //     const context = new Context(test);
-    //     ifCondition.process(template, context).then( (result) => {
-    //         assert.deepEqual(result.content, "<div>\n\n<p>\nIt has to be displayed</p>\n\n</div>");
-    //         done();
-    //     }, (error) => {
-    //         assert.isUndefined(error);
-    //         done();
-    //     });
-    // });
-    //
-    // it('If process() method : Success with a else and a single verified value', function (done) {
-    //     const templateEngine = new TemplateEngine();
-    //     const ifCondition = new If(templateEngine);
-    //     const template = new Template("<div>\n{% if smash.text %}\n<p>\nIt has to be hidden</p>\n{% else %}\n<p>\nIt has to be displayed</p>\n{% endif %}\n</div>");
-    //     const test = {
-    //         smash : {
-    //             "text" : null
-    //         }
-    //     };
-    //     const context = new Context(test);
-    //     ifCondition.process(template, context).then( (result) => {
-    //         assert.deepEqual(result.content, "<div>\n\n<p>\nIt has to be displayed</p>\n\n</div>");
-    //         done();
-    //     }, (error) => {
-    //         assert.isUndefined(error);
-    //         done();
-    //     });
-    // });
-    //
-    // it('If process() method : Success with a else and a single verified value', function (done) {
-    //     const templateEngine = new TemplateEngine();
-    //     const ifCondition = new If(templateEngine);
-    //     const template = new Template("<div>\n{% if smash.text %}\n<p>\nIt has to be displayed</p>\n{% else %}\n<p>\nIt has to be hidden</p>\n{% endif %}\n</div>");
-    //     const test = {
-    //         smash : {
-    //             "text" : []
-    //         }
-    //     };
-    //     const context = new Context(test);
-    //     ifCondition.process(template, context).then( (result) => {
-    //         assert.deepEqual(result.content, "<div>\n\n<p>\nIt has to be displayed</p>\n\n</div>");
-    //         done();
-    //     }, (error) => {
-    //         assert.isUndefined(error);
-    //         done();
-    //     });
-    // });
+    it('If constructor() method', function () {
+        //TODO
+    });
+
+    it('If _getExpressionToEvaluate() method', function () {
+        const ifNode = new IfNode(new Tag(5, "{%    if     value && test === 'this is a teest ' || test    %}", 0), 0);
+
+        assert.equal(ifNode._getExpressionToEvaluate(), "value && test === 'this is a teest ' || test");
+    });
+
+    it('If preExecute() method : success', function () {
+        const ifNode = new IfNode(new Tag(5, "{% if value %}", 0), 0);
+        const ifNode1 = new IfNode(new Tag(5, "{% if value %}", 0), 1);
+        const context1 = new Context({
+            value: true
+        });
+        const context2 = new Context({
+            value: false
+        });
+        const context3 = new Context({
+            value: ""
+        });
+        const context4 = new Context({
+            value: "test"
+        });
+        const context5 = new Context({
+            value: null
+        });
+        const context6 = new Context({});
+        const context7 = new Context({
+            value: undefined
+        });
+        const context8 = new Context({
+            value: {}
+        });
+        const context = new Context({
+            value: {}
+        });
+
+        ifNode.setContext(context1);
+        const nextNode1 = ifNode.preExecute();
+        assert.equal(ifNode._conditionVerified, true);
+        assert.equal(ifNode.isPreExecuted(), true);
+        assert.equal(ifNode, nextNode1);
+
+        ifNode.setContext(context2);
+        const nextNode2 = ifNode.preExecute();
+        assert.equal(ifNode._conditionVerified, false);
+        assert.equal(ifNode.isPreExecuted(), true);
+        assert.equal(ifNode, nextNode2);
+
+        ifNode1.addParent(ifNode);
+        ifNode1.preExecute();
+        assert.deepEqual(ifNode1.context, ifNode.context);
+
+        ifNode.setContext(context3);
+        const nextNode3 = ifNode.preExecute();
+        assert.equal(ifNode._conditionVerified, false);
+        assert.equal(ifNode.isPreExecuted(), true);
+        assert.equal(ifNode, nextNode3);
+
+        ifNode.setContext(context4);
+        const nextNode4 = ifNode.preExecute();
+        assert.equal(ifNode._conditionVerified, true);
+        assert.equal(ifNode.isPreExecuted(), true);
+        assert.equal(nextNode4, ifNode1);
+
+        ifNode.setContext(context5);
+        const nextNode5 = ifNode.preExecute();
+        assert.equal(ifNode._conditionVerified, false);
+        assert.equal(ifNode.isPreExecuted(), true);
+
+        ifNode.setContext(context6);
+        const nextNode6 = ifNode.preExecute();
+        assert.equal(ifNode._conditionVerified, false);
+        assert.equal(ifNode.isPreExecuted(), true);
+
+        ifNode.setContext(context7);
+        const nextNode7 = ifNode.preExecute();
+        assert.equal(ifNode._conditionVerified, false);
+        assert.equal(ifNode.isPreExecuted(), true);
+
+        ifNode.setContext(context8);
+        const nextNode8 = ifNode.preExecute();
+        assert.equal(ifNode._conditionVerified, true);
+        assert.equal(ifNode.isPreExecuted(), true);
+    });
+
+    it('If preExecute() method : failure', function () {
+        const ifNode1 = new IfNode(new Tag(5, "{% if value ==== 'test' %}", 0), 0);
+        const ifNode2 = new IfNode(new Tag(5, "{% if value test %}", 0), 0);
+        const context = new Context({
+            value: true
+        });
+
+        ifNode1.setContext(context);
+        const testFunc1 = function () {
+            ifNode1.preExecute();
+        };
+        expect(testFunc1).to.throw(TemplateError);
+        assert.equal(ifNode1.isPreExecuted(), false);
+
+        ifNode2.setContext(context);
+        const testFunc2 = function () {
+            ifNode2.preExecute();
+        };
+        expect(testFunc2).to.throw(TemplateError);
+        assert.equal(ifNode2.isPreExecuted(), false);
+    });
+
+    it('If preExecute() method : TemplateError failure with an empty expression', function () {
+        const ifNode = new IfNode(new Tag(5, "{%    if   %}", 0), 0);
+        const testFunc = function () {
+            ifNode.preExecute();
+        };
+
+        expect(testFunc).to.throw(TemplateError);
+    });
+
+    it('If postExecute() method', function () {
+        const ifNode1 = new IfNode(new Tag(0, "{% if value %}", 0), 0);
+        ifNode1._conditionVerified = false;
+        assert.equal(ifNode1.isPostExecuted(), false);
+        assert.equal(ifNode1.postExecute(), null);
+        assert.deepEqual(ifNode1.result, new Template(""));
+        assert.equal(ifNode1.isPostExecuted(), true);
+
+        const ifNode2 = new IfNode(new Tag(0, "{% if value %}", 0), 0);
+        ifNode1.addNext(ifNode2);
+        assert.equal(ifNode1.postExecute(), ifNode2);
+
+        const ifNode3 = new IfNode(new Tag(0, "{% if value %}", 0), 0);
+        ifNode2.addParent(ifNode3);
+        assert.equal(ifNode2.postExecute(), ifNode3);
+
+        const template1 = new Template("This is a template");
+        const ifNode4 = new IfNode(new Tag(0, "{% if value %}", 0), 0);
+        ifNode4.template = template1;
+        ifNode4._conditionVerified = true;
+        assert.equal(ifNode4.postExecute(), null);
+        assert.deepEqual(ifNode4.result, template1);
+
+        const template2 = new Template("{% if value %}This is a template {% if value2 %}show this{% endif %}{% if value3 %}Don't show this{% endif %}{% endif %}");
+
+        const ifNode5 = new IfNode(new Tag(0, "{% if value %}", 0), 0);
+        ifNode5.template = new Template("This is a template {% if value2 %}show this{% endif %}{% if value3 %}Don't show this{% endif %}");
+        ifNode5._conditionVerified = true;
+
+        const ifNode6 = new IfNode(new Tag(0, "{% if value2 %}", 0), 0);
+        ifNode6.result = new Template("show this");
+        ifNode6._conditionVerified = true;
+        ifNode6.relativeStart = 19;
+        ifNode6.relativeEnd = 54;
+
+        const ifNode7 = new IfNode(new Tag(0, "{% if value3 %}", 0), 0);
+        ifNode7.result = new Template("");
+        ifNode7._conditionVerified = false;
+        ifNode7.relativeStart = 54;
+        ifNode7.relativeEnd = 95;
+
+        ifNode6.addParent(ifNode5);
+        ifNode6.addNext(ifNode7);
+
+        ifNode5.postExecute();
+
+        assert.deepEqual(ifNode5.result, new Template("This is a template show this"));
+    });
 });

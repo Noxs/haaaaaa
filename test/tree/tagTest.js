@@ -7,13 +7,15 @@ const Tag = require('../../lib/tree/tag.js');
 describe('Tag', function () {
     it('Tag Build : success with a for openning tag', function () {
         const testFunc = function () {
-            return new Tag(23, "{% for user in users %}", 1);
+            return new Tag(22, "{% for user in users %}", 1);
         }
 
         expect(testFunc).to.not.throw();
 
         const tag = testFunc();
-        assert.equal(tag.position, 23);
+        assert.equal(tag.position, 22);
+        assert.equal(tag.start, 22);
+        assert.equal(tag.end, 45);
         assert.equal(tag.isOpenType(), true);
         assert.equal(tag.isCloseType(), false);
         assert.equal(tag.isStandaloneType(), false);
@@ -50,10 +52,10 @@ describe('Tag', function () {
         assert.isFalse(first.isSameCategory(fourth));
     });
 
-    it('Tag lineNumber()', function () {
+    it('Tag line()', function () {
         const tag = new Tag(23, "{% for user in users %}", 1);
 
-        assert.equal(tag.lineNumber, 1);
+        assert.equal(tag.line, 1);
     });
 
 });

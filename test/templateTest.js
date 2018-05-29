@@ -3,10 +3,11 @@ const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
 const Template = require('../lib/template.js');
+const BadParameterError = require('../lib/tree/badParameterError.js');
 
 
 describe('Template', function () {
-    it('Template build : Success', function () {
+    it('Template constructor() method : Success', function () {
         const test = "test";
         const template = new Template(test);
         assert.isObject(template);
@@ -70,7 +71,7 @@ describe('Template', function () {
     });
 
     it('Template.extract() method : Success', function () {
-        const template = new Template("It is a test");
+        const template = new Template("It is a test template");
         const result = template.extract(6, 12);
         assert.isString(result);
         expect(result).to.equal('a test');
@@ -216,9 +217,10 @@ describe('Template', function () {
         expect(undefinedThirdParameterFunc).to.throw();
 
         const objectThirdParameterFunc = function () {
-            template.replace(6, 12, { test: null });
+            template.replace(6, 12, {
+                test: null
+            });
         };
-
         expect(objectThirdParameterFunc).to.throw();
     });
 
@@ -228,6 +230,23 @@ describe('Template', function () {
             template.replace(6, 12);
         };
         expect(parameterMissingFunc).to.throw();
+    });
+
+    it('Template.replaceTemplate() method : success', function () {
+        const template1 = new Template("It is a test");
+        const template2 = new Template("another");
+        assert.equal(template1.replaceTemplate(6, 7, template2).content, "It is another test");
+    });
+
+    it('Template.replaceTemplate() method : failure', function () {
+        const template1 = new Template("It is a test");
+        const template2 = "This is not a Template";
+
+        const testFunc = function () {
+            template1.replaceTemplate(6, 7, template2);
+        };
+
+        expect(testFunc).to.throw(BadParameterError);
     });
 
     it('Template length getter method : success', function () {

@@ -96,5 +96,7 @@ describe('Context', function () {
         expect(successFunc).to.not.throw(Error);
     });
 
-
+    it('Context stringify() method', function () {
+        // TODO
+    });
 });

@@ -2,13 +2,211 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
-const Template = require('../lib/template.js');
-const TemplateEngine = require('../lib/templateEngine.js');
+// const Template = require('../lib/template.js');
+// const TemplateEngine = require('../lib/templateEngine.js');
 const Context = require('../lib/context.js');
-// const For = require('../lib/methods/for/for.js');
-// const ForLoop = require('../lib/methods/for/forLoop.js');
+const ForNode = require('../lib/tree/forNode.js');
+const Tag = require('../lib/tree/tag.js');
+const TemplateError = require('../lib/tree/templateError.js');
 
 describe('For', function () {
+    it('For constructor()', function () {
+        //TODO
+    });
+
+    it('For _init()', function () {
+        //TODO
+
+    });
+
+    it('For getContextForChildren()', function () {
+        const context1 = new Context({
+            tab: ["value1", "value2", "value3"]
+        });
+        const context2 = new Context({
+            string: "This is a string"
+        });
+        const context3 = new Context({
+            tab: ["value1", "value2", "value3"],
+            string: "This is a string"
+        });
+        const context4 = new Context({
+            user: {
+                names: ["Félix", "Henri", "Régis"]
+            }
+        });
+
+        const forNode = new ForNode(new Tag(0, "{% for user in users %}", 0), 0);
+
+        forNode.setContext(context1);
+        forNode._value = "value";
+        forNode._forContextVariableName = "tab";
+        forNode._currentIteration = 1;
+        assert.equal(forNode.getContextForChildren().tab[forNode._currentIteration], forNode.getContextForChildren()[forNode._value]);
+
+        forNode.setContext(context2);
+        forNode._value = "char";
+        forNode._forContextVariableName = "string";
+        forNode._currentIteration = 6;
+        assert.equal(forNode.getContextForChildren().string[forNode._currentIteration], forNode.getContextForChildren()[forNode._value]);
+
+        forNode.setContext(context3);
+        forNode._value = "char";
+        forNode._forContextVariableName = "string";
+        forNode._currentIteration = 6;
+        assert.equal(forNode.getContextForChildren().string[forNode._currentIteration], forNode.getContextForChildren()[forNode._value]);
+
+
+        forNode._forContextVariableName = "tab";
+        forNode._value = "value";
+        forNode._currentIteration = 2;
+        assert.equal(forNode.getContextForChildren().tab[forNode._currentIteration], forNode.getContextForChildren()[forNode._value]);
+
+        forNode.setContext(context4);
+        forNode._forContextVariableName = "user.names";
+        forNode._value = "name";
+        forNode._key = "index";
+        forNode._currentIteration = 2;
+        assert.equal(forNode.getContextForChildren().user.names[forNode._currentIteration], forNode.getContextForChildren()[forNode._value]);
+        assert.equal(forNode.getContextForChildren().index, 2);
+    });
+
+    it('For _checkExpression(): success', function () {
+        const context1 = new Context({
+            tab: ["value1", "value2", "value3"]
+        });
+
+        const forNode = new ForNode(new Tag(0, "{% for user in users %}", 0), 0);
+
+        forNode._forContextVariableName = "tab";
+
+        forNode.setContext(context1);
+
+        assert.equal(forNode._currentIteration, null);
+        assert.equal(forNode._iterationNumber, null);
+        assert.equal(forNode._results, null);
+
+        forNode._checkExpression();
+
+        assert.equal(forNode._iterationNumber, 3);
+        assert.equal(forNode._currentIteration, 0);
+        assert.deepEqual(forNode._results, []);
+
+        forNode._checkExpression();
+
+        assert.equal(forNode._iterationNumber, 3);
+        assert.equal(forNode._currentIteration, 1);
+        assert.deepEqual(forNode._results, []);
+
+    });
+
+    it('For _checkExpression(): failure', function () {
+        const context1 = new Context({
+            object: {},
+            nullValue: null
+        });
+
+        const forNode = new ForNode(new Tag(0, "{% for user in users %}", 0), 0);
+
+        forNode._forContextVariableName = "nullValue";
+        forNode.setContext(context1);
+        const testFunc = function () {
+            forNode._checkExpression();
+        };
+        expect(testFunc).to.throw(TypeError);
+
+        forNode._forContextVariableName = "object";
+        const testFunc1 = function () {
+            forNode._checkExpression();
+        };
+        expect(testFunc1).to.throw(TypeError);
+    });
+
+    it('For _parseExpression(): success', function () {
+        const forNode1 = new ForNode(new Tag(0, "{% for user in users %}", 0), 0);
+        const forNode2 = new ForNode(new Tag(0, "{% for index=>user in users %}", 0), 0);
+
+        forNode1._parseExpression();
+        assert.equal(forNode1._key, null);
+        assert.equal(forNode1._value, "user");
+        assert.equal(forNode1._forContextVariableName, "users");
+
+        forNode2._parseExpression();
+        assert.equal(forNode2._key, "index");
+        assert.equal(forNode2._value, "user");
+        assert.equal(forNode2._forContextVariableName, "users");
+    });
+
+    it('For _parseExpression(): failure', function () {
+        const forNode1 = new ForNode(new Tag(0, "{% for user users %}", 0), 0);
+        const forNode2 = new ForNode(new Tag(0, "{% for user in  %}", 0), 0);
+        const forNode3 = new ForNode(new Tag(0, "{% for in users %}", 0), 0);
+        const forNode4 = new ForNode(new Tag(0, "{% for =>value in users %}", 0), 0);
+        const forNode5 = new ForNode(new Tag(0, "{% for key=> in users %}", 0), 0);
+        const forNode6 = new ForNode(new Tag(0, "{% for key=>value=>tab in users %}", 0), 0);
+
+        const testFunc1 = function () {
+            forNode1._parseExpression();
+        };
+        expect(testFunc1).to.throw(TemplateError);
+
+        const testFunc2 = function () {
+            forNode2._parseExpression();
+        };
+        expect(testFunc2).to.throw(TemplateError);
+
+        const testFunc3 = function () {
+            forNode3._parseExpression();
+        };
+        expect(testFunc3).to.throw(TemplateError);
+
+        const testFunc4 = function () {
+            forNode4._parseExpression();
+        };
+        expect(testFunc4).to.throw(TemplateError);
+
+        const testFunc5 = function () {
+            forNode5._parseExpression();
+        };
+        expect(testFunc5).to.throw(TemplateError);
+
+        const testFunc6 = function () {
+            forNode6._parseExpression();
+        };
+        expect(testFunc6).to.throw(TemplateError);
+
+    });
+
+    it('For preExecute()', function () {
+        const forNode1 = new ForNode(new Tag(0, "{% for user in users %}", 0), 0);
+        const forNode2 = new ForNode(new Tag(0, "{% for name in user.names %}", 0), 0);
+        const context = new Context({
+            users: [{
+                names: ["Roger", "Emile"]
+            }]
+        });
+
+        forNode1.setContext(context);
+        forNode2.addParent(forNode1);
+        const preExecuteResult1 = forNode1.preExecute();
+        const preExecuteResult2 = forNode2.preExecute();
+        assert.isNotNull(forNode2.context);
+        assert.isDefined(forNode2.context.user);
+
+        assert.equal(forNode1._preExecuted, true);
+        assert.equal(forNode2._preExecuted, true);
+
+        assert.equal(preExecuteResult1, forNode2);
+        assert.equal(preExecuteResult2, forNode2);
+    });
+
+    it('For postExecute()', function () {
+        //TODO
+
+    });
+
+
+
     // it('For _checktags() method : First parameter is not a number', function () {
     //     const templateEngine = new TemplateEngine();
     //     const forRepetition = new For(templateEngine);
