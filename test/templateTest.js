@@ -3,8 +3,8 @@ const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
 const Template = require('../lib/template.js');
-const BadParameterError = require('../lib/tree/badParameterError.js');
-
+const BadParameterError = require('../lib/badParameterError.js');
+const TemplateError = require('../lib/templateError.js');
 
 describe('Template', function () {
     it('Template constructor() method : Success', function () {
@@ -13,7 +13,6 @@ describe('Template', function () {
         assert.isObject(template);
         assert.equal(template.content, test);
         assert.isFunction(template.extract);
-        assert.isFunction(template.search);
         assert.isFunction(template.replace);
         const successFunc = function () {
             new Template(test);
@@ -25,7 +24,7 @@ describe('Template', function () {
         const failureFunc = function () {
             new Template({});
         };
-        expect(failureFunc, "Template constructor function").to.throw();
+        expect(failureFunc, "Template constructor function").to.throw(BadParameterError);
     });
 
     it('Template.copy() method : Success', function () {
@@ -34,40 +33,6 @@ describe('Template', function () {
         assert.deepEqual(copy, template);
         template._content = "It changed";
         assert.notDeepEqual(template, copy);
-    });
-
-    it('Template.search() method : Success', function () {
-        const template = new Template("It is a test");
-        const regexp = new RegExp('test', 'g');
-        const result = template.search(regexp);
-        assert.isArray(result);
-        expect(result[0]).to.not.be.empty;
-        expect(result[0][0]).to.equal('test');
-        expect(result[0].index).to.equal(8);
-    });
-
-    it('Template.search() method : First parameter is not a RegExp', function () {
-        const template = new Template("It is a test");
-        const regexp = new RegExp('test', 'g');
-        const notRegexpResultFunc = function () {
-            template.search('test');
-        };
-        expect(notRegexpResultFunc).to.throw();
-    });
-
-    it('Template.search() method : No match', function () {
-        const template = new Template("It is a test");
-        const notRegexpMatch = template.search(new RegExp("not a match", "g"));
-        expect(notRegexpMatch).to.be.empty;
-    });
-
-    it('Template.search() method : First parameter is undefined', function () {
-        const template = new Template("It is a test");
-
-        const undefinedParameterFunc = function () {
-            template.search();
-        };
-        expect(undefinedParameterFunc).to.throw();
     });
 
     it('Template.extract() method : Success', function () {
@@ -91,7 +56,7 @@ describe('Template', function () {
         const oneParameterFunc = function () {
             template.extract(6);
         };
-        expect(oneParameterFunc).to.throw();
+        expect(oneParameterFunc).to.throw(BadParameterError);
     });
 
     it('Template.extract() method : First parameter is a string', function () {
@@ -99,7 +64,7 @@ describe('Template', function () {
         const stringParameterFunc = function () {
             template.extract('test', 6);
         };
-        expect(stringParameterFunc).to.throw();
+        expect(stringParameterFunc).to.throw(BadParameterError);
     });
 
     it('Template.extract() method : Second parameter is a string', function () {
@@ -107,7 +72,7 @@ describe('Template', function () {
         const stringParameterFunc = function () {
             template.extract(6, 'test');
         };
-        expect(stringParameterFunc).to.throw();
+        expect(stringParameterFunc).to.throw(BadParameterError);
     });
 
     it('Template.extract() method : First parameter is a float', function () {
@@ -115,7 +80,7 @@ describe('Template', function () {
         const firstParameterFloatFunc = function () {
             template.extract(6.4, 12);
         };
-        expect(firstParameterFloatFunc).to.throw();
+        expect(firstParameterFloatFunc).to.throw(BadParameterError);
     });
 
     it('Template.extract() method : Second parameter is a float', function () {
@@ -123,7 +88,7 @@ describe('Template', function () {
         const secondParameterFloatFunc = function () {
             template.extract(6, 12.8);
         };
-        expect(secondParameterFloatFunc).to.throw();
+        expect(secondParameterFloatFunc).to.throw(BadParameterError);
     });
 
     it('Template.extract() method : Second parameter is smaller than the first one', function () {
@@ -131,7 +96,7 @@ describe('Template', function () {
         const endingSmallerFunc = function () {
             template.extract(7, 2);
         };
-        expect(endingSmallerFunc).to.throw();
+        expect(endingSmallerFunc).to.throw(BadParameterError);
     });
 
     it("Template.extract() method : Second parameter is bigger than last character's index", function () {
@@ -139,7 +104,7 @@ describe('Template', function () {
         const outOfRangeFunc = function () {
             template.extract(2, 14);
         };
-        expect(outOfRangeFunc).to.throw();
+        expect(outOfRangeFunc).to.throw(BadParameterError);
     });
 
     it("Template.extract() method : First parameter is negative", function () {
@@ -147,7 +112,7 @@ describe('Template', function () {
         const firstParameterNegativeFunc = function () {
             template.extract(-2, 11);
         };
-        expect(firstParameterNegativeFunc).to.throw();
+        expect(firstParameterNegativeFunc).to.throw(BadParameterError);
     });
 
     it("Template.extract() method : Second parameter is negative", function () {
@@ -155,7 +120,7 @@ describe('Template', function () {
         const secondParameterNegativeFunc = function () {
             template.extract(2, -2);
         };
-        expect(secondParameterNegativeFunc).to.throw();
+        expect(secondParameterNegativeFunc).to.throw(BadParameterError);
     });
 
     it('Template.replace() method : Success', function () {
@@ -189,7 +154,7 @@ describe('Template', function () {
             template.replace("This is not an Integer", 11, "success");
         };
 
-        expect(testFunc).to.throw();
+        expect(testFunc).to.throw(BadParameterError);
     });
 
     it('Template.replace() method : Second parameter is not an Integer', function () {
@@ -198,7 +163,7 @@ describe('Template', function () {
             template.replace(2, "This is not an Integer", "success");
         };
 
-        expect(testFunc).to.throw();
+        expect(testFunc).to.throw(BadParameterError);
     });
 
     it('Template.replace() method : Second parameter is smaller than the first one', function () {
@@ -206,7 +171,7 @@ describe('Template', function () {
         const secondParameterSmallerFunc = function () {
             template.replace(12, 6, "test");
         };
-        expect(secondParameterSmallerFunc).to.throw();
+        expect(secondParameterSmallerFunc).to.throw(BadParameterError);
     });
 
     it('Template.replace() method : Third parameter is neither an integer nor a string', function () {
@@ -214,14 +179,14 @@ describe('Template', function () {
         const undefinedThirdParameterFunc = function () {
             template.replace(6, 12, undefined);
         };
-        expect(undefinedThirdParameterFunc).to.throw();
+        expect(undefinedThirdParameterFunc).to.throw(BadParameterError);
 
         const objectThirdParameterFunc = function () {
             template.replace(6, 12, {
                 test: null
             });
         };
-        expect(objectThirdParameterFunc).to.throw();
+        expect(objectThirdParameterFunc).to.throw(BadParameterError);
     });
 
     it('Template.replace() method : Missing parameter', function () {
@@ -229,7 +194,7 @@ describe('Template', function () {
         const parameterMissingFunc = function () {
             template.replace(6, 12);
         };
-        expect(parameterMissingFunc).to.throw();
+        expect(parameterMissingFunc).to.throw(BadParameterError);
     });
 
     it('Template.replaceTemplate() method : success', function () {
@@ -286,5 +251,21 @@ describe('Template', function () {
         assert.equal(identifier.position, 24);
         assert.equal(identifier.rawContent, "{% for user in users %}");
         assert.equal(identifier.content, "for user in users");
+    });
+
+    it('Template searchNextTag() method : failure', function () {
+        const template1 = new Template("<h1>This is a test</h1> %} for user in users %} Do things {% endfor %}");
+        const template2 = new Template("<h1>This is a test</h1> {% for user in users {% Do things {% endfor %}");
+
+        const testFunc1 = function () {
+            template1.searchNextTag();
+        };
+        expect(testFunc1).to.throw(TemplateError);
+
+        const testFunc2 = function () {
+            template2.searchNextTag();
+        };
+        expect(testFunc2).to.throw(TemplateError);
+
     });
 });

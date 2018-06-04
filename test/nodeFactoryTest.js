@@ -2,16 +2,16 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
-const NodeFactory = require('../../lib/tree/nodeFactory.js');
-const ForNode = require('../../lib/tree/forNode.js');
-const IfNode = require('../../lib/tree/ifNode.js');
-const VarNode = require('../../lib/tree/variableNode.js');
-const Tag = require("../../lib/tree/tag.js");
-const BadParameterError = require('../../lib/tree/badParameterError.js');
+const NodeFactory = require('../lib/nodeFactory.js');
+const ForNode = require('../lib/forNode.js');
+const IfNode = require('../lib/ifNode.js');
+const VarNode = require('../lib/variableNode.js');
+const Tag = require("../lib/tag.js");
+const BadParameterError = require('../lib/badParameterError.js');
+const LogicError = require('../lib/logicError.js');
 
 
 describe('NodeFactory', function () {
-
     it('NodeFactory constructor', function () {
         const testFunc = function () {
             const nodeFactory = new NodeFactory();
@@ -50,7 +50,7 @@ describe('NodeFactory', function () {
         assert.equal(nodeFactory.isOnFloor(), false);
     });
 
-    it('NodeFactory create() : Success with a for', function () {// REWORK
+    it('NodeFactory create() : Success with a for', function () {
         const tag = new Tag(12, "{% for user in users %}", 1)
         const testFunc = function () {
             const nodeFactory = new NodeFactory();
@@ -64,7 +64,7 @@ describe('NodeFactory', function () {
         assert.equal(node.isForCategory(), true);
     });
 
-    it('NodeFactory create() : First parameter is not a Tag object', function () {// REWORK
+    it('NodeFactory create() : First parameter is not a Tag object', function () {
         const testFunc = function () {
             const nodeFactory = new NodeFactory();
             return nodeFactory.create("Definitely not a Tag object");
@@ -73,7 +73,7 @@ describe('NodeFactory', function () {
         expect(testFunc).to.throw(BadParameterError);
     });
 
-    it('NodeFactory create() : good', function () {
+    it('NodeFactory create() : success', function () {
         const nodeFactory = new NodeFactory();
 
         const testForFunc = function () {
@@ -99,6 +99,18 @@ describe('NodeFactory', function () {
 
         expect(testVarFunc).to.not.throw();
         assert.equal(testVarFunc().constructor, VarNode);
+    });
+
+    it('NodeFactory create() : failure', function () {
+        const nodeFactory = new NodeFactory();
+        const tag = new Tag(12, "{% for user in users %}", 1);
+        
+        const testFunc = function () {
+            tag._category = "this is not valid";
+            return nodeFactory.create(tag);
+        };
+
+        expect(testFunc).to.throw(LogicError);
     });
 
 });

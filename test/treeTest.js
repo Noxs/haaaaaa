@@ -2,21 +2,20 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
-const Tree = require('../../lib/tree/tree.js');
-const ForNode = require('../../lib/tree/forNode.js');
-const Tag = require('../../lib/tree/tag.js');
-const Template = require('../../lib/template.js');
-const Context = require('../../lib/context.js');
-const BadParameterError = require('../../lib/tree/badParameterError.js');
-const UsageError = require('../../lib/tree/usageError.js');
+const Tree = require('../lib/tree.js');
+const ForNode = require('../lib/forNode.js');
+const Tag = require('../lib/tag.js');
+const Template = require('../lib/template.js');
+const Context = require('../lib/context.js');
+const IfNode = require('../lib/ifNode.js');
+const BadParameterError = require('../lib/badParameterError.js');
+const UsageError = require('../lib/usageError.js');
 const fs = require("fs");
 const path = require('path');
 
 describe('Tree', function () {
-    it('Tree build() method : success', function () {
+    it('Tree constructor method : success', function () {
         const template = new Template("<h1>This is a test</h1> {% for user in users %} Do things {% endfor %}");
-        const context = {};
-        const style = "";
         const testFunc = function () {
             const tree = new Tree(template);
         }
@@ -24,7 +23,7 @@ describe('Tree', function () {
         expect(testFunc).to.not.throw();
     });
 
-    it('Tree build() method : failure', function () {
+    it('Tree constructor method : failure', function () {
         const testFunc = function () {
             const tree = new Tree("This is not a Template");
         }
@@ -32,10 +31,59 @@ describe('Tree', function () {
         expect(testFunc).to.throw(BadParameterError);
     });
 
+    it('Tree set/get start', function () {
+        const template = new Template("<h1>This is a test</h1> {% for user in users %} Do things {% endfor %}");
+        const tree = new Tree(template);
+        const start1 = "this is the start";
+        const start2 = "this is not the good start";
+        tree.start = start1;
+        tree.start = start2;
+        assert.equal(tree.start, start1);
+    });
+
+    it('Tree set/get end', function () {
+        const template = new Template("<h1>This is a test</h1> {% for user in users %} Do things {% endfor %}");
+        const tree = new Tree(template);
+        const end1 = {
+            depth: 0
+        };
+        const end2 = {
+            depth: 1
+        };
+        const end3 = {
+            depth: 0
+        };
+        tree.end = end1;
+        tree.end = end2;
+        assert.equal(tree.end, end1);
+        tree.end = end3;
+        assert.equal(tree.end, end3);
+    });
+
     it('Tree linkNodes() method', function () {
-        //TODO previsouNode === null
-        //TODO this._currentNode.depth === this._previousNode.depth
-        //TODO this._currentNode.depth > this._previousNode.depth
+        const template = new Template("<h1>This is a test</h1> {% for user in users %} Do things {% endfor %}");
+        const tree = new Tree(template);
+
+        const ifNode1 = new IfNode(new Tag(0, "{% if value %}", 0), 0);
+        const ifNode2 = new IfNode(new Tag(3, "{% if value %}", 0), 0);
+        const ifNode3 = new IfNode(new Tag(5, "{% if value %}", 0), 0);
+
+        tree._currentNode = ifNode1;
+        assert.equal(tree.linkNodes(), tree);
+
+        ifNode1.depth = 0;
+        ifNode2.depth = 0;
+        tree._previousNode = ifNode1;
+        tree._currentNode = ifNode2;
+        tree.linkNodes();
+        assert.equal(ifNode1.next, ifNode2);
+
+        ifNode3.depth = 1;
+        tree._previousNode = ifNode2;
+        tree._currentNode = ifNode3;
+        tree.linkNodes();
+
+        assert.equal(ifNode3.parent, ifNode2);
     });
 
     it('Tree create() method : success with a single node', function () {
@@ -75,7 +123,7 @@ describe('Tree', function () {
 
         assert.deepEqual(tree._start.template.content, " Do things {% for email in user.emails %} Do other things {% endfor %} ");
 
-        //tree.execute();
+        assert.equal(tree.isBuilt(), true);
     });
 
 
@@ -165,7 +213,6 @@ describe('Tree', function () {
 
         tree.create();
 
-        const IfNode = require("../../lib/tree/ifNode.js");
         assert.equal(tree._start.children[0].constructor, IfNode);
         assert.equal(tree._start.children[0].parent, tree._start);
         assert.equal(tree._start.children[0].template.content, " Do thing ");
@@ -178,8 +225,7 @@ describe('Tree', function () {
         const tree = new Tree(template);
 
         tree.create();
-
-        const IfNode = require("../../lib/tree/ifNode.js");
+        
         assert.deepEqual(tree._start.constructor, IfNode);
         assert.deepEqual(tree._start.children[0].parent, tree._start);
         assert.deepEqual(tree._start.children[0].template.content, " Do other things ");
@@ -263,7 +309,7 @@ describe('Tree', function () {
 
         tree.create();
         tree.reset();
-        
+
         let currentNode = tree._start;
 
         assert.equal(currentNode.template.content.replace(/\s/g, ""), "{% if variables1.length === 1 %}<title>{{ variable }}</title>{% endif %}".replace(/\s/g, ""));
@@ -361,13 +407,14 @@ describe('Tree', function () {
         currentNode = currentNode.next;
     });
 
-    it('Tree create() method : failure with LogicError', function () {
-        //TODO  call create() with template with no tag as parameter, and set the depth nodeFactory property to 1, it should throw a LogicError
-    });
+    it('Tree execute() method: success', function () {
+        const template = new Template(fs.readFileSync(path.resolve(__dirname, "./template/body.html.ste")).toString());
+        const tree = new Tree(template);
+        tree.create();
 
-
-    it('Tree execute() method: execute a template', function () {
-        // TODO
+        const context = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./template/parameters.json")));
+        const result = tree.execute(new Context(context));
+        assert.equal(result.content, fs.readFileSync(path.resolve(__dirname, "./template/body.html")).toString());
     });
 
     it('Tree execute() method: failure when called before create()', function () {

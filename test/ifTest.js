@@ -5,9 +5,9 @@ const should = chai.should();
 const Template = require('../lib/template.js');
 const Context = require('../lib/context.js');
 const TemplateEngine = require('../lib/templateEngine.js');
-const IfNode = require('../lib/tree/ifNode.js');
-const Tag = require('../lib/tree/tag.js');
-const TemplateError = require('../lib/tree/templateError.js');
+const IfNode = require('../lib/ifNode.js');
+const Tag = require('../lib/tag.js');
+const TemplateError = require('../lib/templateError.js');
 
 describe('If', function () {
     it('If constructor() method', function () {

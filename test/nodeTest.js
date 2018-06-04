@@ -2,14 +2,14 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
-const NodeFactory = require('../../lib/tree/nodeFactory.js');
-const Node = require('../../lib/tree/node.js');
-const Tag = require('../../lib/tree/tag.js');
-const Template = require('../../lib/template.js');
-const Context = require('../../lib/context.js');
-const TemplateError = require('../../lib/tree/templateError.js');
-const BadParameterError = require('../../lib/tree/badParameterError.js');
-const LogicError = require('../../lib/tree/logicError.js');
+const NodeFactory = require('../lib/nodeFactory.js');
+const Node = require('../lib/node.js');
+const Tag = require('../lib/tag.js');
+const Template = require('../lib/template.js');
+const Context = require('../lib/context.js');
+const TemplateError = require('../lib/templateError.js');
+const BadParameterError = require('../lib/badParameterError.js');
+const LogicError = require('../lib/logicError.js');
 
 describe('Node', function () {
     it('Node constructor() failure', function () {
@@ -124,7 +124,7 @@ describe('Node', function () {
         assert.equal(node1.relativeEnd, node1.close.end);
     });
 
-    it('Node replaceRender()', function () {
+    it('Node replaceRender() : success', function () {
         const template = new Template("{% if value %}This is a template test.{% if value2 %}This is a template.{% endif %}This is a template.{% endif %}");
         const node1 = new Node(new Tag(0, "{% if value %}", 0), 0);
         const node2 = new Node(new Tag(38, "{% if value2 %}", 0), 0);
@@ -139,6 +139,17 @@ describe('Node', function () {
 
         node2.replaceRender(node1.template);
         assert.deepEqual(node1.template, node2.result);
+    });
+
+    it('Node replaceRender() : failure', function () {
+        const node = new Node(new Tag(38, "{% if value2 %}", 0), 0);
+
+
+        const testFunc = function () {
+            node.replaceRender("This is not a Template");
+        };
+
+        expect(testFunc).to.throw(BadParameterError);
     });
 
     it('Node get start()', function () {
@@ -214,16 +225,27 @@ describe('Node', function () {
         assert.equal(node.isCompatibleTag(tag6), false);
     });
 
-    it('Node set/get open()', function () {
+    it('Node set/get open(): success', function () {
         const tag1 = new Tag(0, "  node  ", 0);
         const tag2 = new Tag(0, "  node  ", 0);
         const node = new Node(tag1, 0);
 
         assert.equal(node.open, tag1);
 
-        node.open = tag2
+        node.open = tag2;
 
         assert.equal(node.open, tag2);
+    });
+
+    it('Node set open(): failure', function () {
+        const tag1 = new Tag(0, "  node  ", 0);
+        const node = new Node(tag1, 0);
+
+        const testFunc = function () {
+            node.open = "This is not a Tag";
+        };
+
+        expect(testFunc).to.throw(BadParameterError);
     });
 
     it('Node set/get close()', function () {
@@ -553,7 +575,7 @@ describe('Node', function () {
         assert.equal(node.isPostExecuted(), true);
     });
 
-    it('Node set/get context()', function () {
+    it('Node set/get context(): success', function () {
         const context = new Context({});
         const node = new Node(new Tag(0, "  node  ", 0), 0);
 
@@ -562,6 +584,16 @@ describe('Node', function () {
         node.context = context;
 
         assert.equal(node.context, context);
+    });
+
+    it('Node set/get context(): failure', function () {
+        const node = new Node(new Tag(0, "  node  ", 0), 0);
+
+        const testFunc = function () {
+            node.context = "This is not a Context";
+        };
+
+        expect(testFunc).to.throw(BadParameterError);
     });
 
     it('Node reset()', function () {

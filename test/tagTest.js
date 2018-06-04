@@ -2,7 +2,8 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
-const Tag = require('../../lib/tree/tag.js');
+const Tag = require('../lib/tag.js');
+const BadParameterError = require('../lib/badParameterError.js');
 
 describe('Tag', function () {
     it('Tag Build : success with a for openning tag', function () {
@@ -31,14 +32,21 @@ describe('Tag', function () {
         const testFunc = function () {
             return new Tag("Not a number", "{% for user in users %}", 1);
         }
-        expect(testFunc).to.throw();
+        expect(testFunc).to.throw(BadParameterError);
     });
 
     it('Tag Build : second parameter is not a string', function () {
         const testFunc = function () {
             return new Tag(12, 23, 1);
         }
-        expect(testFunc).to.throw();
+        expect(testFunc).to.throw(BadParameterError);
+    });
+
+    it('Tag Build : third parameter is not a integer', function () {
+        const testFunc = function () {
+            return new Tag(22, "{% for user in users %}", "This is not an integer");
+        }
+        expect(testFunc).to.throw(BadParameterError);
     });
 
     it('Tag isSameCategory()', function () {

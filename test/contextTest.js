@@ -3,6 +3,7 @@ const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
 const Context = require('../lib/context.js');
+const BadParameterError = require('../lib/badParameterError.js');
 
 
 describe('Context', function () {
@@ -21,14 +22,14 @@ describe('Context', function () {
         const successFunc = function() {
             new Context(test);
         };
-        expect(successFunc).to.not.throw(Error);
+        expect(successFunc).to.not.throw(BadParameterError);
     });
 
     it('Context build : First parameter is a string', function () {
         const failureFunc = function() {
             new Context('Wrong type');
         };
-        expect(failureFunc).to.throw(Error);
+        expect(failureFunc).to.throw(BadParameterError);
     });
 
     it('Context byString() method : Success', function () {
@@ -76,7 +77,7 @@ describe('Context', function () {
         const firstParameterObjectFunc = function () {
             context.byString({});
         };
-        expect(firstParameterObjectFunc).to.throw(Error);
+        expect(firstParameterObjectFunc).to.throw(BadParameterError);
     });
 
     it('Context copy() method : Success', function () {
@@ -93,7 +94,7 @@ describe('Context', function () {
         const successFunc = function () {
             context.copy();
         };
-        expect(successFunc).to.not.throw(Error);
+        expect(successFunc).to.not.throw();
     });
 
     it('Context stringify() method', function () {

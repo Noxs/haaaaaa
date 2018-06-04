@@ -5,9 +5,10 @@ const should = chai.should();
 // const Template = require('../lib/template.js');
 // const TemplateEngine = require('../lib/templateEngine.js');
 const Context = require('../lib/context.js');
-const ForNode = require('../lib/tree/forNode.js');
-const Tag = require('../lib/tree/tag.js');
-const TemplateError = require('../lib/tree/templateError.js');
+const ForNode = require('../lib/forNode.js');
+const Tag = require('../lib/tag.js');
+const TemplateError = require('../lib/templateError.js');
+const Template = require('../lib/template.js');
 
 describe('For', function () {
     it('For constructor()', function () {
@@ -200,219 +201,102 @@ describe('For', function () {
         assert.equal(preExecuteResult2, forNode2);
     });
 
-    it('For postExecute()', function () {
-        //TODO
+    it('For postExecute(): success#1', function () {
+        const template = new Template("{% for user in users %} Hi, {% for name in user.names %}your name,{% endfor %}{% endfor %}");
+        const forNode1 = new ForNode(new Tag(0, "{% for user in users %}", 0), 0);
+        const forNode2 = new ForNode(new Tag(28, "{% for name in user.names %}", 0), 0);
 
+        const completeTag1 = new Tag(78, "{% endfor %}", 0);
+        const completeTag2 = new Tag(66, "{% endfor %}", 0);
+
+        const context1 = new Context({
+            users: [{
+                names: ["Roger", "Emile"]
+            }]
+        });
+        const context2 = new Context({
+            users: [{
+                names: []
+            }]
+        });
+
+        forNode2.addParent(forNode1);
+        
+        forNode2.complete(completeTag2, template);
+        forNode1.complete(completeTag1, template);
+
+        forNode1.setContext(context1);
+        
+        const preExecuteResult1 = forNode1.preExecute();
+
+        const preExecuteResult2_1 = forNode2.preExecute();
+        const postExecuteResult2_1 = preExecuteResult2_1.postExecute();
+
+        assert.deepEqual(postExecuteResult2_1._results, ["your name,"]);
+        assert.equal(postExecuteResult2_1.isPostExecuted(), false);
+        assert.equal(postExecuteResult2_1, forNode2);
+        
+        const preExecuteResult2_2 = forNode2.preExecute();
+        const postExecuteResult2_2 = preExecuteResult2_2.postExecute();
+
+        assert.deepEqual(forNode2._results, null);
+        assert.equal(forNode2.isPostExecuted(), true);
+        assert.deepEqual(forNode2.result, new Template("your name,your name,"));
+        assert.equal(postExecuteResult2_2, forNode1);
+        
+        const postExecuteResult1 = forNode1.postExecute();
+        assert.equal(postExecuteResult1, null);
     });
 
+    it('For postExecute(): success#2', function () {
+        const template = new Template("{% for user in users %} Hi, {% for name in user.names %}your name,{% endfor %}{% for sport in user.sports %}{% endfor %}{% endfor %}");
+        const forNode1 = new ForNode(new Tag(0, "{% for user in users %}", 0), 0);
+        const forNode2 = new ForNode(new Tag(28, "{% for name in user.names %}", 0), 0);
+        const forNode3 = new ForNode(new Tag(78, "{% for name in user.sports %}", 0), 0);
 
+        const completeTag1 = new Tag(120, "{% endfor %}", 0);
+        const completeTag2 = new Tag(66, "{% endfor %}", 0);
+        const completeTag3 = new Tag(108, "{% endfor %}", 0);
+        
+        const context1 = new Context({
+            users: [{
+                names: ["Roger", "Emile"],
+                sports: []
+            }]
+        });
+        
+        forNode2.addParent(forNode1);
+        forNode2.addNext(forNode3);
 
-    // it('For _checktags() method : First parameter is not a number', function () {
-    //     const templateEngine = new TemplateEngine();
-    //     const forRepetition = new For(templateEngine);
-    //     const test = function () {
-    //         forLoop._checkTags('Not a number', 2);
-    //     }
-    //     expect(test).to.throw();
-    // });
-    //
-    // it('For _checktags() method : Second parameter is not a number', function () {
-    //     const templateEngine = new TemplateEngine();
-    //     const forRepetition = new For(templateEngine);
-    //     const test = function () {
-    //         forLoop._checkTags(1, 'Not a number');
-    //     }
-    //     expect(test).to.throw();
-    // });
-    //
-    // it('For process() method : Success', function (done) {
-    //     const template = new Template('<p>{% for user in users %}<p>{{user.firstname}}</p>{%endfor%}</p>');
-    //     const test = {
-    //         users : [
-    //             {
-    //                 firstname : "Jake",
-    //                 lastname : "Fisher",
-    //                 age : "21",
-    //             },
-    //             {
-    //                 firstname : "Bonz",
-    //                 lastname : "Atron",
-    //                 age : "22",
-    //             }
-    //         ]
-    //     };
-    //     const context = new Context(test);
-    //     const templateEngine = new TemplateEngine();
-    //     const forRepetition = new For(templateEngine);
-    //     forRepetition.process(template, context).then( (result) => {
-    //         assert.equal(result.content, "<p><p>Jake</p><p>Bonz</p></p>");
-    //         done();
-    //     }, (error) => {
-    //         assert.isUndefined(error);
-    //         done();
-    //     });
-    // });
-    //
-    // it('For process() method : One opening tag is missing', function (done) {
-    //     const template = new Template('<p><p>{{user.firstname}}</p>{%endfor%}</p>');
-    //     const test = {
-    //         users : [
-    //             {
-    //                 firstname : "Jake",
-    //                 lastname : "Fisher",
-    //                 age : "21",
-    //             },
-    //             {
-    //                 firstname : "Bonz",
-    //                 lastname : "Atron",
-    //                 age : "22",
-    //             }
-    //         ]
-    //     };
-    //     const context = new Context(test);
-    //     const templateEngine = new TemplateEngine();
-    //     const forRepetition = new For(templateEngine);
-    //     forRepetition.process(template, context).then( (result) => {
-    //         assert.isUndefined(result);
-    //         done();
-    //     }, (error) => {
-    //         assert.isDefined(error);
-    //         done();
-    //     });
-    // });
-    //
-    // it('For process() method : One closing tag is missing', function (done) {
-    //     const template = new Template('<p>{% for user in users %}<p>{{user.firstname}}</p></p>');
-    //     const test = {
-    //         users : [
-    //             {
-    //                 firstname : "Jake",
-    //                 lastname : "Fisher",
-    //                 age : "21",
-    //             },
-    //             {
-    //                 firstname : "Bonz",
-    //                 lastname : "Atron",
-    //                 age : "22",
-    //             }
-    //         ]
-    //     };
-    //     const context = new Context(test);
-    //     const templateEngine = new TemplateEngine();
-    //     const forRepetition = new For(templateEngine);
-    //     forRepetition.process(template, context).then( (result) => {
-    //         assert.isUndefined(result);
-    //         done();
-    //     }, (error) => {
-    //         assert.isDefined(error);
-    //         done();
-    //     });
-    // });
-    //
-    // it('For process() method : Success without tags', function (done) {
-    //     const template = new Template('Template without tags');
-    //     const test = {
-    //         users : [
-    //             {
-    //                 firstname : "Jake",
-    //                 lastname : "Fisher",
-    //                 age : "21",
-    //             },
-    //             {
-    //                 firstname : "Bonz",
-    //                 lastname : "Atron",
-    //                 age : "22",
-    //             }
-    //         ]
-    //     };
-    //     const context = new Context(test);
-    //     const templateEngine = new TemplateEngine();
-    //     const forRepetition = new For(templateEngine);
-    //     forRepetition.process(template, context).then( (result) => {
-    //         assert.isDefined(result);
-    //         assert.deepEqual(result, template);
-    //         done();
-    //     }, (error) => {
-    //         assert.isUndefined(error);
-    //         done();
-    //     });
-    // });
-    //
-    // it('For process() method : Success with many brothers couple of for-tags', function (done) {
-    //     const template = new Template('<p>{% for sport in sports %}<p>{{ sport.name }} is played {{sport.place }}</p>{%endfor%}</p><p>{% for user in users %}<a>{{user.firstname}} is here</a>{% endfor %}</p>');
-    //     const test = {
-    //         users : [
-    //             {
-    //                 firstname : "Jake",
-    //                 lastname : "Fisher",
-    //                 age : "21",
-    //             },
-    //             {
-    //                 firstname : "Bonz",
-    //                 lastname : "Atron",
-    //                 age : "22",
-    //             }
-    //         ],
-    //         sports : [
-    //             {
-    //                 name : "Handball",
-    //                 place : "indoor",
-    //                 team : 7
-    //             },
-    //             {
-    //                 name : "Tennis",
-    //                 place : "outdoor",
-    //                 team : 1
-    //             }
-    //         ]
-    //     };
-    //     const context = new Context(test);
-    //     const templateEngine = new TemplateEngine();
-    //     const forRepetition = new For(templateEngine);
-    //     forRepetition.process(template, context).then( (result) => {
-    //         expect(result.content).to.equal('<p><p>Handball is played indoor</p><p>Tennis is played outdoor</p></p><p><a>Jake is here</a><a>Bonz is here</a></p>');
-    //         done();
-    //     }, (error) => {
-    //         assert.isUndefined(error);
-    //     });
-    // });
-    //
-    // it('For process() method : Success with nested for-tags', function (done) {
-    //     const template = new Template('<p>{% for sport in sports %}<p>{{ sport.name }} is played {{sport.place }} {% for user in users %}<a>{{user.firstname}} plays {{sport.name}}</a>{% endfor %}</p>{%endfor%}</p>');
-    //     const test = {
-    //         users : [
-    //             {
-    //                 firstname : "Jake",
-    //                 lastname : "Fisher",
-    //                 age : "21",
-    //             },
-    //             {
-    //                 firstname : "Bonz",
-    //                 lastname : "Atron",
-    //                 age : "22",
-    //             }
-    //         ],
-    //         sports : [
-    //             {
-    //                 name : "Handball",
-    //                 place : "indoor",
-    //                 team : 7
-    //             },
-    //             {
-    //                 name : "Tennis",
-    //                 place : "outdoor",
-    //                 team : 1
-    //             }
-    //         ]
-    //     };
-    //     const context = new Context(test);
-    //     const templateEngine = new TemplateEngine();
-    //     const forRepetition = new For(templateEngine);
-    //     forRepetition.process(template, context).then( (result) => {
-    //         expect(result.content).to.equal('<p><p>Handball is played indoor <a>Jake plays Handball</a><a>Bonz plays Handball</a></p><p>Tennis is played outdoor <a>Jake plays Tennis</a><a>Bonz plays Tennis</a></p></p>');
-    //         done();
-    //     }, (error) => {
-    //         assert.isUndefined(error);
-    //     });
-    // });
+        forNode2.complete(completeTag2, template);
+        forNode3.complete(completeTag3, template);
+        forNode1.complete(completeTag1, template);
+        
+        forNode1.setContext(context1);
+        
+        const preExecuteResult1 = forNode1.preExecute();
+
+        const preExecuteResult2_1 = forNode2.preExecute();
+        const postExecuteResult2_1 = preExecuteResult2_1.postExecute();
+
+        assert.deepEqual(postExecuteResult2_1._results, ["your name,"]);
+        assert.equal(postExecuteResult2_1.isPostExecuted(), false);
+        assert.equal(postExecuteResult2_1, forNode2);
+        
+        const preExecuteResult2_2 = forNode2.preExecute();
+        const postExecuteResult2_2 = preExecuteResult2_2.postExecute();
+
+        assert.equal(postExecuteResult2_2, forNode3);
+        assert.deepEqual(forNode2._results, null);
+        assert.equal(forNode2.isPostExecuted(), true);
+        assert.deepEqual(forNode2.result, new Template("your name,your name,"));
+        
+        const preExecuteResult3_1 = forNode3.preExecute();
+        const postExecuteResult3_1 = preExecuteResult3_1.postExecute();
+
+        const postExecuteResult1 = forNode1.postExecute();
+
+        assert.equal(postExecuteResult1, null);
+        assert.deepEqual(forNode1.result, new Template(" Hi, your name,your name,"));
+    });
 });
