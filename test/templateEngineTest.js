@@ -18,7 +18,10 @@ describe('TemplateEngine', function () {
         
         const template2 = "This is a very soft template";
         assert.equal(templateEngine.render(template2), "This is a very soft template");
-        
+
+        const template3 = "A template with {% style %}";
+        const style = "Some style";
+        assert.equal(templateEngine.render(template3, context, style), "A template with Some style");
     });
     
     it('TemplateEngine render : failure', function () {
@@ -41,6 +44,5 @@ describe('TemplateEngine', function () {
             templateEngine.render(template, context, style);
         };
         expect(testFunc3).to.throw(UsageError);
-
     });
 });
