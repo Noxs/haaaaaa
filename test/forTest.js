@@ -2,8 +2,6 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
-// const Template = require('../lib/template.js');
-// const TemplateEngine = require('../lib/templateEngine.js');
 const Context = require('../lib/context.js');
 const ForNode = require('../lib/forNode.js');
 const Tag = require('../lib/tag.js');
@@ -17,7 +15,7 @@ describe('For', function () {
 
     it('For _init()', function () {
         //TODO
-
+        
     });
 
     it('For getContextForChildren()', function () {
