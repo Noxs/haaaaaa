@@ -8,7 +8,7 @@
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --reporter=lcovonly -- test --recursive"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "glob": "^7.1.2",
     "moment": "^2.22.0"
