@@ -98,6 +98,12 @@ describe('Variables', function () {
         assert.equal(varNode.result.content, "This is a string.");
 
         varNode.setContext(context2);
+        varNode._nodeFilter._type = "Null";
+        varNode._nodeFilter._filterName = "myFilter";
+        varNode._nodeFilter._filterInstances = [{
+            getName: function () {return "myFilter";},
+            execute: function (input, params, context) {return input;}
+        }];
         const nextNode2 = varNode.postExecute();
         assert.equal(varNode.isPostExecuted(), true);
         assert.equal(nextNode2, null);
@@ -188,5 +194,12 @@ describe('Variables', function () {
         };
 
         expect(testFunc).to.throw(ReferenceError);
+    });
+
+    it('Variables hasFilters()', function () {
+        const varNode = new VarNode(new Tag(0, "{{ myVariable }}", 0), 0);
+        assert.equal(varNode.hasFilters(), false);
+        varNode._nodeFilter._type = "Null";
+        assert.equal(varNode.hasFilters(), true);
     });
 });

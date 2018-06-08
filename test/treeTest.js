@@ -413,24 +413,29 @@ describe('Tree', function () {
         tree.create();
 
         const context = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./template/parameters.json")));
-        const result = tree.execute(new Context(context));
+        const result = tree.execute(new Context(context), []);
         assert.equal(result.content, fs.readFileSync(path.resolve(__dirname, "./template/body.html")).toString());
     });
 
-    it('Tree execute() method: failure when called before create()', function () {
+    it('Tree execute() method: failure', function () {
         const template = new Template("<h1>This is a test</h1> {% if variable %}  {% endif %}{{ variable }} {%if variable %}{% endif%}");
         const context = {};
         const style = "";
         const tree = new Tree(template);
 
         const testBadParameter = function () {
-            tree.execute("This is not a Context");
+            tree.execute("This is not a Context", []);
         };
         expect(testBadParameter).to.throw(BadParameterError);
 
         const testExecuteBeforeCreate = function () {
-            tree.execute(new Context({}));
+            tree.execute(new Context({}), []);
         };
         expect(testExecuteBeforeCreate).to.throw(UsageError);
+
+        const testFunc = function () {
+            tree.execute(new Context({}), "This is not an array");
+        };
+        expect(testFunc).to.throw(BadParameterError);
     });
 });
