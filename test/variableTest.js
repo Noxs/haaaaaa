@@ -92,6 +92,7 @@ describe('Variables', function () {
 
         varNode.variable = "myVariable";
         varNode.setContext(context1);
+        
         const nextNode1 = varNode.postExecute();
         assert.equal(varNode.isPostExecuted(), true);
         assert.equal(nextNode1, null);
@@ -194,12 +195,5 @@ describe('Variables', function () {
         };
 
         expect(testFunc).to.throw(ReferenceError);
-    });
-
-    it('Variables hasFilters()', function () {
-        const varNode = new VarNode(new Tag(0, "{{ myVariable }}", 0), 0);
-        assert.equal(varNode.hasFilters(), false);
-        varNode._nodeFilter._type = "Null";
-        assert.equal(varNode.hasFilters(), true);
     });
 });

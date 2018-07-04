@@ -12,14 +12,14 @@ const TemplateError = require('../lib/templateError.js');
 describe('ObjectFilterNode', function () {
     it('ObjectFilterNode constructor', function () {
         const testFunc = function () {
-            const objectFilterNode = new ObjectFilterNode("{value: 'This is a string'}", 1);
+            const objectFilterNode = new ObjectFilterNode("{value: 'This is a string'}", 1, 0);
         };
         expect(testFunc).to.not.throw();
     });
 
     it('ObjectFilterNode addChild()', function () {
-        const parent = new ObjectFilterNode("{ value: 'This is a string, child'}", 1);
-        const child = new StringFilterNode("This is a string, child", 1);
+        const parent = new ObjectFilterNode("{ value: 'This is a string, child'}", 1, 0);
+        const child = new StringFilterNode("This is a string, child", 1, 0);
 
         assert.equal(parent.getChildren().length, 1);
 
@@ -29,10 +29,10 @@ describe('ObjectFilterNode', function () {
     });
 
     it('ObjectFilterNode getFirstChild()', function () {
-        const parent = new ObjectFilterNode("{ value: 'This is a string, child1', value: 'This is a string, child2', value: 'This is a string, child3'}", 1);
-        const child1 = new StringFilterNode("This is a string, child1", 1);
-        const child2 = new StringFilterNode("This is a string, child2", 1);
-        const child3 = new StringFilterNode("This is a string, child3", 1);
+        const parent = new ObjectFilterNode("{ value: 'This is a string, child1', value: 'This is a string, child2', value: 'This is a string, child3'}", 1, 0);
+        const child1 = new StringFilterNode("This is a string, child1", 1, 0);
+        const child2 = new StringFilterNode("This is a string, child2", 1, 0);
+        const child3 = new StringFilterNode("This is a string, child3", 1, 0);
 
         assert.equal(parent.getFirstChild(), null);
 
@@ -44,10 +44,10 @@ describe('ObjectFilterNode', function () {
     });
 
     it('ObjectFilterNode getLastChild()/hasChildren()', function () {
-        const parent = new ObjectFilterNode("{value: 'This is a string, child1', value: 'This is a string, child2', value: 'This is a string, child3'}", 1);
-        const child1 = new StringFilterNode("This is a string, child1", 1);
-        const child2 = new StringFilterNode("This is a string, child2", 1);
-        const child3 = new StringFilterNode("This is a string, child3", 1);
+        const parent = new ObjectFilterNode("{value: 'This is a string, child1', value: 'This is a string, child2', value: 'This is a string, child3'}", 1, 0);
+        const child1 = new StringFilterNode("This is a string, child1", 1, 0);
+        const child2 = new StringFilterNode("This is a string, child2", 1, 0);
+        const child3 = new StringFilterNode("This is a string, child3", 1, 0);
 
         assert.equal(parent.getFirstChild(), null);
         assert.equal(parent.hasChildren(), false);
@@ -66,7 +66,7 @@ describe('ObjectFilterNode', function () {
     });
 
     it('ObjectFilterNode _parse(): success #1', function () {
-        const objectFilterNode1 = new ObjectFilterNode("{value: 'This is a string1'}", 1);
+        const objectFilterNode1 = new ObjectFilterNode("{value: 'This is a string1'}", 1, 0);
         assert.deepEqual(objectFilterNode1._children, [{
             key: "value",
             value: "'This is a string1'",
@@ -74,13 +74,13 @@ describe('ObjectFilterNode', function () {
         }]);
         assert.deepEqual(objectFilterNode1.getChildrenToBuild(), ["'This is a string1'"]);
 
-        const objectFilterNode2 = new ObjectFilterNode("{}", 1);
+        const objectFilterNode2 = new ObjectFilterNode("{}", 1, 0);
         assert.deepEqual(objectFilterNode2.getChildren(), []);
         assert.deepEqual(objectFilterNode2.getChildrenToBuild(), []);
     });
 
     it('ObjectFilterNode _parse(): success #2', function () {
-        const objectFilterNode1 = new ObjectFilterNode("{value1: {value: 'this is a string'}, value2: 'This is a standalone string', value3: 23, value4: translate('something to translate'), value5: variableName, value6: ['This is a string in an array1', 'This is a string in an array2'], \"value7\": \"This is a string7\"}", 1);
+        const objectFilterNode1 = new ObjectFilterNode("{value1: {value: 'this is a string'}, value2: 'This is a standalone string', value3: 23, value4: translate('something to translate'), value5: variableName, value6: ['This is a string in an array1', 'This is a string in an array2'], \"value7\": \"This is a string7\"}", 1, 0);
         assert.deepEqual(objectFilterNode1._children, [{
             key: "value1",
             value: "{value: 'this is a string'}",
@@ -115,67 +115,67 @@ describe('ObjectFilterNode', function () {
 
     it('ObjectFilterNode _parse(): failure', function () {
         const testFunc1 = function () {
-            const objectFilterNode1 = new ObjectFilterNode("value: 'This is a string1'}", 1);
+            const objectFilterNode1 = new ObjectFilterNode("value: 'This is a string1'}", 1, 0);
         }
         expect(testFunc1).to.throw(TemplateError);
 
         const testFunc2 = function () {
-            const objectFilterNode2 = new ObjectFilterNode("{'This is a string2'", 1);
+            const objectFilterNode2 = new ObjectFilterNode("{'This is a string2'", 1, 0);
         }
         expect(testFunc2).to.throw(TemplateError);
 
         const testFunc3 = function () {
-            const objectFilterNode3 = new ObjectFilterNode("{'value: 'This is a string3', 'value2 : 'This is a string2'}", 1);
+            const objectFilterNode3 = new ObjectFilterNode("{'value: 'This is a string3', 'value2 : 'This is a string2'}", 1, 0);
         }
         expect(testFunc3).to.throw(TemplateError);
 
         const testFunc4 = function () {
-            const objectFilterNode4 = new ObjectFilterNode("{value': \"This is a string4\"}", 1);
+            const objectFilterNode4 = new ObjectFilterNode("{value': \"This is a string4\"}", 1, 0);
         }
         expect(testFunc4).to.throw(TemplateError);
 
         const testFunc5 = function () {
-            const objectFilterNode5 = new ObjectFilterNode("{value\": \"This is a string5\"}", 1);
+            const objectFilterNode5 = new ObjectFilterNode("{value\": \"This is a string5\"}", 1, 0);
         }
         expect(testFunc5).to.throw(TemplateError);
 
         const testFunc6 = function () {
-            const objectFilterNode6 = new ObjectFilterNode("{\"value: 'This is a string6'}", 1);
+            const objectFilterNode6 = new ObjectFilterNode("{\"value: 'This is a string6'}", 1, 0);
         }
         expect(testFunc6).to.throw(TemplateError);
 
         const testFunc7 = function () {
-            const objectFilterNode7 = new ObjectFilterNode("{'value: 'This is a string7'}", 1);
+            const objectFilterNode7 = new ObjectFilterNode("{'value: 'This is a string7'}", 1, 0);
         }
         expect(testFunc7).to.throw(TemplateError);
 
         const testFunc8 = function () {
-            const objectFilterNode8 = new ObjectFilterNode("{'value': 'This is a string8', 'value1: 'This is a string8' }", 1);
+            const objectFilterNode8 = new ObjectFilterNode("{'value': 'This is a string8', 'value1: 'This is a string8' }", 1, 0);
         }
         expect(testFunc8).to.throw(TemplateError);
 
         const testFunc9 = function () {
-            const objectFilterNode9 = new ObjectFilterNode("{'value\": 'This is a string9'}", 1);
+            const objectFilterNode9 = new ObjectFilterNode("{'value\": 'This is a string9'}", 1, 0);
         }
         expect(testFunc9).to.throw(TemplateError);
 
         const testFunc10 = function () {
-            const objectFilterNode10 = new ObjectFilterNode("{\"value: \"This is a string10\", \"value10 : \"This is a string10\"}", 1);
+            const objectFilterNode10 = new ObjectFilterNode("{\"value: \"This is a string10\", \"value10 : \"This is a string10\"}", 1, 0);
         }
         expect(testFunc10).to.throw(TemplateError);
 
         const testFunc11 = function () {
-            const objectFilterNode11 = new ObjectFilterNode("{'value\": 'This is a string10'}", 1);
+            const objectFilterNode11 = new ObjectFilterNode("{'value\": 'This is a string10'}", 1, 0);
         }
         expect(testFunc11).to.throw(TemplateError);
 
         const testFunc12 = function () {
-            const objectFilterNode12 = new ObjectFilterNode("{'value: 'This is a string12', 'value2' : 'This is a string12'}", 1);
+            const objectFilterNode12 = new ObjectFilterNode("{'value: 'This is a string12', 'value2' : 'This is a string12'}", 1, 0);
         }
         expect(testFunc12).to.throw(TemplateError);
 
         const testFunc13 = function () {
-            const objectFilterNode13 = new ObjectFilterNode("{\"value: \"This is a string13\", \"value2\" : \"This is a string13\"}", 1);
+            const objectFilterNode13 = new ObjectFilterNode("{\"value: \"This is a string13\", \"value2\" : \"This is a string13\"}", 1, 0);
         }
         expect(testFunc13).to.throw(TemplateError);
     });

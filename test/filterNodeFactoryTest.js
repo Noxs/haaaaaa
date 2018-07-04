@@ -53,6 +53,9 @@ describe('FilterNodeFactory', function () {
 
     it('FilterNodeFactory create(): success', function () {
         const filterNodeFactory = new FilterNodeFactory(1);
+        assert.instanceOf(filterNodeFactory.create("'This is a string'"), FunctionFilterNode);
+        filterNodeFactory._depth = 1;
+
         assert.instanceOf(filterNodeFactory.create("'This is a string'"), StringFilterNode);
 
         assert.instanceOf(filterNodeFactory.create('"This is a string"'), StringFilterNode);
@@ -66,10 +69,17 @@ describe('FilterNodeFactory', function () {
         assert.instanceOf(filterNodeFactory.create("['This is a string1', 'This is a string2']"), ArrayFilterNode);
 
         assert.instanceOf(filterNodeFactory.create("translate('Something to translate')"), FunctionFilterNode);
+
+        filterNodeFactory.up();
+        assert.equal(filterNodeFactory.create(""), null);
+
+
     });
 
     it('FilterNodeFactory create(): failure', function () {
         const filterNodeFactory = new FilterNodeFactory(1);
+        
+        filterNodeFactory._depth = 1;
 
         const testFunc1 = function () {
            filterNodeFactory.create("'This is a string\"");
