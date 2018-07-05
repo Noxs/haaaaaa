@@ -12,6 +12,15 @@ const BadParameterError = require('../lib/badParameterError.js');
 const LogicError = require('../lib/logicError.js');
 
 describe('Node', function () {
+    it('Node constructor() success', function () {
+        const tag = new Tag(0, " ", 0);
+        const depth = 0;
+        const testFunc = function () {
+            const node = new Node(tag, depth);
+        }
+        expect(testFunc).to.not.throw();
+    });
+
     it('Node constructor() failure', function () {
         const tag = new Tag(0, " ", 0);
         const testFuncWithNoParameters = function () {
@@ -26,15 +35,6 @@ describe('Node', function () {
         expect(testFuncWithNoParameters).to.throw();
         expect(testFuncWithBadFirstParameters).to.throw();
         expect(testFuncWithBadSecondParameters).to.throw();
-    });
-
-    it('Node constructor() success', function () {
-        const tag = new Tag(0, " ", 0);
-        const depth = 0;
-        const testFunc = function () {
-            const node = new Node(tag, depth);
-        }
-        expect(testFunc).to.not.throw();
     });
 
     it('Node complete() failure', function () {
@@ -677,5 +677,9 @@ describe('Node', function () {
         child2._fetchContext();
 
         assert.equal(child1.context, child2.context);
+    });
+
+    it('Node _fetchFilters()', function () {
+       
     });
 });

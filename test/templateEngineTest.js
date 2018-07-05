@@ -25,6 +25,30 @@ describe('TemplateEngine', function () {
         assert.equal(templateEngine.render(template3, context, style), "A template with Some style");
     });
 
+    it('TemplateEngine render : success with filter', function () {
+        const templateEngine = new TemplateEngine();
+        const template = fs.readFileSync(path.resolve(__dirname, "./template/body_with_filter.html.ste")).toString();
+        const context = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./template/parameters_with_filter.json")));
+
+        const filter = {
+            getName: function() {
+                return "testFilter";
+            },
+            execute: function (input, param, context) {
+                return "Input that has been entered is: " + input;
+            }
+        };
+
+        templateEngine.addFilter(filter);
+        assert.equal(templateEngine.render(template, context), fs.readFileSync(path.resolve(__dirname, "./template/body_with_filter.html")).toString());
+    });
+
+    it('TemplateEngine render : success with multiple call', function () {
+       //TODO render same template several time with different context
+    });
+
+    
+
     it('TemplateEngine render : failure', function () {
         const templateEngine = new TemplateEngine();
         const template = fs.readFileSync(path.resolve(__dirname, "./template/body.html.ste")).toString();

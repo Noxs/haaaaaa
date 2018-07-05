@@ -41,6 +41,11 @@ describe('Filter', function () {
     });
 
     it('Filter build(): success', function () {
+        const softFilter = new Filter(0);
+        softFilter.build("mySoftFilter");
+
+        assert.instanceOf(softFilter._start, FunctionFilterNode);
+
         const filter = new Filter(0);
         filter.build("myFilter({value1: {value: 'this is a string'}, value2: 'This is a standalone string', value3: 23, value4: translate('something to translate'), value5: variableName, value6: ['This is a string in an array1', 'This is a string in an array2'], \"value7\": \"This is a string7\"})");
         

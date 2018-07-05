@@ -20,13 +20,13 @@ describe('Variables', function () {
     });
 
     it('Variables selfComplete() method : success', function () {
-        //TODO filters
         const varNode = new VarNode(new Tag(0, "{{ myVar | filterName }}", 0), 0);
         const template = new Template("{{ myVar | filterName }}");
 
         varNode.selfComplete(template);
         assert.deepEqual(varNode.template.content, " myVar | filterName ");
         assert.deepEqual(varNode.variable, "myVar");
+        assert.isNotNull(varNode._nodeFilter._start);
     });
 
     it('Variables selfComplete() method : failure', function () {
@@ -56,9 +56,18 @@ describe('Variables', function () {
 
     it('Variables postExecute() method : success', function () {
         //TODO filters
+        const filter = {
+            getName: function () {
+                return "testFilter";
+            },
+            execute: function () {
+                return "This is a filter string";
+            },
+        };
         const varNode = new VarNode(new Tag(0, "{{ myVariable }}", 0), 0);
         const varNode1 = new VarNode(new Tag(0, "{{ myVariable1 }}", 0), 0);
         const varNode2 = new VarNode(new Tag(0, "{{ myVariable2 }}", 0), 0);
+        const varNode3 = new VarNode(new Tag(0, "{{ myVariable3 | testFilter }}", 0), 0);
 
         const context1 = new Context({
             myVariable: "This is a string."
@@ -88,6 +97,9 @@ describe('Variables', function () {
         });
         const context9 = new Context({
             myVariable: ["Value1", "Value2", "Value3"]
+        });
+        const context10 = new Context({
+            myVariable3: "This is a variable3"
         });
 
         varNode.variable = "myVariable";
@@ -167,6 +179,13 @@ describe('Variables', function () {
         assert.equal(varNode.isPostExecuted(), true);
         assert.equal(varNode.result.content, "Value2");
         assert.equal(nextNode10, varNode2);
+
+        varNode3.variable = "myVariable3";
+        varNode3.setContext(context10);
+        varNode3._filterInstances = [filter];
+        varNode3.selfComplete(new Template("{{ myVariable3 | testFilter }}"));
+        varNode3.postExecute();
+        assert.equal(varNode3.result.content, "This is a filter string");
     });
 
     it('Variables postExecute() method : failure #1', function () {
