@@ -92,7 +92,7 @@ describe('Variables', function () {
 
         varNode.variable = "myVariable";
         varNode.setContext(context1);
-        
+
         const nextNode1 = varNode.postExecute();
         assert.equal(varNode.isPostExecuted(), true);
         assert.equal(nextNode1, null);
@@ -102,8 +102,8 @@ describe('Variables', function () {
         varNode._nodeFilter._type = "Null";
         varNode._nodeFilter._filterName = "myFilter";
         varNode._nodeFilter._filterInstances = [{
-            getName: function () {return "myFilter";},
-            execute: function (input, params, context) {return input;}
+            getName: function () { return "myFilter"; },
+            execute: function (input, params, context) { return input; }
         }];
         const nextNode2 = varNode.postExecute();
         assert.equal(varNode.isPostExecuted(), true);
