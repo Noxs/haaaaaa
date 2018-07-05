@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    {% if variable %}
-        {% if variables1.length === 1 %}
-            <title>{{ variable }}</title>
-        {% endif %}
-    {% endif %}
+    
+        
+            <title>My variable</title>
+        
+    
 </head>
 
 <body>
@@ -18,7 +18,7 @@
                 <td>
                     <table>
                         <tr>
-                            <td background="https://{{variable}}">
+                            <td background="https://My variable">
                                 <table>
                                     <tbody>
                                         <tr>
@@ -35,7 +35,7 @@
                                                                                     <tbody>
                                                                                         <tr>
                                                                                             <td style="padding:0;">
-                                                                                                <img src="https://{{url}}" alt="">
+                                                                                                <img src="https://website.com" alt="">
                                                                                             </td>
                                                                                         </tr>
                                                                                     </tbody>
@@ -64,9 +64,7 @@
                                                     <tbody>
                                                         <tr>
                                                             <td>
-                                                                {% if variables2.length === 1 %}
-                                                                    <div>{{ variable }}</div>
-                                                                {% endif %}
+                                                                
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -83,56 +81,64 @@
                                                     <tbody>
                                                         <tr>
                                                             <td>
-                                                                {% if variable %}
+                                                                
                                                                     <div>
                                                                         <div>
-                                                                            {{ variable }}
+                                                                            My variable
                                                                         </div>
                                                                         <div>
-                                                                            {{ variable }}
+                                                                            My variable
                                                                         </div>
                                                                     </div>
                                                                     <br/>
-                                                                {% endif %}
+                                                                
                                                                 <div>
                                                                     <div>
-                                                                        {{ variable }}
+                                                                        My variable
                                                                     </div>
                                                                     <div >
-                                                                        <a  href="https://{{url}}" target="_blank">https://{{ url }}</a>
+                                                                        <a  href="https://website.com" target="_blank">https://website.com</a>
                                                                     </div>
                                                                 </div>
                                                                 <br/>
                                                                 <div>
                                                                     <div>
-                                                                        {{ variable }}
+                                                                        My variable
                                                                     </div>
                                                                     <div>
-                                                                        {{ variable }}
+                                                                        My variable
                                                                     </div>
                                                                 </div>
                                                                 <br/>
                                                                 <div>
                                                                     <div>
-                                                                        {{ variable2 | testFilter2(2) }}
+                                                                        Input that has been entered is: 12, and (input+param) equals 14
                                                                     </div>
                                                                     <div>
-                                                                        {{ variable | testFilter1 }}
+                                                                        Input that has been entered is: My variable
                                                                     </div>
                                                                 </div>
                                                                 <br/>
                                                                 <div>
                                                                     <div>
-                                                                        {% if variables3.length === 1 %}
-                                                                            {{ variable }}
-                                                                        {% endif %}
+                                                                        
                                                                     </div>
-                                                                    {% for variable in variables %}
+                                                                    
                                                                         <a>
-                                                                            {{ variable.key }}
+                                                                            This is Value1
                                                                         </a>
                                                                         <br/>
-                                                                    {% endfor %}
+                                                                    
+                                                                        <a>
+                                                                            This is Value2
+                                                                        </a>
+                                                                        <br/>
+                                                                    
+                                                                        <a>
+                                                                            This is Value3
+                                                                        </a>
+                                                                        <br/>
+                                                                    
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -146,38 +152,7 @@
                         </tr>
                         <tr>
                             <td>
-                                {% if !variable %}
-                                <table>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <table>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>
-                                                                <table>
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td>
-                                                                                <a href="https://{{url}}" target="_blank">
-                                                                                    <img src="https://{{ url }}" alt="">
-                                                                                </a>
-                                                                            </td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                                <div>
-                                                                    <span>{{ variable }}</span>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                {% endif %}
+                                
                             </td>
                         </tr>
                     </table>

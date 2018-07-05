@@ -30,24 +30,65 @@ describe('TemplateEngine', function () {
         const template = fs.readFileSync(path.resolve(__dirname, "./template/body_with_filter.html.ste")).toString();
         const context = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./template/parameters_with_filter.json")));
 
-        const filter = {
-            getName: function() {
-                return "testFilter";
+        const filter1 = {
+            getName: function () {
+                return "testFilter1";
+            },
+            execute: function (input, param, filterContext) {
+                assert.deepEqual(param, null);
+                assert.deepEqual(filterContext, context);
+                return "Input that has been entered is: " + input;
+            }
+        };
+
+        const filter2 = {
+            getName: function () {
+                return "testFilter2";
+            },
+            execute: function (input, param, filterContext) {
+                assert.equal(param, 2);
+                assert.deepEqual(filterContext, context);
+                return "Input that has been entered is: " + input + ", and (input+param) equals " + (input + param);
+            }
+        };
+
+        templateEngine.addFilter(filter1);
+        templateEngine.addFilter(filter2);
+
+        assert.equal(templateEngine.render(template, context), fs.readFileSync(path.resolve(__dirname, "./template/body_with_filter.html")).toString());
+    });
+
+    it('TemplateEngine render : success with multiple call and different contexts', function () {
+        const templateEngine = new TemplateEngine();
+        const template = fs.readFileSync(path.resolve(__dirname, "./template/body_with_filter.html.ste")).toString();
+        const context = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./template/parameters_with_filter.json")));
+
+        const filter1 = {
+            getName: function () {
+                return "testFilter1";
             },
             execute: function (input, param, context) {
                 return "Input that has been entered is: " + input;
             }
         };
 
-        templateEngine.addFilter(filter);
+        const filter2 = {
+            getName: function () {
+                return "testFilter2";
+            },
+            execute: function (input, param, context) {
+                return "Input that has been entered is: " + input + ", and (input+param) equals " + (input + param);
+            }
+        };
+
+        templateEngine.addFilter(filter1);
+        templateEngine.addFilter(filter2);
+
         assert.equal(templateEngine.render(template, context), fs.readFileSync(path.resolve(__dirname, "./template/body_with_filter.html")).toString());
-    });
 
-    it('TemplateEngine render : success with multiple call', function () {
-       //TODO render same template several time with different context
+        const context1 = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./template/parameters_with_filter.1.json")));
+        assert.equal(templateEngine.render(template, context1), fs.readFileSync(path.resolve(__dirname, "./template/body_with_filter.1.html")).toString());
     });
-
-    
 
     it('TemplateEngine render : failure', function () {
         const templateEngine = new TemplateEngine();
@@ -80,7 +121,7 @@ describe('TemplateEngine', function () {
 
         templateEngine.addFilter(filter);
         assert.equal(templateEngine._filterInstances.length, 1);
-        
+
         templateEngine.addFilter(filter);
         assert.equal(templateEngine._filterInstances.length, 2);
 
@@ -110,17 +151,17 @@ describe('TemplateEngine', function () {
             templateEngine.addFilter(filter1);
         };
         expect(testFunc1).to.throw(InvalidFilterError);
-        
+
         const testFunc2 = function () {
             templateEngine.addFilter(filter2);
         };
         expect(testFunc2).to.throw(InvalidFilterError);
-        
+
         const testFunc3 = function () {
             templateEngine.addFilter(filter3);
         };
         expect(testFunc3).to.throw(InvalidFilterError);
-        
+
         const testFunc4 = function () {
             templateEngine.addFilter("This is not an object");
         };
