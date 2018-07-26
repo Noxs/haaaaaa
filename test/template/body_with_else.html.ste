@@ -4,17 +4,19 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    {% if variable %}
-        {% if variables.length === 1 %}
+    {% if variable12 %}
+        {% if variables.length === 3 %}
             <title>{{ variable }}</title>
         {% else %}
             <title>string</title>
         {% endif %}
     {% else %}
         {% if variables.length === 1 %}
-            <title>string</title>
-        {% else %}
+            <title>string 1</title>
+        {% elseif variables.length === 2 %}
             <title>string 2</title>
+        {% else %}
+            <title>string 3</title>
         {% endif %}
     {% endif %}
 </head>
@@ -73,9 +75,9 @@
                                                         <tr>
                                                             <td>
                                                                 {% if variables.length === 1 %}
-                                                                    <div>{{ variable }}</div>
+                                                                    Not shown
                                                                 {% else %}
-                                                                    <div>{{ variable }}</div>
+                                                                    Shown
                                                                 {% endif %}
                                                             </td>
                                                         </tr>
@@ -134,9 +136,11 @@
                                                                 <div>
                                                                     <div>
                                                                         {% if variables.length === 1 %}
-                                                                            {{ variable }}
-                                                                        {% else %}
-                                                                            {{ variable }}
+                                                                            {{ variable }}1
+                                                                        {% elseif variables.length === 3 %}
+                                                                            {{ variable }}3
+                                                                        {% elseif variables.length === 2 %}
+                                                                            {{ variable }}2
                                                                         {% endif %}
                                                                     </div>
                                                                     {% for variable in variables %}

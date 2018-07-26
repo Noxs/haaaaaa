@@ -2,6 +2,7 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
+const Filter = require('../lib/filter.js');
 const Template = require('../lib/template.js');
 const Context = require('../lib/context.js');
 const VarNode = require('../lib/variableNode.js');
@@ -10,7 +11,29 @@ const BadParameterError = require('../lib/badParameterError.js');
 
 describe('Variables', function () {
     it('Variables constructor() method', function () {
-        //TODO
+        const tag = new Tag(0, "{{ myVar | filterName }}", 0);
+        const varNode = new VarNode(tag, 0);
+
+        assert.equal(varNode.open, tag);
+        assert.equal(varNode._close, null);
+        assert.equal(varNode.depth, 0);
+        assert.equal(varNode._next, null);
+        assert.equal(varNode._previous, null);
+        assert.equal(varNode._parent, null);
+        assert.deepEqual(varNode._children, []);
+        assert.equal(varNode._category, null);
+        assert.equal(varNode.template, null);
+        assert.equal(varNode._preExecuted, false);
+        assert.equal(varNode._postExecuted, false);
+        assert.equal(varNode._context, null);
+        assert.equal(varNode._filterInstances, null);
+        assert.equal(varNode._relativeStart, null);
+        assert.equal(varNode._relativeEnd, null);
+        assert.equal(varNode.result, null);
+
+        assert.instanceOf(varNode._nodeFilter, Filter);
+        assert.equal(varNode.variable, null);
+        
     });
 
     it('Variables extractVar() method', function () {

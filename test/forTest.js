@@ -10,14 +10,54 @@ const Template = require('../lib/template.js');
 
 describe('For', function () {
     it('For constructor()', function () {
-        //TODO
-    });
+        const tag = new Tag(0, "{% for user in users %}", 0);
+        const forNode = new ForNode(tag, 0);
 
+        assert.equal(forNode.open, tag);
+        assert.equal(forNode._close, null);
+        assert.equal(forNode.depth, 0);
+        assert.equal(forNode._next, null);
+        assert.equal(forNode._previous, null);
+        assert.equal(forNode._parent, null);
+        assert.deepEqual(forNode._children, []);
+        assert.equal(forNode._category, null);
+        assert.equal(forNode.template, null);
+        assert.equal(forNode._preExecuted, false);
+        assert.equal(forNode._postExecuted, false);
+        assert.equal(forNode._context, null);
+        assert.equal(forNode._filterInstances, null);
+        assert.equal(forNode._relativeStart, null);
+        assert.equal(forNode._relativeEnd, null);
+        assert.equal(forNode.result, null);
+
+        assert.equal(forNode._forContextVariableName, null);
+        assert.equal(forNode._value, null);
+        assert.equal(forNode._key, null);
+        assert.equal(forNode._iterationNumber, null);
+        assert.equal(forNode._currentIteration, null);
+        assert.equal(forNode._results, null);
+    });
+    
     it('For _init()', function () {
-        //TODO
+        const forNode = new ForNode(new Tag(0, "{% for user in users %}", 0), 0);
+        forNode._forContextVariableName = "myVar";
+        forNode._value = "Value";
+        forNode._key = "Key";
+        forNode._iterationNumber = 1;
+        forNode._currentIteration = 0;
+        forNode._results = ["This is a string"];
+        
+        forNode._init();
+        
+        assert.equal(forNode._forContextVariableName, null);
+        assert.equal(forNode._value, null);
+        assert.equal(forNode._key, null);
+        assert.equal(forNode._iterationNumber, null);
+        assert.equal(forNode._currentIteration, null);
+        assert.equal(forNode._results, null);
         
     });
-
+    
     it('For getContextForChildren()', function () {
         const context1 = new Context({
             tab: ["value1", "value2", "value3"]

@@ -98,6 +98,13 @@ describe('Context', function () {
     });
 
     it('Context stringify() method', function () {
-        // TODO
+        const test = {
+            year: 2017,
+            day: "Tuesday",
+        };
+        const context = new Context(test);
+        
+        assert.equal(context.stringify(), "var year=2017;var day=\"Tuesday\";");
+        assert.equal(context.stringify("expression"), "var year=2017;var day=\"Tuesday\";expression");
     });
 });

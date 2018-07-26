@@ -11,7 +11,25 @@ const UsageError = require('../lib/usageError.js');
 
 describe('StyleNode', function () {
     it('StyleNode constructor() : success', function () {
-        //TODO
+        const tag = new Tag(0, "{% style %}", 0);
+        const styleNode = new StyleNode(tag, 0);
+
+        assert.equal(styleNode.open, tag);
+        assert.equal(styleNode._close, null);
+        assert.equal(styleNode.depth, 0);
+        assert.equal(styleNode._next, null);
+        assert.equal(styleNode._previous, null);
+        assert.equal(styleNode._parent, null);
+        assert.deepEqual(styleNode._children, []);
+        assert.equal(styleNode._category, null);
+        assert.equal(styleNode.template, null);
+        assert.equal(styleNode._preExecuted, false);
+        assert.equal(styleNode._postExecuted, false);
+        assert.equal(styleNode._context, null);
+        assert.equal(styleNode._filterInstances, null);
+        assert.equal(styleNode._relativeStart, null);
+        assert.equal(styleNode._relativeEnd, null);
+        assert.equal(styleNode.result, null);
     });
 
     it('StyleNode constructor() : failure', function () {

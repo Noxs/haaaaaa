@@ -15,10 +15,29 @@ describe('Node', function () {
     it('Node constructor() success', function () {
         const tag = new Tag(0, " ", 0);
         const depth = 0;
+        let node = null;
         const testFunc = function () {
-            const node = new Node(tag, depth);
+            node = new Node(tag, depth);
         }
         expect(testFunc).to.not.throw();
+
+        assert.equal(node.open, tag);
+        assert.equal(node._close, null);
+        assert.equal(node.depth, 0);
+        assert.equal(node._next, null);
+        assert.equal(node._previous, null);
+        assert.equal(node._parent, null);
+        assert.deepEqual(node._children, []);
+        assert.equal(node._category, null);
+        assert.equal(node.template, null);
+        assert.equal(node._preExecuted, false);
+        assert.equal(node._postExecuted, false);
+        assert.equal(node._context, null);
+        assert.equal(node._filterInstances, null);
+        assert.equal(node._relativeStart, null);
+        assert.equal(node._relativeEnd, null);
+        assert.equal(node.result, null);
+
     });
 
     it('Node constructor() failure', function () {
@@ -32,9 +51,9 @@ describe('Node', function () {
         const testFuncWithBadSecondParameters = function () {
             const node = new Node(tag, "not good");
         }
-        expect(testFuncWithNoParameters).to.throw();
-        expect(testFuncWithBadFirstParameters).to.throw();
-        expect(testFuncWithBadSecondParameters).to.throw();
+        expect(testFuncWithNoParameters).to.throw(/*TODO error type*/);
+        expect(testFuncWithBadFirstParameters).to.throw(/*TODO error type*/);
+        expect(testFuncWithBadSecondParameters).to.throw(/*TODO error type*/);
     });
 
     it('Node complete() failure', function () {
@@ -649,7 +668,7 @@ describe('Node', function () {
         const parent = new Node(new Tag(0, "  parent  ", 0), 0);
         const child1 = new Node(new Tag(0, "  child1  ", 0), 0);
         const child2 = new Node(new Tag(0, "  child2  ", 0), 0);
-        const child3 = new Node(new Tag(0, "  child3  ", 0), 0);
+        const child3 = new Node(new Tag(0, "  child3  ", 0), 0); //TODO why not used
         const node1 = new Node(new Tag(0, "  node1  ", 0), 0);
         const node2 = new Node(new Tag(0, "  node2  ", 0), 0);
         const context = new Context({});
@@ -680,6 +699,30 @@ describe('Node', function () {
     });
 
     it('Node _fetchFilters()', function () {
-       
+        const previous = new Node(new Tag(0, "  previous  ", 0), 0);
+        const parent = new Node(new Tag(0, "  parent  ", 0), 0);
+        const child1 = new Node(new Tag(0, "  child1  ", 0), 0);
+        const context = new Context({});
+
+        previous.setContext(context);
+
+        previous.addNext(parent);
+        parent._fetchContext();
+        child1.addParent(parent);
+        
+        child1._fetchContext();
+
+        assert.deepEqual(previous.context, parent.context);
+        assert.deepEqual(child1.context, parent.context);
+    });
+
+    it('Node addStep()', function () {
+        const tag = new Tag(0, " ", 0);
+        const node = new Node(new Tag(0, "  node  ", 0), 0);
+        const testFunc = function () {
+            node.addStep(tag);
+        };
+
+        expect(testFunc).to.throw(TemplateError);
     });
 });

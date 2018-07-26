@@ -8,6 +8,7 @@ const Tag = require('../lib/tag.js');
 const Template = require('../lib/template.js');
 const Context = require('../lib/context.js');
 const IfNode = require('../lib/ifNode.js');
+const TemplateError = require('../lib/templateError.js');
 const BadParameterError = require('../lib/badParameterError.js');
 const UsageError = require('../lib/usageError.js');
 const fs = require("fs");
@@ -405,6 +406,160 @@ describe('Tree', function () {
         assert.equal(currentNode.children[2].open.rawContent, "{{ variable }}");
         assert.equal(currentNode.children[2].open.line, 170);
         currentNode = currentNode.next;
+    });
+
+    it('Tree create() method: success with if, else, and elseif', function () {
+        const template = new Template(fs.readFileSync(path.resolve(__dirname, "./template/body_with_else.html.ste")).toString());
+        const tree = new Tree(template);
+
+        tree.create();
+        tree.reset();
+
+        let currentNode = tree._start;
+
+        assert.equal(currentNode.template.content.replace(/\s/g, ""), "{% if variables.length === 3 %}<title>{{ variable }}</title>{% else %}<title>string</title>{% endif %}{% else %}{% if variables.length === 1 %}<title>string 1</title>{% elseif variables.length === 2 %}<title>string 2</title>{% else %}<title>string 3</title>{% endif %}".replace(/\s/g, ""));
+        assert.equal(currentNode.open.line, 7);
+        assert.equal(currentNode.children.length, 2);
+        assert.equal(currentNode.children[0].isIfCategory(), true);
+        assert.equal(currentNode.children[0].open.rawContent, "{% if variables.length === 3 %}");
+        assert.equal(currentNode.children[0].open.line, 8);
+        assert.equal(currentNode.children[0].depth, 1);
+        assert.equal(currentNode.children[0]._steps[0].template.content.replace(/\s/g, ""), "<title>{{ variable }}</title>".replace(/\s/g, ""));
+        assert.equal(currentNode.children[0]._steps[0].children[0].isVarCategory(), true);
+        assert.equal(currentNode.children[0]._steps[0].children[0].open.rawContent, "{{ variable }}");
+        assert.equal(currentNode.children[0]._steps[0].children[0].open.line, 9);
+        assert.equal(currentNode.children[0]._steps[0].children[0].depth, 2);
+    
+        assert.equal(currentNode.children[0]._steps[1].template.content.replace(/\s/g, ""), "<title>string</title>".replace(/\s/g, ""));
+        
+        assert.equal(currentNode.children[1].isIfCategory(), true);
+        assert.equal(currentNode.children[1].open.rawContent, "{% if variables.length === 1 %}");
+        assert.equal(currentNode.children[1].open.line, 14);
+        assert.equal(currentNode.children[1].depth, 1);
+        assert.equal(currentNode.children[1].children, 0);
+        assert.deepEqual(currentNode.children[1]._steps[0].children, []);
+        assert.equal(currentNode.children[1]._steps[0].template.content.replace(/\s/g, ""), "<title>string 1</title>".replace(/\s/g, ""));
+        assert.equal(currentNode.children[1]._steps[1].template.content.replace(/\s/g, ""), "<title>string 2</title>".replace(/\s/g, ""));
+        assert.equal(currentNode.children[1]._steps[2].template.content.replace(/\s/g, ""), "<title>string 3</title>".replace(/\s/g, ""));
+
+        currentNode = currentNode.next;
+
+        assert.equal(currentNode.open.rawContent, "{{variable}}");
+        assert.equal(currentNode.open.line, 31);
+        assert.equal(currentNode.depth, 0);
+        currentNode = currentNode.next;
+
+        assert.equal(currentNode.open.rawContent, "{{url}}");
+        assert.equal(currentNode.open.line, 48);
+        assert.equal(currentNode.depth, 0);
+        currentNode = currentNode.next;
+
+        assert.equal(currentNode.template.content.replace(/\s/g, ""), "Not shown{% else %}Shown".replace(/\s/g, ""));
+        assert.equal(currentNode.open.line, 77);
+        assert.equal(currentNode.depth, 0);
+        assert.deepEqual(currentNode._steps[0].children, []);
+        assert.deepEqual(currentNode._steps[1].children, []);
+        currentNode = currentNode.next;
+
+        assert.equal(currentNode.template.content.replace(/\s/g, ""), "<div><div>{{ variable }}</div><div>{{ variable }}</div></div><br/>".replace(/\s/g, ""));
+        assert.equal(currentNode.open.line, 98);
+        assert.equal(currentNode.depth, 0);
+        assert.equal(currentNode.children[0].open.rawContent, "{{ variable }}");
+        assert.equal(currentNode.children[0].open.line, 101);
+        assert.equal(currentNode.children[0].depth, 1);
+        assert.equal(currentNode.children[0].next.open.rawContent, "{{ variable }}");
+        assert.equal(currentNode.children[0].next.open.line, 104);
+        assert.equal(currentNode.children[0].next.depth, 1);
+        currentNode = currentNode.next;
+
+        assert.equal(currentNode.open.rawContent, "{{ variable }}");
+        assert.equal(currentNode.open.line, 111);
+        currentNode = currentNode.next;
+
+        assert.equal(currentNode.open.rawContent, "{{url}}");
+        assert.equal(currentNode.open.line, 114);
+        currentNode = currentNode.next;
+
+        assert.equal(currentNode.open.rawContent, "{{url}}");
+        assert.equal(currentNode.open.line, 114);
+        currentNode = currentNode.next;
+
+        assert.equal(currentNode.open.rawContent, "{{ variable }}");
+        assert.equal(currentNode.open.line, 120);
+        currentNode = currentNode.next;
+
+        assert.equal(currentNode.open.rawContent, "{{ variable }}");
+        assert.equal(currentNode.open.line, 123);
+        currentNode = currentNode.next;
+
+        assert.equal(currentNode.open.rawContent, "{{ variable }}");
+        assert.equal(currentNode.open.line, 129);
+        currentNode = currentNode.next;
+
+        assert.equal(currentNode.open.rawContent, "{{ variable }}");
+        assert.equal(currentNode.open.line, 132);
+        currentNode = currentNode.next;
+
+        assert.equal(currentNode.template.content.replace(/\s/g, ""), "{{ variable }}1{% elseif variables.length === 3 %}{{ variable }}3{% elseif variables.length === 2 %}{{ variable }}2".replace(/\s/g, ""));
+        assert.equal(currentNode.open.line, 138);
+        assert.equal(currentNode.children[0].open.rawContent, "{{ variable }}");
+        assert.equal(currentNode.children[0].open.line, 139);
+        assert.equal(currentNode.children[1].open.rawContent, "{{ variable }}");
+        assert.equal(currentNode.children[1].open.line, 141);
+        
+        assert.equal(currentNode._steps[0].template.content.replace(/\s/g, ""), "{{ variable }}1".replace(/\s/g, ""));
+        assert.equal(currentNode._steps[0].children[0].depth, 1);
+        assert.equal(currentNode._steps[0].children[0].isVarCategory(), true);
+        
+        assert.equal(currentNode._steps[1].template.content.replace(/\s/g, ""), "{{ variable }}3".replace(/\s/g, ""));
+        assert.equal(currentNode._steps[1].children[0].depth, 1);
+        assert.equal(currentNode._steps[1].children[0].isVarCategory(), true);
+
+        assert.equal(currentNode._steps[2].template.content.replace(/\s/g, ""), "{{ variable }}2".replace(/\s/g, ""));
+        assert.equal(currentNode._steps[2].children[0].depth, 1);
+        assert.equal(currentNode._steps[2].children[0].isVarCategory(), true);
+        currentNode = currentNode.next;
+
+        assert.equal(currentNode.template.content.replace(/\s/g, ""), "<a>{{ variable.key }}</a><br/>".replace(/\s/g, ""));
+        assert.equal(currentNode.open.line, 146);
+        assert.equal(currentNode.children[0].open.rawContent, "{{ variable.key }}");
+        assert.equal(currentNode.children[0].open.line, 148);
+        currentNode = currentNode.next;
+
+        assert.equal(currentNode.template.content.replace(/\s/g, ""), "<table><tbody><tr><td><table><tbody><tr><td><table><tbody><tr><td><a href=\"https://{{url}}\" target=\"_blank\"><img src=\"https://{{url}}\" alt=\"\"></a></td></tr></tbody></table><div><span>{{ variable }}</span><br><span><a href=\"{{ url }}\" target=\"_blank\">{{ variable }}</a> | <a href=\"{{ variable }}\" target=\"_blank\">{{ variable }}</a></span></div></td></tr></tbody></table></td></tr></tbody></table>".replace(/\s/g, ""));
+        assert.equal(currentNode.open.line, 165);
+        assert.equal(currentNode.children[0].open.rawContent, "{{url}}");
+        assert.equal(currentNode.children[0].open.line, 178);
+        assert.equal(currentNode.children[1].open.rawContent, "{{url}}");
+        assert.equal(currentNode.children[1].open.line, 179);
+        assert.equal(currentNode.children[2].open.rawContent, "{{ variable }}");
+        assert.equal(currentNode.children[2].open.line, 186);
+        assert.equal(currentNode.children[3].open.rawContent, "{{ url }}");
+        assert.equal(currentNode.children[3].open.line, 187);
+        assert.equal(currentNode.children[4].open.rawContent, "{{ variable }}");
+        assert.equal(currentNode.children[4].open.line, 187);
+        assert.equal(currentNode.children[5].open.rawContent, "{{ variable }}");
+        assert.equal(currentNode.children[5].open.line, 187);
+    });
+
+    it('Tree create() method: failure', function () {
+        const template = new Template("{% else %} This is a template");
+        const tree = new Tree(template);
+
+        const testFunc = function () {
+            tree.create();
+        };
+        
+        expect(testFunc).to.throw(TemplateError);
+        
+        const template2 = new Template("{% if variable %}This is a template{% endif %}{% else %}");
+        const tree2 = new Tree(template2);
+        
+        const testFunc2 = function () {
+            tree2.create();
+        };
+
+        expect(testFunc2).to.throw(TemplateError);
     });
 
     it('Tree execute() method: success', function () {

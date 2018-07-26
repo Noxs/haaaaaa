@@ -4,6 +4,7 @@ const expect = chai.expect;
 const should = chai.should();
 const Template = require('../lib/template.js');
 const BadParameterError = require('../lib/badParameterError.js');
+const BadValueError = require('../lib/badValueError.js');
 const TemplateError = require('../lib/templateError.js');
 
 describe('Template', function () {
@@ -96,7 +97,7 @@ describe('Template', function () {
         const endingSmallerFunc = function () {
             template.extract(7, 2);
         };
-        expect(endingSmallerFunc).to.throw(BadParameterError);
+        expect(endingSmallerFunc).to.throw(BadValueError);
     });
 
     it("Template.extract() method : Second parameter is bigger than last character's index", function () {
@@ -104,7 +105,7 @@ describe('Template', function () {
         const outOfRangeFunc = function () {
             template.extract(2, 14);
         };
-        expect(outOfRangeFunc).to.throw(BadParameterError);
+        expect(outOfRangeFunc).to.throw(BadValueError);
     });
 
     it("Template.extract() method : First parameter is negative", function () {
@@ -112,7 +113,7 @@ describe('Template', function () {
         const firstParameterNegativeFunc = function () {
             template.extract(-2, 11);
         };
-        expect(firstParameterNegativeFunc).to.throw(BadParameterError);
+        expect(firstParameterNegativeFunc).to.throw(BadValueError);
     });
 
     it("Template.extract() method : Second parameter is negative", function () {
@@ -120,7 +121,7 @@ describe('Template', function () {
         const secondParameterNegativeFunc = function () {
             template.extract(2, -2);
         };
-        expect(secondParameterNegativeFunc).to.throw(BadParameterError);
+        expect(secondParameterNegativeFunc).to.throw(BadValueError);
     });
 
     it('Template.replace() method : Success', function () {
@@ -171,7 +172,7 @@ describe('Template', function () {
         const secondParameterSmallerFunc = function () {
             template.replace(12, 6, "test");
         };
-        expect(secondParameterSmallerFunc).to.throw(BadParameterError);
+        expect(secondParameterSmallerFunc).to.throw(BadValueError);
     });
 
     it('Template.replace() method : Third parameter is neither an integer nor a string', function () {
