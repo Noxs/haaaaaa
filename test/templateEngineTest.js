@@ -30,7 +30,6 @@ describe('TemplateEngine', function () {
         const template = fs.readFileSync(path.resolve(__dirname, "./template/body_with_else.html.ste")).toString();
         const context = JSON.parse(fs.readFileSync(path.resolve(__dirname, "./template/parameters.json")));
         const render = templateEngine.render(template, context);
-        fs.writeFileSync(path.resolve(__dirname, "./test.html"), render);
         assert.equal(render, fs.readFileSync(path.resolve(__dirname, "./template/body_with_else.html")).toString());
     });
 
