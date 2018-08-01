@@ -1,6 +1,6 @@
 {
   "name": "smash-template-engine",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -8,15 +8,12 @@
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha --reporter=lcovonly -- test --recursive"
   },
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "glob": "^7.1.2",
-    "moment": "^2.22.0"
-  },
+  "license": "MIT",
+  "dependencies": {},
   "devDependencies": {
     "chai": "^4.1.2",
-    "codecov": "^3.0.0",
-    "coveralls": "^3.0.0",
+    "codecov": "^3.0.3",
+    "coveralls": "^3.0.2",
     "eslint": "^4.19.1",
     "istanbul": "^0.4.5",
     "mocha": "^4.1.0",

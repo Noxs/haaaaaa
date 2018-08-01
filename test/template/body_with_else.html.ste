@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {% if variable12 %}
+        {% if variables.length === 3 %}
+            <title>{{ variable }}</title>
+        {% else %}
+            <title>string</title>
+        {% endif %}
+    {% else %}
+        {% if variables.length === 1 %}
+            <title>string 1</title>
+        {% elseif variables.length === 2 %}
+            <title>string 2</title>
+        {% else %}
+            <title>string 3</title>
+        {% endif %}
+    {% endif %}
+</head>
+
+<body>
+    <center>
+        <table>
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td background="https://{{variable}}">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <table>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                <table>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td background="https://url.com">
+                                                                                <table>
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td style="padding:0;">
+                                                                                                <img src="https://{{url}}" alt="">
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <table>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                {% if variables.length === 1 %}
+                                                                    Not shown
+                                                                {% else %}
+                                                                    Shown
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <table>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                {% if variable %}
+                                                                    <div>
+                                                                        <div>
+                                                                            {{ variable }}
+                                                                        </div>
+                                                                        <div>
+                                                                            {{ variable }}
+                                                                        </div>
+                                                                    </div>
+                                                                    <br/>
+                                                                {% endif %}
+                                                                <div>
+                                                                    <div>
+                                                                        {{ variable }}
+                                                                    </div>
+                                                                    <div >
+                                                                        <a  href="https://{{url}}" target="_blank">https://{{url}}</a>
+                                                                    </div>
+                                                                </div>
+                                                                <br/>
+                                                                <div>
+                                                                    <div>
+                                                                        {{ variable }}
+                                                                    </div>
+                                                                    <div>
+                                                                        {{ variable }}
+                                                                    </div>
+                                                                </div>
+                                                                <br/>
+                                                                <div>
+                                                                    <div>
+                                                                        {{ variable }}
+                                                                    </div>
+                                                                    <div>
+                                                                        {{ variable }}
+                                                                    </div>
+                                                                </div>
+                                                                <br/>
+                                                                <div>
+                                                                    <div>
+                                                                        {% if variables.length === 1 %}
+                                                                            {{ variable }}1
+                                                                        {% elseif variables.length === 3 %}
+                                                                            {{ variable }}3
+                                                                        {% elseif variables.length === 2 %}
+                                                                            {{ variable }}2
+                                                                        {% endif %}
+                                                                    </div>
+                                                                    {% for variable in variables %}
+                                                                        <a>
+                                                                            {{ variable.key }}
+                                                                        </a>
+                                                                        <br/>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {% if !variable %}
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <table>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                <table>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <a href="https://{{url}}" target="_blank">
+                                                                                    <img src="https://{{url}}" alt="">
+                                                                                </a>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                                <div>
+                                                                    <span>{{ variable }}</span>
+                                                                    <br><span><a href="{{ url }}" target="_blank">{{ variable }}</a> | <a href="{{ variable }}" target="_blank">{{ variable }}</a></span>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </center>
+</body>
+
+</html>
