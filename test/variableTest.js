@@ -224,6 +224,17 @@ describe('Variables', function () {
         };
 
         expect(testFunc).to.throw(ReferenceError);
+
+        const varNode1 = new VarNode(new Tag(0, "{{ myVariable1 | noFilter }}", 0), 0);
+        varNode1.variable = "myVariable1";
+        varNode1.setContext(new Context({ "myVariable1": "This is a string"}));
+        varNode1._filterInstances = [];
+        varNode1.selfComplete(new Template("{{ myVariable1 | noFilter }}"));
+
+        const testFunc1 = function () {
+            varNode1.postExecute();
+        };
+        expect(testFunc1).to.throw();
     });
 
     it('Variables postExecute() method : failure #2', function () {

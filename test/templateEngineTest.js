@@ -6,6 +6,7 @@ const TemplateEngine = require('../lib/templateEngine.js');
 const Context = require('../lib/context.js');
 const UsageError = require('../lib/usageError.js');
 const InvalidFilterError = require('../lib/invalidFilterError.js');
+const BadParameterError = require('../lib/badParameterError.js');
 const fs = require('fs');
 const path = require("path");
 
@@ -174,5 +175,24 @@ describe('TemplateEngine', function () {
             templateEngine.addFilter("This is not an object");
         };
         expect(testFunc4).to.throw(InvalidFilterError);
+    });
+
+    it('TemplateEngine analyse : success', function () {
+        const templateEngine = new TemplateEngine();
+        const template = fs.readFileSync(path.resolve(__dirname, "./template/body_with_else.html.ste")).toString();
+
+        const analysedContext = templateEngine.analyse(template);
+
+        assert.deepEqual(analysedContext, ["variable", "url"]);
+    });
+    
+    it('TemplateEngine analyse : failure', function () {
+        const templateEngine = new TemplateEngine();
+    
+        const testFunc = function () {
+            const analysedContext = templateEngine.analyse(21);
+        };
+
+        expect(testFunc).to.throw(BadParameterError);
     });
 });
