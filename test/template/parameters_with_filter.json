@@ -1,0 +1,17 @@
+{
+    "variable": "justAVar",
+    "url" : "myUrl.com",
+    "variable2": 2,
+    "variables1": ["A value"],
+    "variables": [
+        {
+            "key": "Value1"
+        },
+        {
+            "key": "Value2"
+        },
+        {
+            "key": "Value3"
+        }
+    ]
+}
