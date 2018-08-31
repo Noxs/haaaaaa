@@ -1,6 +1,5 @@
 # SmashTemplateEngine [![Build Status](https://travis-ci.org/Noxs/SmashTemplateEngine.svg?branch=master)](https://travis-ci.org/Noxs/SmashTemplateEngine) [![codecov](https://codecov.io/gh/Noxs/SmashTemplateEngine/branch/master/graph/badge.svg)](https://codecov.io/gh/Noxs/SmashTemplateEngine)
 
-//TODO update 
 //FIXME when filters are not fetch in styleNode, FilterNotFound exception is not thrown, why?
 
 A template Engine with basic features :<br />
@@ -25,27 +24,23 @@ You can now require the package and create an instance of TemplateEngine :
 
 ```
 const STE = require('smash-template-engine');
-const templateEngine = new STE.TemplateEngine();
+const templateEngine = new STE(); 
 ```
 
 ## Usage
 
 The only method you need is templateEngine.render().
-It takes two parameters :<br />
+It takes three parameters :<br />
 &ensp;&ensp;- The first one is a string, which is actually your template<br />
 &ensp;&ensp;- The second one (optional) is an object, it corresponds to your context, containing all the variables used in the template<br />
 &ensp;&ensp;- The third one (optional) is a string that corresponds to your stylesheet. You can put your css into a seperated file, to improve performances <br />
 
-templateEngine.render() method is asynchronous, it resolves an object with a content attribute which is basically the compiled template.
+templateEngine.render() method is synchronous, it return an object with a 'content' attribute which is basically the compiled template.
 
 To make it simple, it should look like :
 
 ```
-templateEngine.render(string[, parameters, style]).then(function (template) {
-    let renderer = template.content;
-},function (error) {
-    console.log(error);
-});
+const renderer = templateEngine.render(string[, parameters, style]);
 ```
 
 ### Seperated CSS
@@ -55,33 +50,8 @@ If you want to use a seperated CSS file, don't forget to specify it as third par
 To tell the templateEngine where to insert the CSS in your template, you will need :
 
 ```
-{% style %}{% endstyle %}
+{% style %}
 ```
-
-### Translate Filter
-
-If you pretend to use the translate filter you will have to check few easy peasy steps before.
-The template engine needs to know the translations used in the template, but also the wished language and a default language that is used as fallback.
-
-A translator object manages the translation, so all you need may look like this :
-
-```
-const translator = STE.translator;
-const translations = {
-    'HELLO_WORD' : {
-        en : 'Hello',
-        fr : 'Bonjour',
-        de : 'Hallo'
-    }
-};
-const language = 'fr';
-const fallbackLanguage = 'en';
-
-translator.translations = translations;
-translator.language = language;
-translator.fallbackLanguage = fallbackLanguage;
-```
-You can now call the translate filter in your template.
 
 ## Syntax
 
@@ -89,7 +59,7 @@ It is highly inspired of twig, so it might look familiar.
 
 ### Variables
 
-It is the most common feature, it allow you to insert variables from a context into a template.
+It is the most common feature, it allow you to insert variables from the context into a template.
 
 ```
 {{ Variable }}
@@ -97,10 +67,12 @@ It is the most common feature, it allow you to insert variables from a context i
 
 ### If condition
 
-Everything between the opening and the closing tag will be either inserted or removed in the compiled template depending on if the condition is checked or not. The else statement also works as known.
+Everything between the opening and the closing tag will be either inserted or removed in the compiled template depending on if the condition is checked or not. The else and elseif statement also works as known.
 
 ```
 {% if 'hello' === 'world' %}
+    It won't be inserted
+{% elseif 'hello' === 'hola' %}
     It won't be inserted
 {% else %}
     It will be inserted
@@ -116,84 +88,92 @@ Everything between the opening and the closing will be repeated as many as there
 {% for user in users %} {{user.name}} is {{user.age}} years old. {% endfor %}
 ```
 
-### Filters
+## Filters
 
-Filters allow to apply treatment on a variable. They are few filters build-in : Translate, date and size.
+There is no build-in filters. Fortunately, you can add your owns !
 
-#### Translate filter
-
-Quite useful to deal with several languages. it looks like this :
+In a template, a filter may look like this : 
 
 ```
-{{ 'HELLO_KEYWORD' | translate }}
+{{ myVar | myFilter }}
+
+{{ myVar | myFilter({customVar: "This is a string"}) }}     // A template can also be designed to receive parameter into an object
 ```
 
-You can also add variable into translations, it is made so :
+Every Filter must have getName() and execute() methods.
+
+The execute() method take three arguments : <br/>
+&ensp;&ensp;- The first one (string type) is the input at the left of the pipe (hereabove "myVar")<br />
+&ensp;&ensp;- The second one (optional) is an object, it corresponds to the parameter set at the right of pipe (hereabove {customVar: "This is a string"})<br />
+&ensp;&ensp;- The third one (optional) is an object that corresponds to your global context set in STE<br />
 
 ```
-// Considering
-const translations : {
-    "HELLO_WORD" : {
-        "en" : "Hello %name%"
+class FilterTest {
+    getName() {
+        return "myFilter"; //This is the name to use in the template 
     }
-};
-// And name defined in the global context
 
-{{ 'HELLO_KEYWORD' | translate({name : "James"}) }}  // Hello James
+    execute(input, param, context) {
+        // do things
+        return;
+    }
+}
 ```
 
-NB : In order to use translate filter, you'll need to tell translator your intention, make sure you've read [Translate Filter](#translate-filter)
-
-#### Date filter
-
-The build-in date filter allow you to transform all your UNIX timestamp into a string formatted as you wish and translated into the language you want.
-
-It can have no parameter specified, so the format will be defined thanks to the language set in the translator.
+Let's create a basic filter. We will give it an age and it will display "You are above the limit" or "you are under the limit" either the age is bigger or not than a limit we will set in the filter's parameters.
 
 ```
-const timestamp = 1517407220;
-{{ timestamp | date }} // January 31, 2018
+class FilterTest {
+    getName() {
+        return "myFilter"; //This is the name to use in the template 
+    }
+
+    execute(input, param, context) {
+        if (input > param.ageLimit) {
+            return "You are above the limit";
+        } else {
+            return "You are under the limit";
+        }
+        return;
+    }
+}
+
+templateEngine.addFilter(new FilterTest());
+const renderer1 = templateEngine.render("{{age | myFilter({ageLimit: 21})}}", {age: 22}); // "You are above the limit"
+const renderer2 = templateEngine.render("{{age | myFilter({ageLimit: 21})}}", {age: 19}); // "You are under the limit"
 ```
 
-But you can set the format you want as parameter :
+Nevertheless another project ([SmashTemplateEngineFilters](https://www.npmjs.com/package/smash-template-engine-filters)) proposes some basic filters : 
+
+&ensp;&ensp;- Translate<br />
+&ensp;&ensp;- Date<br />
+&ensp;&ensp;- Size<br />
+&ensp;&ensp;- Plural<br />
+&ensp;&ensp;- UcFirst<br />
+
+
+First of all if you want to use smash-template-engine-filters, you will need to install the package:
 
 ```
-const timestamp = 1517407220;
-{{ timestamp | date({format : "MM-DD-YYYY"}) }} // 31-01-2018
+npm i smash-template-engine-filters
 ```
 
-This filter is based on [MomentJS](https://momentjs.com/), just check it out for specific format.
-
-#### size filter
-
-It convert a Bytes number into a appropriated unit :
+Let's create an instance
 
 ```
-{{ 1 | size }}                      // "1 B"
-{{ 10 | size }}                     // "10 B"
-{{ 100 | size }}                    // "100 B"
-{{ 1000 | size }}                   // "1 KB"
-{{ 10000 | size }}                  // "10 KB"
-{{ 100000 | size }}                 // "100 KB"
-{{ 1000000 | size }}                // "1 MB"
-{{ 10000000 | size }}               // "10 MB"
-{{ 100000000 | size }}              // "100 MB"
-{{ 1000000000 | size }}             // "1 GB"
-{{ 10000000000 | size }}            // "10 GB"
-{{ 100000000000 | size }}           // "100 GB"
-{{ 1000000000000 | size }}          // "1 TB"
-{{ 10000000000000 | size }}         // "10 TB"
-{{ 100000000000000 | size }}        // "100 TB"
-{{ 1000000000000000 | size }}       // "1 PB"
-{{ 10000000000000000 | size }}      // "10 PB"
-{{ 100000000000000000 | size }}     // "100 PB"
+const Filters = require('smash-template-engine-filters');
+const filters = new Filters();
 ```
+
+Now you can add filters you need to your template engine thanks to templateEngine.addFilter(). But keep in mind that Date and Size filters needs Translate filter to work properly.
+
+You should really read the [Smash Template Engine Filters Doc](https://github.com/Noxs/SmashTemplateEngineFilters) if your not used to it.
 
 ### Nested filters
 
 Sometimes, you may need nested filter, to apply a filter on the result of another filter.
 
-Let's have a look of a case you may face : use date into a translation.
+Let's have a look of a case you may face : use date into a translation that are included in [SmashTemplateEngineFilters](https://www.npmjs.com/package/smash-template-engine-filters).
 
 ```
 const translations : {
@@ -201,42 +181,6 @@ const translations : {
 };
 const timestamp = 1517407220;
 {{"HELLO_WORD" | translate( { name : "James", date : date(timestamp, {format : ""MMMM Do YYYY"})} )}} // Hello James. Today is January 31st 2018
-```
-
-#### Custom filters
-
-You can add you own template to the template engine.
-Let's consider the template hereunder as an example :
-```
-{{variable | myFilter(param1, param2)}}
-```
-
-Avery basic filter structure may look like this :
-```
-function myFilter(variable, param1, param2){
-    //do things
-    return;
-}
-
-module.exports = myFilter;
-```
-
-Make sure you placed your filter in /filters
-
-Then you need to add your filter to the filters constructor located in lib/filters.js
-
-Please take a look at how it should be :
-```
-const myFilter = {
-        process : require('../filters/myFilter.js'),
-        name : 'myFilter'
-};
-this.add(myFilter);
-```
-
-Now you can use :
-```
-{{ variable | myFilter }}
 ```
 
 ## Running the tests
@@ -251,13 +195,11 @@ npm test
 
 Here is a full examples of how to use the template engine.
 
-
-
 ```
 const STE = require('smash-template-engine');
-const templateEngine = new STE.TemplateEngine();
-const translator = STE.translator;
-const string = '<body><main>{{"HELLO_WORD" | translate}}</main><h1>{%if title %}{{title}}{% endif %}</h1><div>{% for user in users %}<p>{%if user.hobby %}{{user.firstname}} enjoys {{user.hobby}}{% endif %}{% if user.age < 30 %} and is {{user.age}} {% endif %}{{user.firstname}} lastname is {{user.lastname}}</p>{% endfor %}<p>{{day | dayTest(\'Monday\')}}</p></div></body>';
+const Filters = require('smash-template-engine-filters');
+
+const template = '<body><main>{{"HELLO_WORD" | translate}}</main><h1>{%if title %}{{title}}{% endif %}</h1><div>{% for user in users %}<p>{%if user.hobby %}{{user.firstname}} enjoys {{user.hobby}}{% endif %}{% if user.age < 30 %} and is {{user.age}} {% endif %}{{user.firstname}} lastname is {{user.lastname}}</p>{% endfor %}<p>{{day | dayTest(\'Monday\')}}</p></div></body>';
 
 const parameters = {
     title : "Welcome",
@@ -289,17 +231,17 @@ const translations = {
         de : "Wie geht's?"
     }
 };
-const language = 'en';
-const fallbackLanguage = 'fr';
-translator.translations = translations;
-translator.language = language;
-translator.fallbackLanguage = fallbackLanguage;
 
-templateEngine.render(string, parameters).then( (result) => {
-    let renderer = result.content;
-}, (error) => {
-    console.log(error);
-});
+const filters = new Fitler();
+const translator = new filters.Translate(translations);
+const translator.language = 'en';
+
+const templateEngine = new STE();
+templateEngine.addFilter(translator);
+templateEngine.addFilter(new filters.Date(translator));
+templateEngine.addFilter(new filters.Size(translator));
+
+const renderer = templateEngine.render(string, parameters);
 ```
 
 renderer now should be :
