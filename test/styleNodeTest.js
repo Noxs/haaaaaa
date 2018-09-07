@@ -3,7 +3,6 @@ const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
 const Tag = require('../lib/tag.js');
-const Template = require('../lib/template.js');
 const StyleNode = require('../lib/styleNode.js');
 const Context = require('../lib/context.js');
 const TemplateError = require('../lib/templateError.js');
