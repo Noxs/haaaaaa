@@ -106,5 +106,18 @@ describe('Context', function () {
         
         assert.equal(context.stringify(), "var year=2017;var day=\"Tuesday\";");
         assert.equal(context.stringify("expression"), "var year=2017;var day=\"Tuesday\";expression");
+
+        context.day = "Wednesday";
+        context.modify("day");
+        assert.equal(context.stringify("expression"), "var year=2017;var day=\"Wednesday\";expression");
+
+        context.year = "Two thousand twenty eight";
+        context.modify("year");
+        assert.equal(context.stringify("expression"), "var year=\"Two thousand twenty eight\";var day=\"Wednesday\";expression");
+
+        context.year = "Two thousand twenty seven";
+        context.modify("year");
+        assert.equal(context.stringify("expression"), "var year=\"Two thousand twenty seven\";var day=\"Wednesday\";expression");
+
     });
 });
