@@ -661,7 +661,7 @@ describe('Node', function () {
         parent.setContext(context);
         const contextResult = parent.getContextForChildren();
         assert.deepEqual(contextResult, context);
-        assert.notEqual(contextResult, context);
+        assert.equal(contextResult, context);
     });
 
     it('Node _fetchContext()', function () {

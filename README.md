@@ -32,7 +32,7 @@ const templateEngine = new STE();
 The only method you need is templateEngine.render().
 It takes three parameters :<br />
 &ensp;&ensp;- The first one is a string, which is actually your template<br />
-&ensp;&ensp;- The second one (optional) is an object, it corresponds to your context, containing all the variables used in the template<br />
+&ensp;&ensp;- The second one (optional) is an object, it corresponds to your context, containing all the variables used in the template (key in the context witch starts with '_' are not supported)<br />
 &ensp;&ensp;- The third one (optional) is a string that corresponds to your stylesheet. You can put your css into a seperated file, to improve performances <br />
 
 templateEngine.render() method is synchronous, it return an object with a 'content' attribute which is basically the compiled template.

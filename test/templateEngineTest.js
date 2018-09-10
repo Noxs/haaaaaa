@@ -50,7 +50,7 @@ describe('TemplateEngine', function () {
             },
             execute: function (input, param, filterContext) {
                 assert.deepEqual(param, null);
-                assert.deepEqual(filterContext, context);
+                assert.deepEqual(filterContext.copy(), new Context(context));
                 return "Input that has been entered is: " + input;
             }
         };
@@ -61,7 +61,7 @@ describe('TemplateEngine', function () {
             },
             execute: function (input, param, filterContext) {
                 assert.equal(param, 2);
-                assert.deepEqual(filterContext, context);
+                assert.deepEqual(filterContext.copy(), new Context(context));
                 return "Input that has been entered is: " + input + ", and (input+param) equals " + (input + param);
             }
         };

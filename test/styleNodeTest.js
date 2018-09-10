@@ -57,7 +57,7 @@ describe('StyleNode', function () {
         assert.equal(nextNode, styleNode2);
 
         assert.isDefined(styleNode1.context.getStyle);
-        assert.isUndefined(styleNode2.context.getStyle);
+        assert.isDefined(styleNode2.context.getStyle);
     });
 
     it('StyleNode postExecute(): success', function () {
