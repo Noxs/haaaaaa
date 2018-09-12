@@ -3,7 +3,6 @@ const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
 const Tag = require('../lib/tag.js');
-const Template = require('../lib/template.js');
 const StyleNode = require('../lib/styleNode.js');
 const Context = require('../lib/context.js');
 const TemplateError = require('../lib/templateError.js');
@@ -58,7 +57,7 @@ describe('StyleNode', function () {
         assert.equal(nextNode, styleNode2);
 
         assert.isDefined(styleNode1.context.getStyle);
-        assert.isUndefined(styleNode2.context.getStyle);
+        assert.isDefined(styleNode2.context.getStyle);
     });
 
     it('StyleNode postExecute(): success', function () {

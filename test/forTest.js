@@ -37,7 +37,7 @@ describe('For', function () {
         assert.equal(forNode._currentIteration, null);
         assert.equal(forNode._results, null);
     });
-    
+
     it('For _init()', function () {
         const forNode = new ForNode(new Tag(0, "{% for user in users %}", 0), 0);
         forNode._forContextVariableName = "myVar";
@@ -46,18 +46,19 @@ describe('For', function () {
         forNode._iterationNumber = 1;
         forNode._currentIteration = 0;
         forNode._results = ["This is a string"];
-        
+
         forNode._init();
-        
+
         assert.equal(forNode._forContextVariableName, null);
         assert.equal(forNode._value, null);
         assert.equal(forNode._key, null);
         assert.equal(forNode._iterationNumber, null);
         assert.equal(forNode._currentIteration, null);
         assert.equal(forNode._results, null);
-        
+        assert.equal(forNode._copiedContext, null);
+
     });
-    
+
     it('For getContextForChildren()', function () {
         const context1 = new Context({
             tab: ["value1", "value2", "value3"]
@@ -76,19 +77,21 @@ describe('For', function () {
         });
 
         const forNode = new ForNode(new Tag(0, "{% for user in users %}", 0), 0);
-
+        forNode.reset();
         forNode.setContext(context1);
         forNode._value = "value";
         forNode._forContextVariableName = "tab";
         forNode._currentIteration = 1;
         assert.equal(forNode.getContextForChildren().tab[forNode._currentIteration], forNode.getContextForChildren()[forNode._value]);
 
+        forNode.reset();
         forNode.setContext(context2);
         forNode._value = "char";
         forNode._forContextVariableName = "string";
         forNode._currentIteration = 6;
         assert.equal(forNode.getContextForChildren().string[forNode._currentIteration], forNode.getContextForChildren()[forNode._value]);
 
+        forNode.reset();
         forNode.setContext(context3);
         forNode._value = "char";
         forNode._forContextVariableName = "string";
@@ -101,6 +104,7 @@ describe('For', function () {
         forNode._currentIteration = 2;
         assert.equal(forNode.getContextForChildren().tab[forNode._currentIteration], forNode.getContextForChildren()[forNode._value]);
 
+        forNode.reset();
         forNode.setContext(context4);
         forNode._forContextVariableName = "user.names";
         forNode._value = "name";
@@ -259,12 +263,12 @@ describe('For', function () {
         });
 
         forNode2.addParent(forNode1);
-        
+
         forNode2.complete(completeTag2, template);
         forNode1.complete(completeTag1, template);
 
         forNode1.setContext(context1);
-        
+
         const preExecuteResult1 = forNode1.preExecute();
 
         const preExecuteResult2_1 = forNode2.preExecute();
@@ -273,7 +277,7 @@ describe('For', function () {
         assert.deepEqual(postExecuteResult2_1._results, ["your name,"]);
         assert.equal(postExecuteResult2_1.isPostExecuted(), false);
         assert.equal(postExecuteResult2_1, forNode2);
-        
+
         const preExecuteResult2_2 = forNode2.preExecute();
         const postExecuteResult2_2 = preExecuteResult2_2.postExecute();
 
@@ -281,7 +285,7 @@ describe('For', function () {
         assert.equal(forNode2.isPostExecuted(), true);
         assert.deepEqual(forNode2.result, new Template("your name,your name,"));
         assert.equal(postExecuteResult2_2, forNode1);
-        
+
         const postExecuteResult1 = forNode1.postExecute();
         assert.equal(postExecuteResult1, null);
     });
@@ -295,23 +299,23 @@ describe('For', function () {
         const completeTag1 = new Tag(120, "{% endfor %}", 0);
         const completeTag2 = new Tag(66, "{% endfor %}", 0);
         const completeTag3 = new Tag(108, "{% endfor %}", 0);
-        
+
         const context1 = new Context({
             users: [{
                 names: ["Roger", "Emile"],
                 sports: []
             }]
         });
-        
+
         forNode2.addParent(forNode1);
         forNode2.addNext(forNode3);
 
         forNode2.complete(completeTag2, template);
         forNode3.complete(completeTag3, template);
         forNode1.complete(completeTag1, template);
-        
+
         forNode1.setContext(context1);
-        
+
         const preExecuteResult1 = forNode1.preExecute();
 
         const preExecuteResult2_1 = forNode2.preExecute();
@@ -320,7 +324,7 @@ describe('For', function () {
         assert.deepEqual(postExecuteResult2_1._results, ["your name,"]);
         assert.equal(postExecuteResult2_1.isPostExecuted(), false);
         assert.equal(postExecuteResult2_1, forNode2);
-        
+
         const preExecuteResult2_2 = forNode2.preExecute();
         const postExecuteResult2_2 = preExecuteResult2_2.postExecute();
 
@@ -328,7 +332,7 @@ describe('For', function () {
         assert.deepEqual(forNode2._results, null);
         assert.equal(forNode2.isPostExecuted(), true);
         assert.deepEqual(forNode2.result, new Template("your name,your name,"));
-        
+
         const preExecuteResult3_1 = forNode3.preExecute();
         const postExecuteResult3_1 = preExecuteResult3_1.postExecute();
 
@@ -337,4 +341,22 @@ describe('For', function () {
         assert.equal(postExecuteResult1, null);
         assert.deepEqual(forNode1.result, new Template(" Hi, your name,your name,"));
     });
+
+    it('Node getContextForChildren()', function () {
+        const parent = new ForNode(new Tag(0, "{% for user in users %}", 0), 0);
+        const context = new Context({
+            users: [
+                { username: "user1" },
+                { username: "user2" }
+            ]
+        });
+        parent._forContextVariableName = "users";
+        parent._currentIteration = 0;
+        parent._value = "user";
+        parent.setContext(context);
+        const contextResult = parent.getContextForChildren();
+        assert.notEqual(contextResult, context);
+        assert.equal(contextResult.user.username, context.byString("users")[0].username);
+    });
+
 });

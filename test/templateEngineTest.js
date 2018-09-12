@@ -7,6 +7,11 @@ const Context = require('../lib/context.js');
 const UsageError = require('../lib/usageError.js');
 const InvalidFilterError = require('../lib/invalidFilterError.js');
 const BadParameterError = require('../lib/badParameterError.js');
+const TemplateError = require('../lib/templateError.js');
+const LogicError = require('../lib/logicError.js');
+const BadValueError = require('../lib/badValueError.js');
+const FilterExecutionError = require('../lib/filterExecutionError.js');
+const FilterNotFoundError = require('../lib/filterNotFoundError.js');
 const fs = require('fs');
 const path = require("path");
 
@@ -45,7 +50,7 @@ describe('TemplateEngine', function () {
             },
             execute: function (input, param, filterContext) {
                 assert.deepEqual(param, null);
-                assert.deepEqual(filterContext, context);
+                assert.deepEqual(filterContext.copy(), new Context(context));
                 return "Input that has been entered is: " + input;
             }
         };
@@ -56,7 +61,7 @@ describe('TemplateEngine', function () {
             },
             execute: function (input, param, filterContext) {
                 assert.equal(param, 2);
-                assert.deepEqual(filterContext, context);
+                assert.deepEqual(filterContext.copy(), new Context(context));
                 return "Input that has been entered is: " + input + ", and (input+param) equals " + (input + param);
             }
         };
@@ -124,8 +129,8 @@ describe('TemplateEngine', function () {
     it('TemplateEngine addFilter/resetFilter: success', function () {
         const templateEngine = new TemplateEngine();
         const filter = {
-            getName: function () {},
-            execute: function (input, params, context) {}
+            getName: function () { },
+            execute: function (input, params, context) { }
         };
 
         templateEngine.addFilter(filter);
@@ -148,12 +153,12 @@ describe('TemplateEngine', function () {
         };
 
         const filter2 = {
-            getName: function () {}
+            getName: function () { }
         };
 
         const filter3 = {
-            getName: function () {},
-            execute: function () {}
+            getName: function () { },
+            execute: function () { }
         };
 
         const testFunc1 = function () {
@@ -185,14 +190,27 @@ describe('TemplateEngine', function () {
 
         assert.deepEqual(analysedContext, ["variable", "url"]);
     });
-    
+
     it('TemplateEngine analyse : failure', function () {
         const templateEngine = new TemplateEngine();
-    
+
         const testFunc = function () {
             const analysedContext = templateEngine.analyse(21);
         };
 
         expect(testFunc).to.throw(BadParameterError);
+    });
+
+    it('TemplateEngine Errors', function () {
+        const templateEngine = new TemplateEngine();
+
+        assert.equal(BadParameterError, templateEngine.BadParameterError);
+        assert.equal(BadValueError, templateEngine.BadValueError);
+        assert.equal(FilterExecutionError, templateEngine.FilterExecutionError);
+        assert.equal(FilterNotFoundError, templateEngine.FilterNotFoundError);
+        assert.equal(InvalidFilterError, templateEngine.InvalidFilterError);
+        assert.equal(LogicError, templateEngine.LogicError);
+        assert.equal(TemplateError, templateEngine.TemplateError);
+        assert.equal(UsageError, templateEngine.UsageError);
     });
 });

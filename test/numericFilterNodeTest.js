@@ -2,8 +2,6 @@ const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should();
-// const Template = require('../lib/template.js');
-// const Context = require('../lib/context.js');
 const TemplateError = require('../lib/templateError.js');
 const NumericFilterNode = require('../lib/numericFilterNode.js');
 
