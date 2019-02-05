@@ -1,6 +1,7 @@
 # SmashTemplateEngine [![Build Status](https://travis-ci.org/Noxs/SmashTemplateEngine.svg?branch=master)](https://travis-ci.org/Noxs/SmashTemplateEngine) [![codecov](https://codecov.io/gh/Noxs/SmashTemplateEngine/branch/master/graph/badge.svg)](https://codecov.io/gh/Noxs/SmashTemplateEngine)
 
-//FIXME when filters are not fetch in styleNode, FilterNotFound exception is not thrown, why?
+//FIXME Update documentation
+//FIXME When filters are not fetch in styleNode, FilterNotFound exception is not thrown, why?
 
 A template Engine with basic features :<br />
 &ensp;&ensp;- Variables handling<br />
