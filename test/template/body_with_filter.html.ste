@@ -117,6 +117,9 @@
                                                                         {{ variable2 | testFilter2(2) }}
                                                                     </div>
                                                                     <div>
+                                                                        {{ variable2 | testFilter1 | testFilter2(2) }}
+                                                                    </div>
+                                                                    <div>
                                                                         {{ variable | testFilter1 }}
                                                                     </div>
                                                                 </div>
@@ -185,6 +188,9 @@
             </tr>
         </table>
     </center>
+    <span>
+        {{ variable | testFilter1 }}
+    </span>
 </body>
 
 </html>

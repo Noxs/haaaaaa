@@ -31,15 +31,31 @@ describe('Variables', function () {
         assert.equal(varNode._relativeEnd, null);
         assert.equal(varNode.result, null);
 
-        assert.instanceOf(varNode._nodeFilter, Filter);
+        assert.instanceOf(varNode._nodeFilters, Array);
         assert.equal(varNode.variable, null);
-        
+
     });
 
     it('Variables extractVar() method', function () {
-        const varNode = new VarNode(new Tag(0, "{{ myVar | filterName }}", 0), 0);
-        varNode.template = new Template(" myVar | filterName ");
-        assert.equal(varNode.extractVar(), "myVar");
+        const varNode1 = new VarNode(new Tag(0, "{{ myVar | filterName }}", 0), 0);
+        varNode1.template = new Template(" myVar | filterName ");
+        assert.equal(varNode1.extractVar(), "myVar");
+
+        const varNode2 = new VarNode(new Tag(0, "{{ myVar | filterName1 | filterName2 }}", 0), 0);
+        varNode2.template = new Template(" myVar | filterName1 | filterName2 ");
+        assert.equal(varNode2.extractVar(), "myVar");
+
+        const varNode3 = new VarNode(new Tag(0, "{{ 'myVar' | filterName1 | filterName2 }}", 0), 0);
+        varNode3.template = new Template(" 'myVar' | filterName1 | filterName2 ");
+        assert.equal(varNode3.extractVar(), "'myVar'");
+
+        const varNode4 = new VarNode(new Tag(0, '{{ "myVar" | filterName1 | filterName2 }}', 0), 0);
+        varNode4.template = new Template(' "myVar" | filterName1 | filterName2 ');
+        assert.equal(varNode4.extractVar(), '"myVar"');
+
+        const varNode5 = new VarNode(new Tag(0, '{{ "myVar | myVar" | filterName1 | filterName2 }}', 0), 0);
+        varNode5.template = new Template(' "myVar | myVar" | filterName1 | filterName2 ');
+        assert.equal(varNode5.extractVar(), '"myVar | myVar"');
     });
 
     it('Variables selfComplete() method : success', function () {
@@ -49,7 +65,7 @@ describe('Variables', function () {
         varNode.selfComplete(template);
         assert.deepEqual(varNode.template.content, " myVar | filterName ");
         assert.deepEqual(varNode.variable, "myVar");
-        assert.isNotNull(varNode._nodeFilter._start);
+        assert.isNotNull(varNode._nodeFilters[0]._start);
     });
 
     it('Variables selfComplete() method : failure', function () {
@@ -134,9 +150,11 @@ describe('Variables', function () {
         assert.equal(varNode.result.content, "This is a string.");
 
         varNode.setContext(context2);
-        varNode._nodeFilter._type = "Null";
-        varNode._nodeFilter._filterName = "myFilter";
-        varNode._nodeFilter._filterInstances = [{
+        varNode._nodeFilters = [];
+        varNode._nodeFilters.push({});
+        varNode._nodeFilters[0]._type = "Null";
+        varNode._nodeFilters[0]._filterName = "myFilter";
+        varNode._nodeFilters[0]._filterInstances = [{
             getName: function () { return "myFilter"; },
             execute: function (input, params, context) { return input; }
         }];
@@ -227,7 +245,7 @@ describe('Variables', function () {
 
         const varNode1 = new VarNode(new Tag(0, "{{ myVariable1 | noFilter }}", 0), 0);
         varNode1.variable = "myVariable1";
-        varNode1.setContext(new Context({ "myVariable1": "This is a string"}));
+        varNode1.setContext(new Context({ "myVariable1": "This is a string" }));
         varNode1._filterInstances = [];
         varNode1.selfComplete(new Template("{{ myVariable1 | noFilter }}"));
 
@@ -248,5 +266,23 @@ describe('Variables', function () {
         };
 
         expect(testFunc).to.throw(ReferenceError);
+    });
+
+    it('Variables _extractPipePosition() method', function () {
+        const varNode1 = new VarNode(new Tag(0, '{{ "myVar | myVar" | filterName1 }}', 0), 0);
+        varNode1.template = new Template(' "myVar | myVar" | filterName1 ');
+        assert.deepEqual(varNode1._extractPipePosition(varNode1.template.content), [17]);
+
+        const varNode2 = new VarNode(new Tag(0, '{{ "myVar | myVar" | filterName1 | filterName2 }}', 0), 0);
+        varNode2.template = new Template(' "myVar | myVar" | filterName1 | filterName2 ');
+        assert.deepEqual(varNode2._extractPipePosition(varNode2.template.content), [17, 31]);
+
+        const varNode3 = new VarNode(new Tag(0, '{{ "myVar | myVar" | filterName1 | filterName2 }}', 0), 0);
+        varNode3.template = new Template(' "myVar | myVar" | filterName1 | filterName2 ');
+        assert.deepEqual(varNode2._extractPipePosition(varNode3.template.content), [17, 31]);
+
+        const varNode4 = new VarNode(new Tag(0, "{{ 'myVar | myVar' | myFilter1({value1: {value: 'this is a |'}, value2: 'This is a standalone |', value3: 23, value4: translate('something to |'), value5: variableName, value6: ['This is a string in a |', 'This is a string a |'], \"value7\": \"This is a |7\"}) | myFilter2 | myFilter3() }}", 0), 0);
+        varNode4.template = new Template(" 'myVar | myVar' | myFilter1({value1: {value: 'this is a |'}, value2: 'This is a standalone |', value3: 23, value4: translate('something to |'), value5: variableName, value6: ['This is a string in a |', 'This is a string a |'], \"value7\": \"This is a |7\"}) | myFilter2 | myFilter3() ");
+        assert.deepEqual(varNode2._extractPipePosition(varNode4.template.content), [17, 255, 267]);
     });
 });
