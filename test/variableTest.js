@@ -56,6 +56,50 @@ describe('Variables', function () {
         const varNode5 = new VarNode(new Tag(0, '{{ "myVar | myVar" | filterName1 | filterName2 }}', 0), 0);
         varNode5.template = new Template(' "myVar | myVar" | filterName1 | filterName2 ');
         assert.equal(varNode5.extractVar(), '"myVar | myVar"');
+
+        const varNode6 = new VarNode(new Tag(0, '{{ myVar|filterName1| filterName2 }}', 0), 0);
+        varNode6.template = new Template(' myVar|filterName1| filterName2 ');
+        assert.equal(varNode6.extractVar(), 'myVar');
+    });
+
+    it('Variables extractFilters() method', function () {
+        const varNode1 = new VarNode(new Tag(0, "{{ myVar | filterName }}", 0), 0);
+        varNode1.template = new Template(" myVar | filterName ");
+        varNode1.extractFilters();
+        assert.equal(varNode1._nodeFilters[0]._start._functionName, "filterName");
+
+
+        const varNode2 = new VarNode(new Tag(0, "{{ myVar | filterName1 | filterName2 }}", 0), 0);
+        varNode2.template = new Template(" myVar | filterName1 | filterName2 ");
+        varNode2.extractFilters();
+        assert.equal(varNode2._nodeFilters[0]._start._functionName, "filterName1");
+        assert.equal(varNode2._nodeFilters[1]._start._functionName, "filterName2");
+
+        const varNode3 = new VarNode(new Tag(0, "{{ 'myVar' | filterName1 | filterName2 }}", 0), 0);
+        varNode3.template = new Template(" 'myVar' | filterName1 | filterName2 ");
+        varNode3.extractFilters();
+        assert.equal(varNode3._nodeFilters[0]._start._functionName, "filterName1");
+        assert.equal(varNode3._nodeFilters[1]._start._functionName, "filterName2");
+
+        const varNode4 = new VarNode(new Tag(0, '{{ "myVar" | filterName1 | filterName2 }}', 0), 0);
+        varNode4.template = new Template(' "myVar" | filterName1 | filterName2 ');
+        varNode4.extractFilters();
+        assert.equal(varNode4._nodeFilters[0]._start._functionName, "filterName1");
+        assert.equal(varNode4._nodeFilters[1]._start._functionName, "filterName2");
+
+        const varNode5 = new VarNode(new Tag(0, '{{ "myVar | myVar" | filterName1 | filterName2 }}', 0), 0);
+        varNode5.template = new Template(' "myVar | myVar" | filterName1 | filterName2 ');
+        varNode5.extractFilters();
+        assert.equal(varNode5._nodeFilters[0]._start._functionName, "filterName1");
+        assert.equal(varNode5._nodeFilters[1]._start._functionName, "filterName2");
+
+        const varNode6 = new VarNode(new Tag(0, '{{ myVar|filterName1| filterName2 }}', 0), 0);
+        varNode6.template = new Template(' myVar|filterName1| filterName2 |filterName3 | filterName4');
+        varNode6.extractFilters();
+        assert.equal(varNode6._nodeFilters[0]._start._functionName, "filterName1");
+        assert.equal(varNode6._nodeFilters[1]._start._functionName, "filterName2");
+        assert.equal(varNode6._nodeFilters[2]._start._functionName, "filterName3");
+        assert.equal(varNode6._nodeFilters[3]._start._functionName, "filterName4");
     });
 
     it('Variables selfComplete() method : success', function () {
