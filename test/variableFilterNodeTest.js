@@ -22,10 +22,13 @@ describe('VariableFilterNode', function () {
         const context = new Context({myVar : "This is a string", my: {var: 12}});
         const variableFilterNode1 = new VariableFilterNode(" myVar ", 1, 0);
         const variableFilterNode2 = new VariableFilterNode(" my.var ", 1, 0);
+        const variableFilterNode3 = new VariableFilterNode(" (my.var + 1) *2  ", 1, 0);
         variableFilterNode1.execute("", context, "");
         variableFilterNode2.execute("", context, "");
+        variableFilterNode3.execute("", context, "");
 
         assert.equal(variableFilterNode1.getResult(), "This is a string");
         assert.equal(variableFilterNode2.getResult(), 12);
+        assert.equal(variableFilterNode3.getResult(), 26);
     });
 });
