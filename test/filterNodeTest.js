@@ -51,6 +51,11 @@ describe('FilterNode', function () {
         expect(testFunc4).to.throw(BadParameterError);
     });
 
+    it('FilterNode get line', function () {
+        const parent = new TestFilterNode("This is a string, parent", 1, 0);
+        assert.equal(parent.line, 1);
+    });
+
     it('FilterNode getChildren()', function () {
         const testFilterNode = new TestFilterNode("This is a string", 1, 0);
         assert.deepEqual(testFilterNode.getChildren(), []);
