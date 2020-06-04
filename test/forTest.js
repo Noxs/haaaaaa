@@ -29,6 +29,7 @@ describe('For', function () {
         assert.equal(forNode._relativeStart, null);
         assert.equal(forNode._relativeEnd, null);
         assert.equal(forNode.result, null);
+        assert.equal(forNode._nodeFilters, null);
 
         assert.equal(forNode._forContextVariableName, null);
         assert.equal(forNode._value, null);
@@ -56,6 +57,7 @@ describe('For', function () {
         assert.equal(forNode._currentIteration, null);
         assert.equal(forNode._results, null);
         assert.equal(forNode._copiedContext, null);
+        assert.deepEqual(forNode._nodeFilters, null);
 
     });
 
@@ -114,6 +116,101 @@ describe('For', function () {
         assert.equal(forNode.getContextForChildren().index, 2);
     });
 
+    it('For _getForContextVariable()', function () {
+        const context1 = new Context({
+            tab: ["value1", "value2", "value3"]
+        });
+        const context2 = new Context({
+            string: "This is a string"
+        });
+        const context3 = new Context({
+            tab: ["value1", "value2", "value3"],
+            string: "This is a string"
+        });
+        const context4 = new Context({
+            user: {
+                names: ["Félix", "Henri", "Régis"]
+            }
+        });
+
+        const sliceFilter = {
+            getName: function () {
+                return "slice";
+            },
+            execute: function (input, param, filterContext) {
+                return input.slice(0, 2);
+            }
+        };
+
+        const forNode1 = new ForNode(new Tag(0, "{% for user in users %}", 0), 0);
+        forNode1.reset();
+        forNode1._nodeFilters = [];
+        forNode1.setFilters([sliceFilter]);
+        forNode1.setContext(context1);
+        forNode1._value = "value";
+        forNode1._forContextVariableName = "tab";
+        forNode1._currentIteration = 1;
+        assert.equal(forNode1._getForContextVariable(), context1.tab);
+
+        const forNode2 = new ForNode(new Tag(0, "{% for user in users | slice({start: 0, end: 2}) %}", 0), 0);
+        forNode2.reset();
+        forNode2._nodeFilters = [sliceFilter];
+        forNode2.setFilters([sliceFilter]);
+        forNode2.setContext(context1);
+        forNode2._value = "value";
+        forNode2._forContextVariableName = "tab";
+        forNode2._currentIteration = 1;
+        assert.deepEqual(forNode2._getForContextVariable(), ["value1", "value2"]);
+    });
+
+    it('For _extractPipePosition() method', function () {
+        const forNode1 = new ForNode(new Tag(0, '{% for user in users | myFilter1 %}', 0), 0);
+        forNode1.template = new Template(' for user in users | myFilter1 ');
+        assert.deepEqual(forNode1._extractPipePosition(forNode1.template.content), [19]);
+
+        const forNode2 = new ForNode(new Tag(0, '{% for user in users | myFilter1 | myFilter2 %}', 0), 0);
+        forNode2.template = new Template(' for user in users | myFilter1 | myFilter2 ');
+        assert.deepEqual(forNode2._extractPipePosition(forNode2.template.content), [19, 31]);
+    });
+
+    it('For extractFilters() method', function () {
+        const template = new Template("{% for user in users | slice({start: 0, end: 2}) %} Hi, {% for name in user.names %}your name,{% endfor %}{% endfor %}");
+        const forNode1 = new ForNode(new Tag(0, "{% for user in users | slice({start: 0, end: 2}) %}", 0), 0);
+        const forNode2 = new ForNode(new Tag(55, "{% for name in user.names %}", 0), 0);
+
+        const completeTag1 = new Tag(105, "{% endfor %}", 0);
+        const completeTag2 = new Tag(93, "{% endfor %}", 0);
+
+        const context1 = new Context({
+            users: [
+                {
+                    names: ["Roger", "Emile"]
+                },
+                {
+                    names: ["Mireille", "Rachida"]
+                }
+            ]
+        });
+        const context2 = new Context({
+            users: [{
+                names: []
+            }]
+        });
+
+        forNode2.addParent(forNode1);
+
+        forNode2.complete(completeTag2, template);
+        forNode1.complete(completeTag1, template);
+
+        forNode1.setContext(context1);
+
+        forNode1.preExecute();
+        forNode2.preExecute();
+
+        assert.equal(forNode1._nodeFilters[0]._start._functionName, "slice");
+        assert.deepEqual(forNode2._nodeFilters, []);
+    });
+
     it('For _checkExpression(): success', function () {
         const context1 = new Context({
             tab: ["value1", "value2", "value3"]
@@ -169,12 +266,12 @@ describe('For', function () {
         const forNode1 = new ForNode(new Tag(0, "{% for user in users %}", 0), 0);
         const forNode2 = new ForNode(new Tag(0, "{% for index=>user in users %}", 0), 0);
 
-        forNode1._parseExpression();
+        forNode1._parseExpression("for user in users");
         assert.equal(forNode1._key, null);
         assert.equal(forNode1._value, "user");
         assert.equal(forNode1._forContextVariableName, "users");
 
-        forNode2._parseExpression();
+        forNode2._parseExpression("for index=>user in users");
         assert.equal(forNode2._key, "index");
         assert.equal(forNode2._value, "user");
         assert.equal(forNode2._forContextVariableName, "users");
@@ -189,50 +286,71 @@ describe('For', function () {
         const forNode6 = new ForNode(new Tag(0, "{% for key=>value=>tab in users %}", 0), 0);
 
         const testFunc1 = function () {
-            forNode1._parseExpression();
+            forNode1._parseExpression("for user users");
         };
         expect(testFunc1).to.throw(TemplateError);
 
         const testFunc2 = function () {
-            forNode2._parseExpression();
+            forNode2._parseExpression("for user in");
         };
         expect(testFunc2).to.throw(TemplateError);
 
         const testFunc3 = function () {
-            forNode3._parseExpression();
+            forNode3._parseExpression("for in users");
         };
         expect(testFunc3).to.throw(TemplateError);
 
         const testFunc4 = function () {
-            forNode4._parseExpression();
+            forNode4._parseExpression("for =>value in users");
         };
         expect(testFunc4).to.throw(TemplateError);
 
         const testFunc5 = function () {
-            forNode5._parseExpression();
+            forNode5._parseExpression("for key=> in users");
         };
         expect(testFunc5).to.throw(TemplateError);
 
         const testFunc6 = function () {
-            forNode6._parseExpression();
+            forNode6._parseExpression("for key=>value=>tab in users");
         };
         expect(testFunc6).to.throw(TemplateError);
-
     });
 
     it('For preExecute()', function () {
-        const forNode1 = new ForNode(new Tag(0, "{% for user in users %}", 0), 0);
+        const forNode1 = new ForNode(new Tag(0, "{% for user in users | slice({start: 0, env: 2}) %}", 0), 0);
         const forNode2 = new ForNode(new Tag(0, "{% for name in user.names %}", 0), 0);
         const context = new Context({
-            users: [{
-                names: ["Roger", "Emile"]
-            }]
+            users: [
+                {
+                    names: ["Roger", "Emile"]
+                },
+                {
+                    names: ["Roger", "Emile"]
+                },
+                {
+                    names: ["Roger", "Emile"]
+                }
+            ]
         });
+
+        const sliceFilter = {
+            getName: function () {
+                return "slice";
+            },
+            execute: function (input, param, filterContext) {
+                return input.slice(0, 2);
+            }
+        };
+
+        forNode1._nodeFilters = [sliceFilter];
+        forNode1.setFilters([sliceFilter]);
 
         forNode1.setContext(context);
         forNode2.addParent(forNode1);
         const preExecuteResult1 = forNode1.preExecute();
         const preExecuteResult2 = forNode2.preExecute();
+
+        assert.equal(forNode1._iterationNumber, 2);
         assert.isNotNull(forNode2.context);
         assert.isDefined(forNode2.context.user);
 

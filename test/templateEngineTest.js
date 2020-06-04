@@ -66,8 +66,18 @@ describe('TemplateEngine', function () {
             }
         };
 
+        const filter3 = {
+            getName: function () {
+                return "slice";
+            },
+            execute: function (input, param, context) {
+                return input.slice(param.start, param.end);
+            }
+        };
+
         templateEngine.addFilter(filter1);
         templateEngine.addFilter(filter2);
+        templateEngine.addFilter(filter3);
 
         assert.equal(templateEngine.render(template, context), fs.readFileSync(path.resolve(__dirname, "./template/body_with_filter.html")).toString());
     });
@@ -95,8 +105,18 @@ describe('TemplateEngine', function () {
             }
         };
 
+        const filter3 = {
+            getName: function () {
+                return "slice";
+            },
+            execute: function (input, param, context) {
+                return input.slice(param.start, param.end);
+            }
+        };
+
         templateEngine.addFilter(filter1);
         templateEngine.addFilter(filter2);
+        templateEngine.addFilter(filter3);
 
         assert.equal(templateEngine.render(template, context), fs.readFileSync(path.resolve(__dirname, "./template/body_with_filter.html")).toString());
 
