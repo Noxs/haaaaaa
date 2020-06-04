@@ -33,7 +33,6 @@ describe('Variables', function () {
 
         assert.instanceOf(varNode._nodeFilters, Array);
         assert.equal(varNode.variable, null);
-
     });
 
     it('Variables extractVar() method', function () {

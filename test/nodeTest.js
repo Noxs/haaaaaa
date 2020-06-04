@@ -709,7 +709,7 @@ describe('Node', function () {
         previous.addNext(parent);
         parent._fetchContext();
         child1.addParent(parent);
-        
+
         child1._fetchContext();
 
         assert.deepEqual(previous.context, parent.context);
@@ -724,5 +724,14 @@ describe('Node', function () {
         };
 
         expect(testFunc).to.throw(TemplateError);
+    });
+
+    it('Node _extractPipePosition() method', function () {
+        const node = new Node(new Tag(0, "  node  ", 0), 0);
+        assert.deepEqual(node._extractPipePosition(' "myVar | myVar" | filterName1 '), [17]);
+        assert.deepEqual(node._extractPipePosition(' "myVar | myVar" | filterName1 | filterName2 '), [17, 31]);
+        assert.deepEqual(node._extractPipePosition(' "myVar | myVar" | filterName1 | filterName2 '), [17, 31]);
+        assert.deepEqual(node._extractPipePosition(" 'myVar | myVar' | myFilter1({value1: {value: 'this is a |'}, value2: 'This is a standalone |', value3: 23, value4: translate('something to |'), value5: variableName, value6: ['This is a string in a |', 'This is a string a |'], \"value7\": \"This is a |7\"}) | myFilter2 | myFilter3() "), [17, 255, 267]);
+        assert.deepEqual(node._extractPipePosition(" 'myVar | myVar' | myFilter1({value1: {value: 'this is a |'}, value2: 'This is a standalone |', value3: 23, value4: translate('something to |'), value5: variableName, value6: ['This is a string in a |', 'This is a string a |'], \"value7\": \"This is a |7\"}) | myFilter2 | myFilter3() "), [17, 255, 267]);
     });
 });
