@@ -35,10 +35,8 @@ describe('VariableFilterNode', function () {
 
     it('VariableFilterNode execute() failure #1', function () {
         const context = new Context({ myVar: "This is a string", my: { var: 12 } });
-        //const variableFilterNode1 = new VariableFilterNode(" my.VVvar ", 1, 0);
         const variableFilterNode2 = new VariableFilterNode(" (my.var + 1) **** 2  ", 1, 0);
 
-        //expect(() => variableFilterNode1.execute("", context, "")).to.throw(TemplateError);
         expect(() => variableFilterNode2.execute("", context, "")).to.throw(TemplateError);
     });
 });
