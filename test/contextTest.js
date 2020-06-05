@@ -9,8 +9,8 @@ const BadParameterError = require('../lib/badParameterError.js');
 describe('Context', function () {
     it('Context build : Success', function () {
         const test = {
-            year : 2017,
-            day : "Tuesday",
+            year: 2017,
+            day: "Tuesday",
         };
         const context = new Context(test);
         assert.isObject(context);
@@ -19,14 +19,14 @@ describe('Context', function () {
         assert.equal(context.year, 2017);
         assert.equal(context.day, "Tuesday");
         assert.equal(context.test, undefined);
-        const successFunc = function() {
+        const successFunc = function () {
             new Context(test);
         };
         expect(successFunc).to.not.throw(BadParameterError);
     });
 
     it('Context build : First parameter is a string', function () {
-        const failureFunc = function() {
+        const failureFunc = function () {
             new Context('Wrong type');
         };
         expect(failureFunc).to.throw(BadParameterError);
@@ -34,8 +34,8 @@ describe('Context', function () {
 
     it('Context byString() method : Success', function () {
         const test = {
-            year : 2017,
-            day : "Tuesday",
+            year: 2017,
+            day: "Tuesday",
         };
         const context = new Context(test);
         expect(context.byString("year")).to.equal(2017);
@@ -44,10 +44,10 @@ describe('Context', function () {
 
     it('Context byString() method : Success with nested context', function () {
         const nestedTest = {
-            sports : {
-                handball : {
-                    place : 'indoor',
-                    team : 7,
+            sports: {
+                handball: {
+                    place: 'indoor',
+                    team: 7,
                 }
             },
         };
@@ -58,9 +58,9 @@ describe('Context', function () {
 
     it('Context byString() method failure : Value is not in the object', function () {
         const testObject = {
-            sports : {
-                handball : {
-                    team : 7,
+            sports: {
+                handball: {
+                    team: 7,
                 }
             },
         };
@@ -68,10 +68,27 @@ describe('Context', function () {
         assert.isUndefined(context.byString('sports.handball.place'));
     });
 
+    it('Context set() method success ', function () {
+        const testObject = {
+            sports: {
+                handball: {
+                    team: 7,
+                },
+                basket: 2,
+            },
+            test: 0,
+        };
+        const context = new Context(testObject);
+        assert.equal(context.set('sports.handball.team', 9).sports.handball.team, 9);
+        assert.equal(context.set('test', 1).test, 1);
+        assert.deepEqual(context.set('sports.basket', { foo: "bar" }).sports.basket, { foo: "bar" });
+    });
+
+
     it('Context byString() method : First parameter is an object', function () {
         const test = {
-            year : 2017,
-            day : "Tuesday",
+            year: 2017,
+            day: "Tuesday",
         };
         const context = new Context(test);
         const firstParameterObjectFunc = function () {
@@ -82,8 +99,8 @@ describe('Context', function () {
 
     it('Context copy() method : Success', function () {
         const test = {
-            year : 2017,
-            day : "Tuesday",
+            year: 2017,
+            day: "Tuesday",
         };
         const context = new Context(test);
         const copy = context.copy();
@@ -101,23 +118,34 @@ describe('Context', function () {
         const test = {
             year: 2017,
             day: "Tuesday",
+            deep: {
+                foo: "bar",
+            }
         };
         const context = new Context(test);
-        
-        assert.equal(context.stringify(), "var year=2017;var day=\"Tuesday\";");
-        assert.equal(context.stringify("expression"), "var year=2017;var day=\"Tuesday\";expression");
+
+        assert.equal(context.stringify(), "var year=2017;var day=\"Tuesday\";var deep={\"foo\":\"bar\"};");
+        assert.equal(context.stringify("expression"), "var year=2017;var day=\"Tuesday\";var deep={\"foo\":\"bar\"};expression");
 
         context.day = "Wednesday";
         context.modify("day");
-        assert.equal(context.stringify("expression"), "var year=2017;var day=\"Wednesday\";expression");
+        assert.equal(context.stringify("expression"), "var year=2017;var day=\"Wednesday\";var deep={\"foo\":\"bar\"};expression");
 
         context.year = "Two thousand twenty eight";
         context.modify("year");
-        assert.equal(context.stringify("expression"), "var year=\"Two thousand twenty eight\";var day=\"Wednesday\";expression");
+        assert.equal(context.stringify("expression"), "var year=\"Two thousand twenty eight\";var day=\"Wednesday\";var deep={\"foo\":\"bar\"};expression");
 
         context.year = "Two thousand twenty seven";
         context.modify("year");
-        assert.equal(context.stringify("expression"), "var year=\"Two thousand twenty seven\";var day=\"Wednesday\";expression");
+        assert.equal(context.stringify("expression"), "var year=\"Two thousand twenty seven\";var day=\"Wednesday\";var deep={\"foo\":\"bar\"};expression");
+
+        context.deep = { bar: "foo" };
+        context.modify("deep");
+        assert.equal(context.stringify("expression"), "var year=\"Two thousand twenty seven\";var day=\"Wednesday\";var deep={\"bar\":\"foo\"};expression");
+
+        context.deep = { bar: "foobar" };
+        context.modify("deep.bar");
+        assert.equal(context.stringify("expression"), "var year=\"Two thousand twenty seven\";var day=\"Wednesday\";var deep={\"bar\":\"foobar\"};expression");
 
     });
 });

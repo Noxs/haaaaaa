@@ -130,7 +130,7 @@
                                                                             {{ variable }}
                                                                         {% endif %}
                                                                     </div>
-                                                                    {% for variable in variables | slice({start:0,end:2}) %}
+                                                                    {% for key => variable in deep.variables | slice({start:0,end:2}) %}
                                                                         <a>
                                                                             {{ variable.key }}
                                                                         </a>

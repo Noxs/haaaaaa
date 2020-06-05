@@ -5,15 +5,20 @@
     "variables1": [
         "This array contains only one value"
     ],
-    "variables": [
-        {
-            "key": "This is Value1"
-        },
-        {
-            "key": "This is Value2"
-        },
-        {
-            "key": "This is Value3"
-        }
-    ]
+    "deep": {
+        "variables": [
+            {
+                "key": "This is Value1",
+                "name": "test1"
+            },
+            {
+                "key": "This is Value2",
+                "name": "test2"
+            },
+            {
+                "key": "This is Value3",
+                "name": "test3"
+            }
+        ]
+    }
 }
