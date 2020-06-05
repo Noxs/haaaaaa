@@ -77,6 +77,15 @@ describe('For', function () {
                 names: ["Félix", "Henri", "Régis"]
             }
         });
+        const context5 = new Context({
+            user: {
+                names: [
+                    { firstName: "Félix" },
+                    { firstName: "Henri" },
+                    { firstName: "Régis" },
+                ]
+            }
+        });
 
         const forNode = new ForNode(new Tag(0, "{% for user in users %}", 0), 0);
         forNode.reset();
@@ -113,6 +122,15 @@ describe('For', function () {
         forNode._key = "index";
         forNode._currentIteration = 2;
         assert.equal(forNode.getContextForChildren().user.names[forNode._currentIteration], forNode.getContextForChildren()[forNode._value]);
+        assert.equal(forNode.getContextForChildren().index, 2);
+
+        forNode.reset();
+        forNode.setContext(context5);
+        forNode._forContextVariableName = "user.names";
+        forNode._value = "name";
+        forNode._key = "index";
+        forNode._currentIteration = 2;
+        assert.deepEqual(forNode.getContextForChildren().user.names[forNode._currentIteration], forNode.getContextForChildren()[forNode._value]);
         assert.equal(forNode.getContextForChildren().index, 2);
     });
 
@@ -161,6 +179,16 @@ describe('For', function () {
         forNode2._forContextVariableName = "tab";
         forNode2._currentIteration = 1;
         assert.deepEqual(forNode2._getForContextVariable(), ["value1", "value2"]);
+
+        const forNode3 = new ForNode(new Tag(0, "{% for user in users | slice({start: 0, end: 2}) %}", 0), 0);
+        forNode3.reset();
+        forNode3._nodeFilters = [sliceFilter];
+        forNode3.setFilters([sliceFilter]);
+        forNode3.setContext(context4);
+        forNode3._value = "value";
+        forNode3._forContextVariableName = "user.names";
+        forNode3._currentIteration = 1;
+        assert.deepEqual(forNode3._getForContextVariable(), ["Félix", "Henri"]);
     });
 
     it('For _extractPipePosition() method', function () {

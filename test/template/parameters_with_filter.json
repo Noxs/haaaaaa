@@ -1,17 +1,24 @@
 {
     "variable": "justAVar",
-    "url" : "myUrl.com",
+    "url": "myUrl.com",
     "variable2": 2,
-    "variables1": ["A value"],
-    "variables": [
-        {
-            "key": "Value1"
-        },
-        {
-            "key": "Value2"
-        },
-        {
-            "key": "Value3"
-        }
-    ]
+    "variables1": [
+        "A value"
+    ],
+    "deep": {
+        "variables": [
+            {
+                "key": "Value1",
+                "name": "test1"
+            },
+            {
+                "key": "Value2",
+                "name": "test2"
+            },
+            {
+                "key": "Value3",
+                "name": "test3"
+            }
+        ]
+    }
 }
