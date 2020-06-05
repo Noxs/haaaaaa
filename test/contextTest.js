@@ -68,7 +68,33 @@ describe('Context', function () {
         assert.isUndefined(context.byString('sports.handball.place'));
     });
 
-    it('Context set() method success ', function () {
+    it('Context byString() method : First parameter is an object', function () {
+        const test = {
+            year: 2017,
+            day: "Tuesday",
+        };
+        const context = new Context(test);
+        const firstParameterObjectFunc = function () {
+            context.byString({});
+        };
+        expect(firstParameterObjectFunc).to.throw(BadParameterError);
+    });
+
+    it('Context set() method failure', function () {
+        const testObject = {
+            sports: {
+                handball: {
+                    team: 7,
+                },
+                basket: 2,
+            },
+            test: 0,
+        };
+        const context = new Context(testObject);
+        expect(() => context.set({}, 9)).to.throw(BadParameterError);;
+    });
+
+    it('Context set() method success', function () {
         const testObject = {
             sports: {
                 handball: {
@@ -82,19 +108,6 @@ describe('Context', function () {
         assert.equal(context.set('sports.handball.team', 9).sports.handball.team, 9);
         assert.equal(context.set('test', 1).test, 1);
         assert.deepEqual(context.set('sports.basket', { foo: "bar" }).sports.basket, { foo: "bar" });
-    });
-
-
-    it('Context byString() method : First parameter is an object', function () {
-        const test = {
-            year: 2017,
-            day: "Tuesday",
-        };
-        const context = new Context(test);
-        const firstParameterObjectFunc = function () {
-            context.byString({});
-        };
-        expect(firstParameterObjectFunc).to.throw(BadParameterError);
     });
 
     it('Context copy() method : Success', function () {
